@@ -1,3 +1,77 @@
+
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "swift",
+      "description": "A red Maruti Suzuki Swift hatchback.",
+      "imageUrl": "https://picsum.photos/seed/swift/600/400",
+      "imageHint": "red hatchback"
+    },
+    {
+      "id": "creta",
+      "description": "A white Hyundai Creta SUV.",
+      "imageUrl": "https://picsum.photos/seed/creta/600/400",
+      "imageHint": "white suv"
+    },
+    {
+      "id": "city",
+      "description": "A silver Honda City sedan.",
+      "imageUrl": "https://picsum.photos/seed/city/600/400",
+      "imageHint": "silver sedan"
+    },
+    {
+      "id": "nexon",
+      "description": "A blue Tata Nexon EV SUV.",
+      "imageUrl": "https://picsum.photos/seed/nexon/600/400",
+      "imageHint": "blue suv"
+    },
+    {
+      "id": "innova",
+      "description": "A grey Toyota Innova Crysta MPV.",
+      "imageUrl": "https://picsum.photos/seed/innova/600/400",
+      "imageHint": "grey mpv"
+    },
+    {
+      "id": "seltos",
+      "description": "A black Kia Seltos SUV.",
+      "imageUrl": "https://picsum.photos/seed/seltos/600/400",
+      "imageHint": "black suv"
+    },
+    {
+      "id": "thar",
+      "description": "A black Mahindra Thar off-road vehicle.",
+      "imageUrl": "https://picsum.photos/seed/thar/600/400",
+      "imageHint": "black jeep"
+    },
+    {
+      "id": "polo",
+      "description": "A blue Volkswagen Polo hatchback.",
+      "imageUrl": "https://picsum.photos/seed/polo/600/400",
+      "imageHint": "blue hatchback"
+    },
+    {
+      "id": "ecosport",
+      "description": "An orange Ford EcoSport compact SUV.",
+      "imageUrl": "https://picsum.photos/seed/ecosport/600/400",
+      "imageHint": "orange suv"
+    },
+    {
+      "id": "kwid",
+      "description": "A white Renault Kwid small hatchback.",
+      "imageUrl": "https://picsum.photos/seed/kwid/600/400",
+      "imageHint": "white hatchback"
+    },
+    {
+      "id": "ertiga",
+      "description": "A brown Maruti Suzuki Ertiga MPV.",
+      "imageUrl": "https://picsum.photos/seed/ertiga/600/400",
+      "imageHint": "brown mpv"
+    },
+    {
+      "id": "i20",
+      "description": "A red Hyundai i20 premium hatchback.",
+      "imageUrl": "https://picsum.photos/seed/i20/600/400",
+      "imageHint": "red hatchback"
+    }
+  ]
 }

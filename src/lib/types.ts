@@ -1,0 +1,30 @@
+export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'CNG';
+export type Condition = 'New' | 'Like New' | 'Good' | 'Fair';
+export type SortOption = 'price-asc' | 'price-desc' | 'year-desc' | 'year-asc' | 'kms-asc' | 'kms-desc';
+
+export interface Vehicle {
+  id: string;
+  make: string;
+  model: string;
+  year: number;
+  price: number;
+  kmsDriven: number;
+  fuelType: FuelType;
+  condition: Condition;
+  imageUrl: string;
+  imageHint: string;
+  verified: boolean;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  savedVehicles: string[]; // array of vehicle IDs
+}
+
+export interface Filters {
+  fuelType: FuelType[];
+  condition: Condition[];
+}
