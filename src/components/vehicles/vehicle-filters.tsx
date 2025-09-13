@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Select,
   SelectContent,
@@ -39,11 +41,6 @@ export default function VehicleFilters() {
                     Clear
                 </Button>
             )}
-            <SidebarClose asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                    <X className="h-5 w-5" />
-                </Button>
-            </SidebarClose>
         </div>
       </SidebarHeader>
 

@@ -1,11 +1,11 @@
 import VehicleGrid from '@/components/vehicles/vehicle-grid';
 import { vehicles } from '@/lib/data';
 import VehicleFilters from '@/components/vehicles/vehicle-filters';
-import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar';
+import { Sidebar, SidebarInset } from '@/components/ui/sidebar';
 
 export default function Home() {
   return (
-    <SidebarProvider>
+    <>
       <Sidebar side="left" collapsible="offcanvas">
         <VehicleFilters />
       </Sidebar>
@@ -22,6 +22,6 @@ export default function Home() {
           <VehicleGrid vehicles={vehicles} />
         </div>
       </SidebarInset>
-    </SidebarProvider>
+    </>
   );
 }

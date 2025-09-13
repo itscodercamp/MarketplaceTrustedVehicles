@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/context/auth-provider';
 import Header from '@/components/layout/header';
 import Chatbot from '@/components/ai/chatbot';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 export const metadata: Metadata = {
   title: 'Trusted Vehicles Marketplace',
@@ -24,12 +25,14 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <AuthProvider>
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-          </div>
-          <Toaster />
-          <Chatbot />
+          <SidebarProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+            </div>
+            <Toaster />
+            <Chatbot />
+          </SidebarProvider>
         </AuthProvider>
       </body>
     </html>
