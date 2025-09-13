@@ -26,8 +26,12 @@ export default function Chatbot() {
   // For dragging
   const chatRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 32, y: window.innerHeight - 88 - 32 });
+  const [position, setPosition] = useState({ x: 32, y: 32 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    setPosition({ x: 32, y: window.innerHeight - 88 - 32 });
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
