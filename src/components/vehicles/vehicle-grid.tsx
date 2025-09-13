@@ -1,21 +1,20 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import VehicleCard from './vehicle-card';
-import VehicleFilters from './vehicle-filters';
-import type { Vehicle, Filters, SortOption } from '@/lib/types';
+import type { Vehicle } from '@/lib/types';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useVehicleFilterStore } from '@/store/vehicle-filters';
+import { SidebarTrigger } from '../ui/sidebar';
+import { Button } from '../ui/button';
+import { SlidersHorizontal } from 'lucide-react';
 
 interface VehicleGridProps {
   vehicles: Vehicle[];
 }
 
 export default function VehicleGrid({ vehicles }: VehicleGridProps) {
-  const [filters, setFilters] = useState<Filters>({
-    fuelType: [],
-    condition: [],
-  });
-  const [sort, setSort] = useState<SortOption>('price-asc');
+  const { filters, sort, setResultCount } = useVehicleFilterStore();
 
   const filteredAndSortedVehicles = useMemo(() => {
     let result = [...vehicles];
@@ -52,19 +51,24 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
 
     return result;
   }, [vehicles, filters, sort]);
+
+  useEffect(() => {
+    setResultCount(filteredAndSortedVehicles.length);
+  }, [filteredAndSortedVehicles, setResultCount]);
   
   return (
     <section>
-      <VehicleFilters
-        filters={filters}
-        setFilters={setFilters}
-        sort={sort}
-        setSort={setSort}
-        resultCount={filteredAndSortedVehicles.length}
-      />
+      <div className="mb-4 text-center md:hidden">
+        <SidebarTrigger asChild>
+            <Button variant="outline">
+                <SlidersHorizontal className="mr-2 h-4 w-4" />
+                Filters & Sort
+            </Button>
+        </SidebarTrigger>
+      </div>
       
       {filteredAndSortedVehicles.length > 0 ? (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
           <AnimatePresence>
             {filteredAndSortedVehicles.map((vehicle, i) => (
               <motion.div
@@ -81,8 +85,8 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
           </AnimatePresence>
         </div>
       ) : (
-         <div className="text-center py-20">
-            <h3 className="text-2xl font-semibold">No Vehicles Found</h3>
+         <div className="text-center py-20 bg-card rounded-lg border-2 border-dashed">
+            <h3 className="text-xl font-semibold">No Vehicles Found</h3>
             <p className="text-muted-foreground mt-2">Try adjusting your filters.</p>
         </div>
       )}

@@ -3,15 +3,14 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeft } from "lucide-react"
+import { PanelLeft, X } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet"
 import {
   Tooltip,
   TooltipContent,
@@ -175,7 +174,7 @@ const Sidebar = React.forwardRef<
     },
     ref
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+    const { isMobile, state, openMobile, setOpenMobile, open } = useSidebar()
 
     if (collapsible === "none") {
       return (
@@ -215,7 +214,7 @@ const Sidebar = React.forwardRef<
     return (
       <div
         ref={ref}
-        className="group peer hidden md:block text-sidebar-foreground"
+        className={cn("group peer hidden md:block text-sidebar-foreground", !open && "hidden", className)}
         data-state={state}
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-variant={variant}
@@ -242,7 +241,6 @@ const Sidebar = React.forwardRef<
             variant === "floating" || variant === "inset"
               ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
               : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
-            className
           )}
           {...props}
         >
@@ -285,6 +283,28 @@ const SidebarTrigger = React.forwardRef<
 })
 SidebarTrigger.displayName = "SidebarTrigger"
 
+const SidebarClose = React.forwardRef<
+    React.ElementRef<typeof Button>,
+    React.ComponentProps<typeof Button>
+>(({ className, ...props }, ref) => {
+    return (
+        <SheetClose asChild>
+            <Button
+                ref={ref}
+                variant="ghost"
+                size="icon"
+                className={cn("h-7 w-7", className)}
+                {...props}
+            >
+                <X />
+                <span className="sr-only">Close Sidebar</span>
+            </Button>
+        </SheetClose>
+    )
+})
+SidebarClose.displayName = "SidebarClose"
+
+
 const SidebarRail = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<"button">
@@ -318,12 +338,14 @@ const SidebarInset = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"main">
 >(({ className, ...props }, ref) => {
+    const { isMobile, open } = useSidebar()
   return (
     <main
       ref={ref}
       className={cn(
         "relative flex min-h-svh flex-1 flex-col bg-background",
-        "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
+        "md:transition-[margin-left] md:duration-200 md:ease-linear",
+        !isMobile && open && "md:ml-[var(--sidebar-width)]",
         className
       )}
       {...props}
@@ -358,7 +380,7 @@ const SidebarHeader = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="header"
-      className={cn("flex flex-col gap-2 p-2", className)}
+      className={cn("flex flex-col gap-2", className)}
       {...props}
     />
   )
@@ -373,7 +395,7 @@ const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn("flex flex-col gap-2 p-2", className)}
+      className={cn("flex flex-col gap-2", className)}
       {...props}
     />
   )
@@ -421,7 +443,7 @@ const SidebarGroup = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="group"
-      className={cn("relative flex w-full min-w-0 flex-col p-2", className)}
+      className={cn("relative flex w-full min-w-0 flex-col", className)}
       {...props}
     />
   )
@@ -737,6 +759,7 @@ SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
 
 export {
   Sidebar,
+  SidebarClose,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,

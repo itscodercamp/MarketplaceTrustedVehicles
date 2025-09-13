@@ -1,13 +1,3 @@
-"use client";
-
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -16,104 +6,107 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
-import { Filter, ListRestart } from 'lucide-react';
-import type { Filters, FuelType, Condition, SortOption } from '@/lib/types';
-
-interface VehicleFiltersProps {
-  filters: Filters;
-  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
-  sort: SortOption;
-  setSort: React.Dispatch<React.SetStateAction<SortOption>>;
-  resultCount: number;
-}
+import { ListRestart, X } from 'lucide-react';
+import type { FuelType, Condition } from '@/lib/types';
+import { useVehicleFilterStore } from '@/store/vehicle-filters';
+import { SidebarHeader, SidebarClose, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarGroupContent } from "../ui/sidebar";
+import { Label } from "../ui/label";
+import { Checkbox } from "../ui/checkbox";
 
 const fuelTypes: FuelType[] = ['Petrol', 'Diesel', 'Electric', 'CNG'];
 const conditions: Condition[] = ['New', 'Like New', 'Good', 'Fair'];
 
-export default function VehicleFilters({ filters, setFilters, sort, setSort, resultCount }: VehicleFiltersProps) {
-
-  const handleFilterChange = (filterType: keyof Filters, value: FuelType | Condition) => {
-    setFilters(prev => {
-      const currentValues = prev[filterType] as string[];
-      const newValues = currentValues.includes(value)
-        ? currentValues.filter(item => item !== value)
-        : [...currentValues, value];
-      return { ...prev, [filterType]: newValues };
-    });
-  };
-
-  const clearFilters = () => {
-    setFilters({ fuelType: [], condition: [] });
-  }
+export default function VehicleFilters() {
+  const {
+    filters,
+    sort,
+    setSort,
+    toggleFilter,
+    clearFilters,
+    resultCount,
+  } = useVehicleFilterStore();
 
   const activeFilterCount = filters.fuelType.length + filters.condition.length;
 
   return (
-    <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-lg bg-card border shadow-sm">
+    <>
+      <SidebarHeader className="flex items-center justify-between border-b p-4">
+        <h2 className="text-lg font-semibold">Filters</h2>
         <div className="flex items-center gap-2">
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="relative">
-                    <Filter className="mr-2 h-4 w-4" />
-                    Filter
-                    {activeFilterCount > 0 && (
-                        <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
-                            {activeFilterCount}
-                        </span>
-                    )}
-                </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Fuel Type</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {fuelTypes.map(type => (
-                    <DropdownMenuCheckboxItem
-                    key={type}
-                    checked={filters.fuelType.includes(type)}
-                    onCheckedChange={() => handleFilterChange('fuelType', type)}
-                    >
-                    {type}
-                    </DropdownMenuCheckboxItem>
-                ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>Condition</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {conditions.map(condition => (
-                    <DropdownMenuCheckboxItem
-                    key={condition}
-                    checked={filters.condition.includes(condition)}
-                    onCheckedChange={() => handleFilterChange('condition', condition)}
-                    >
-                    {condition}
-                    </DropdownMenuCheckboxItem>
-                ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
-
             {activeFilterCount > 0 && (
-                 <Button variant="ghost" size="sm" onClick={clearFilters}>
+                <Button variant="ghost" size="sm" onClick={clearFilters}>
                     <ListRestart className="mr-2 h-4 w-4" />
                     Clear
                 </Button>
             )}
+            <SidebarClose asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                    <X className="h-5 w-5" />
+                </Button>
+            </SidebarClose>
         </div>
+      </SidebarHeader>
 
-        <div className="flex items-center gap-4 w-full md:w-auto">
-            <p className="text-sm text-muted-foreground whitespace-nowrap">{resultCount} vehicles found</p>
-            <Select value={sort} onValueChange={(value) => setSort(value as SortOption)}>
-                <SelectTrigger className="w-full md:w-[180px]">
-                <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                <SelectItem value="year-desc">Year: Newest First</SelectItem>
-                <SelectItem value="year-asc">Year: Oldest First</SelectItem>
-                <SelectItem value="kms-asc">Kms: Low to High</SelectItem>
-                <SelectItem value="kms-desc">Kms: High to Low</SelectItem>
-                </SelectContent>
-            </Select>
+      <SidebarContent className="p-0">
+        <div className="p-4 space-y-6">
+            <SidebarGroup>
+                <SidebarGroupLabel>Sort By</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <Select value={sort} onValueChange={(value) => setSort(value as any)}>
+                        <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                        <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                        <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                        <SelectItem value="year-desc">Year: Newest First</SelectItem>
+                        <SelectItem value="year-asc">Year: Oldest First</SelectItem>
+                        <SelectItem value="kms-asc">Kms: Low to High</SelectItem>
+                        <SelectItem value="kms-desc">Kms: High to Low</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarGroup>
+                <SidebarGroupLabel>Fuel Type</SidebarGroupLabel>
+                <SidebarGroupContent className="space-y-3">
+                    {fuelTypes.map(type => (
+                        <div key={type} className="flex items-center space-x-2">
+                            <Checkbox
+                                id={`fuel-${type}`}
+                                checked={filters.fuelType.includes(type)}
+                                onCheckedChange={() => toggleFilter('fuelType', type)}
+                            />
+                            <Label htmlFor={`fuel-${type}`} className="font-normal">{type}</Label>
+                        </div>
+                    ))}
+                </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarGroup>
+                <SidebarGroupLabel>Condition</SidebarGroupLabel>
+                <SidebarGroupContent className="space-y-3">
+                    {conditions.map(condition => (
+                        <div key={condition} className="flex items-center space-x-2">
+                            <Checkbox
+                                id={`condition-${condition}`}
+                                checked={filters.condition.includes(condition)}
+                                onCheckedChange={() => toggleFilter('condition', condition)}
+                            />
+                            <Label htmlFor={`condition-${condition}`} className="font-normal">{condition}</Label>
+                        </div>
+                    ))}
+                </SidebarGroupContent>
+            </SidebarGroup>
         </div>
-    </div>
+      </SidebarContent>
+
+      <SidebarFooter className="p-4 border-t">
+        <p className="text-sm text-muted-foreground text-center">
+            {resultCount} {resultCount === 1 ? 'vehicle' : 'vehicles'} found
+        </p>
+      </SidebarFooter>
+    </>
   );
 }

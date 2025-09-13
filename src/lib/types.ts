@@ -28,3 +28,13 @@ export interface Filters {
   fuelType: FuelType[];
   condition: Condition[];
 }
+
+export interface VehicleFilterState {
+    filters: Filters;
+    sort: SortOption;
+    resultCount: number;
+    setSort: (sort: SortOption) => void;
+    toggleFilter: (filterType: keyof Filters, value: string) => void;
+    clearFilters: () => void;
+    setResultCount: (count: number) => void;
+}
