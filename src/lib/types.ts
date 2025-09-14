@@ -37,6 +37,7 @@ export interface Vehicle {
     Interior: string[];
     Engine: string[];
     Tyres: string[];
+    Documents?: string[];
   };
 }
 
@@ -89,7 +90,7 @@ export const RecommendVehiclesViaChatbotInputSchema = z.object({
     .describe(
       'The language the user is speaking in (Hindi, Marathi, Urdu, English), but using English alphabet.'
     ),
-  vehicleList: z.string().describe('A list of available vehicles in JSON format. Each item is a string with year, make, model and price.'),
+  vehicleList: z.string().describe('A list of available vehicles in JSON format. Each item is a string with year, make, model, price, kms driven and fuel type.'),
 });
 export type RecommendVehiclesViaChatbotInput = z.infer<typeof RecommendVehiclesViaChatbotInputSchema>;
 
