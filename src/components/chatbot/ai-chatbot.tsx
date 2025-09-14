@@ -27,7 +27,7 @@ export default function AiChatbot() {
   const dragControls = useDragControls();
   const constraintsRef = useRef(null);
 
-  const { displayText, startTyping, isTyping } = useTypingEffect(20);
+  const { displayText, startTyping, isTyping } = useTypingEffect(1);
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
@@ -142,7 +142,7 @@ export default function AiChatbot() {
                 <div className={`rounded-lg p-3 max-w-lg ${msg.sender === 'ai' ? 'bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground'}`}>
                   <p>{(isLastMessage && isTyping && !isInitialMessage) ? displayText : msg.text}</p>
                   {msg.vehicle && (
-                    <div className="mt-4 bg-background rounded-lg overflow-hidden">
+                    <div className="mt-4 bg-background rounded-lg overflow-hidden w-[300px]">
                        <VehicleCard vehicle={msg.vehicle} />
                     </div>
                   )}
