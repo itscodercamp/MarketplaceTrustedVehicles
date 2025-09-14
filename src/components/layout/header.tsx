@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { PanelLeftOpen, LayoutGrid, List } from 'lucide-react';
+import { PanelLeftOpen, LayoutGrid, List, User } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useLayoutStore } from '@/store/layout-store';
 import { cn } from '@/lib/utils';
@@ -30,22 +30,24 @@ export default function Header() {
               <span className="sr-only">Toggle Sidebar</span>
             </Button>
           </SidebarTrigger>
-          <Link
-            href="/"
-            className="text-lg font-bold tracking-tight text-primary sm:text-xl"
-          >
-            Trusted Vehicles Marketplace
+          <Link href="/" className="flex flex-col -my-2">
+            <span className="text-xl font-bold tracking-tight text-primary leading-tight">
+              Marketplace
+            </span>
+            <span className="text-xs text-muted-foreground leading-tight -mt-0.5">
+              by Trusted Vehicles
+            </span>
           </Link>
         </div>
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
-          <div className="hidden sm:flex items-center rounded-md bg-muted p-1">
+          <div className="flex items-center rounded-md bg-muted p-1">
             <Button
               variant={layout === 'grid' ? 'secondary' : 'ghost'}
               size="sm"
               onClick={() => setLayout('grid')}
               className={cn(
-                'h-8 px-3',
+                'h-8 px-2 sm:px-3',
                 layout === 'grid' && 'bg-background shadow-sm'
               )}
             >
@@ -57,7 +59,7 @@ export default function Header() {
               size="sm"
               onClick={() => setLayout('list')}
               className={cn(
-                'h-8 px-3',
+                'h-8 px-2 sm:px-3',
                 layout === 'list' && 'bg-background shadow-sm'
               )}
             >
@@ -72,7 +74,7 @@ export default function Header() {
                   aria-label="User menu"
                   className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
-                  <Avatar>
+                  <Avatar className="h-9 w-9">
                     <AvatarImage src={user.avatarUrl} alt={user.name} />
                     <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                   </Avatar>
@@ -88,7 +90,10 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={login}>Login</Button>
+            <Button onClick={login} variant="ghost" size="icon" className="h-9 w-9">
+              <User className="h-5 w-5" />
+              <span className="sr-only">Login</span>
+            </Button>
           )}
         </div>
       </div>
