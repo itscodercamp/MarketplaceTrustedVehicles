@@ -30,9 +30,12 @@ export default function Header() {
     return (
       <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
         <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold tracking-tight text-primary">
+          <Link href="/" className="flex flex-col -my-2">
+            <span className="text-xl font-bold tracking-tight text-primary leading-tight">
               Marketplace
+            </span>
+            <span className="text-xs text-muted-foreground leading-tight -mt-0.5">
+              by <span className="text-success font-semibold">Trusted</span> Vehicles
             </span>
           </Link>
           {pathname === '/login' ? (
@@ -51,7 +54,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
-      <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto flex h-16 items-center px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
           {isVehicleDetailPage ? (
             <Button variant="ghost" size="icon" className="mr-2 h-8 w-8 lg:hidden" onClick={() => router.back()}>
@@ -71,13 +74,13 @@ export default function Header() {
               Marketplace
             </span>
             <span className="text-xs text-muted-foreground leading-tight -mt-0.5">
-              by <span className="text-success">Trusted</span> Vehicles
+              by <span className="text-success font-semibold">Trusted</span> Vehicles
             </span>
           </Link>
         </div>
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
-          <div className="flex items-center rounded-md bg-muted p-1">
+          <div className="hidden items-center rounded-md bg-muted p-1 sm:flex">
             <Button
               variant={layout === 'grid' ? 'secondary' : 'ghost'}
               size="sm"

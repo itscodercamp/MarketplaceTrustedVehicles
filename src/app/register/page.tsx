@@ -23,7 +23,7 @@ export default function RegisterPage() {
           Marketplace
         </span>
         <span className="text-sm text-muted-foreground leading-tight">
-          by <span className="text-success">Trusted</span> Vehicles
+          by <span className="text-success font-semibold">Trusted</span> Vehicles
         </span>
       </Link>
       <h2 className="mt-6 text-3xl font-extrabold text-foreground">Create a new account</h2>
@@ -62,7 +62,7 @@ export default function RegisterPage() {
             Marketplace
           </span>
           <span className="text-xs text-muted-foreground leading-tight">
-            by <span className="text-success">Trusted</span> Vehicles
+            by <span className="text-success font-semibold">Trusted</span> Vehicles
           </span>
         </Link>
         <h2 className="mt-4 text-2xl font-bold text-foreground">

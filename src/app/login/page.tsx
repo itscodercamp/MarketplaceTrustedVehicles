@@ -25,7 +25,7 @@ export default function LoginPage() {
               Marketplace
             </span>
             <span className="text-sm text-muted-foreground leading-tight">
-              by <span className="text-success">Trusted</span> Vehicles
+              by <span className="text-success font-semibold">Trusted</span> Vehicles
             </span>
           </Link>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-foreground">
