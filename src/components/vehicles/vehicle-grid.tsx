@@ -5,9 +5,6 @@ import VehicleCard from './vehicle-card';
 import type { Vehicle } from '@/lib/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
-import { SidebarTrigger } from '../ui/sidebar';
-import { Button } from '../ui/button';
-import { SlidersHorizontal } from 'lucide-react';
 
 interface VehicleGridProps {
   vehicles: Vehicle[];
@@ -58,17 +55,8 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
   
   return (
     <section>
-      <div className="mb-4 text-center md:hidden">
-        <SidebarTrigger asChild>
-          <Button variant="outline">
-            <SlidersHorizontal className="h-4 w-4" />
-            <span>Filters & Sort</span>
-          </Button>
-        </SidebarTrigger>
-      </div>
-      
       {filteredAndSortedVehicles.length > 0 ? (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           <AnimatePresence>
             {filteredAndSortedVehicles.map((vehicle, i) => (
               <motion.div
