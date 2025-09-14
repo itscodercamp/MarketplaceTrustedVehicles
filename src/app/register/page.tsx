@@ -1,11 +1,12 @@
 'use client';
 import { useState } from 'react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { FacebookIcon, GoogleIcon, Logo } from '@/components/icons';
+import { FacebookIcon, GoogleIcon } from '@/components/icons';
 import { User, Building } from 'lucide-react';
 
 type Role = 'customer' | 'dealer';
@@ -17,7 +18,14 @@ export default function RegisterPage() {
 
   const renderStepOne = () => (
     <div className="text-center">
-      <Logo className="mx-auto h-12 w-auto" />
+      <Link href="/" className="inline-flex flex-col -my-2">
+        <span className="text-3xl font-bold tracking-tight text-primary leading-tight">
+          Marketplace
+        </span>
+        <span className="text-sm text-muted-foreground leading-tight">
+          by <span className="text-success">Trusted</span> Vehicles
+        </span>
+      </Link>
       <h2 className="mt-6 text-3xl font-extrabold text-foreground">Create a new account</h2>
       <p className="mt-2 text-sm text-muted-foreground">
         Are you a customer looking to buy, or a dealer looking to sell?
@@ -49,7 +57,14 @@ export default function RegisterPage() {
   const renderStepTwo = () => (
     <div>
       <div className="text-center">
-        <Logo className="mx-auto h-10 w-auto" />
+        <Link href="/" className="inline-flex flex-col -my-2">
+          <span className="text-2xl font-bold tracking-tight text-primary leading-tight">
+            Marketplace
+          </span>
+          <span className="text-xs text-muted-foreground leading-tight">
+            by <span className="text-success">Trusted</span> Vehicles
+          </span>
+        </Link>
         <h2 className="mt-4 text-2xl font-bold text-foreground">
           Register as a {role}
         </h2>

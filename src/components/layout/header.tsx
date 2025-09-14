@@ -16,7 +16,6 @@ import { PanelLeftOpen, LayoutGrid, List, User, ArrowLeft } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useLayoutStore } from '@/store/layout-store';
 import { cn } from '@/lib/utils';
-import { Logo } from '../icons';
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -32,7 +31,6 @@ export default function Header() {
       <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
         <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
-            <Logo className="h-8 w-8" />
             <span className="text-xl font-bold tracking-tight text-primary">
               Marketplace
             </span>
@@ -73,7 +71,7 @@ export default function Header() {
               Marketplace
             </span>
             <span className="text-xs text-muted-foreground leading-tight -mt-0.5">
-              by Trusted Vehicles
+              by <span className="text-success">Trusted</span> Vehicles
             </span>
           </Link>
         </div>

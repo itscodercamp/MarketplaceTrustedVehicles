@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FacebookIcon, GoogleIcon, Logo } from '@/components/icons';
+import { FacebookIcon, GoogleIcon } from '@/components/icons';
 import { useAuth } from '@/context/auth-provider';
 import { useRouter } from 'next/navigation';
 
@@ -20,7 +20,14 @@ export default function LoginPage() {
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <Logo className="mx-auto h-12 w-auto" />
+          <Link href="/" className="inline-flex flex-col -my-2">
+            <span className="text-3xl font-bold tracking-tight text-primary leading-tight">
+              Marketplace
+            </span>
+            <span className="text-sm text-muted-foreground leading-tight">
+              by <span className="text-success">Trusted</span> Vehicles
+            </span>
+          </Link>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-foreground">
             Sign in to your account
           </h2>
