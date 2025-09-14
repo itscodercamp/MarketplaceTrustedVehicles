@@ -98,15 +98,7 @@ const Sidebar = React.forwardRef<
         className={cn(sidebarVariants({side, isDesktop, state, className}))}
         {...props}
       >
-        {!isDesktop && (
-          <button
-            onClick={() => setOpen(false)}
-            className="absolute top-2 right-2 p-2 rounded-full text-muted-foreground hover:bg-muted"
-          >
-            <X size={20} />
-          </button>
-        )}
-        <div className="overflow-y-auto h-full">{props.children}</div>
+        <div className="overflow-y-auto h-full hide-scrollbar">{props.children}</div>
       </aside>
       {!isDesktop && open && (
         <div

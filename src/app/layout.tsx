@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/auth-provider";
 import Header from "@/components/layout/header";
 import { Toaster } from "@/components/ui/toaster";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import Footer from "@/components/layout/footer";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({
             <div className="relative flex min-h-screen flex-col">
               <Header />
               <main className="flex-1">{children}</main>
+              <Footer />
             </div>
             <Toaster />
           </SidebarProvider>
