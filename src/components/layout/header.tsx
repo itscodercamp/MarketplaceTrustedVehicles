@@ -18,7 +18,7 @@ import { useLayoutStore } from '@/store/layout-store';
 import { cn } from '@/lib/utils';
 
 export default function Header() {
-  const { user, login, logout } = useAuth();
+  const { user, logout } = useAuth();
   const { layout, setLayout } = useLayoutStore();
   const pathname = usePathname();
   const router = useRouter();
@@ -53,7 +53,7 @@ export default function Header() {
         </div>
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
-          <div className="hidden sm:flex items-center rounded-md bg-muted p-1">
+          <div className="flex items-center rounded-md bg-muted p-1">
             <Button
               variant={layout === 'grid' ? 'secondary' : 'ghost'}
               size="sm"
@@ -102,9 +102,11 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={login} variant="ghost" size="icon" className="h-9 w-9">
-              <User className="h-5 w-5" />
-              <span className="sr-only">Login</span>
+            <Button asChild variant="ghost" size="icon" className="h-9 w-9">
+              <Link href="/login">
+                <User className="h-5 w-5" />
+                <span className="sr-only">Login</span>
+              </Link>
             </Button>
           )}
         </div>

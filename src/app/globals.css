@@ -95,4 +95,10 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .step-card {
+    @apply bg-card p-8 rounded-lg shadow-lg border transition-all;
+  }
+  .step-card-active {
+    @apply border-primary ring-2 ring-primary;
+  }
 }

@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     toast({
       title: 'Login Successful',
       description: `Welcome back, ${mockUser.name}!`,
+      variant: 'default'
     });
   };
 

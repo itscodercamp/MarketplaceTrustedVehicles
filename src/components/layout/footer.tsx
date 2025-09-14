@@ -13,7 +13,7 @@ export default function Footer() {
             <p>
               Made by{' '}
               <Link href="https://trustedvehicles.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
-                Trusted Vehicles
+                <span className="text-success">Trusted</span> Vehicles
               </Link>
             </p>
           </div>
