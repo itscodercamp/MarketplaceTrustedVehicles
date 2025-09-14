@@ -19,7 +19,9 @@ export default function Home() {
               Browse our curated selection of trusted and verified vehicles.
             </p>
           </header>
-          <VehicleGrid vehicles={vehicles} />
+          <div className="flex justify-center">
+            <VehicleGrid vehicles={vehicles} />
+          </div>
         </div>
       </SidebarInset>
     </>
