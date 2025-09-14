@@ -24,13 +24,15 @@ export default function Chatbot() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
+    if (isOpen && scrollAreaRef.current) {
         const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
         if (viewport) {
-            viewport.scrollTop = viewport.scrollHeight;
+            setTimeout(() => {
+                viewport.scrollTop = viewport.scrollHeight;
+            }, 100);
         }
     }
-  }, [messages]);
+  }, [messages, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,14 +67,14 @@ export default function Chatbot() {
   return (
     <>
       <Button
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl z-40"
+        className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-2xl z-40 bg-accent hover:bg-accent/90"
         onClick={() => setIsOpen(true)}
       >
-        <Bot className="h-7 w-7" />
+        <Bot className="h-8 w-8" />
       </Button>
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in-25">
-            <Card className="w-full max-w-2xl h-full max-h-[90vh] flex flex-col shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-0 md:p-4 animate-in fade-in-25">
+            <Card className="w-full h-full md:max-w-2xl md:h-auto md:max-h-[90vh] flex flex-col shadow-2xl rounded-none md:rounded-lg">
               <CardHeader
                 className="flex flex-row items-center justify-between p-4 bg-primary text-primary-foreground"
               >
@@ -85,9 +87,9 @@ export default function Chatbot() {
                   <span className="sr-only">Close Chat</span>
                 </Button>
               </CardHeader>
-              <CardContent className="p-0 flex-1 flex flex-col">
-                <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-                  <div className="space-y-4">
+              <CardContent className="p-0 flex-1 flex flex-col overflow-hidden">
+                <ScrollArea className="flex-1" ref={scrollAreaRef}>
+                  <div className="space-y-4 p-4">
                     {messages.map((message, index) => (
                       <div key={index} className={`flex items-end gap-2 ${message.sender === 'user' ? 'justify-end' : ''}`}>
                         {message.sender === 'bot' && <Bot className="h-6 w-6 text-primary flex-shrink-0" />}
@@ -118,7 +120,7 @@ export default function Chatbot() {
                     onChange={e => setInputValue(e.target.value)}
                     disabled={isLoading}
                   />
-                   <Button type="submit" size="icon" disabled={isLoading}>
+                   <Button type="submit" size="icon" disabled={isLoading} className="bg-accent text-accent-foreground hover:bg-accent/90">
                      <Send className="h-4 w-4" />
                      <span className="sr-only">Send</span>
                    </Button>

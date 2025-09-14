@@ -26,12 +26,6 @@ export default function Header() {
             >
               Marketplace
             </Link>
-            <Link
-              href="/generate-report"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              AI Condition Report
-            </Link>
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
