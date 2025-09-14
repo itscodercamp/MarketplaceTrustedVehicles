@@ -57,7 +57,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
           {isVehicleDetailPage ? (
-            <Button variant="ghost" size="icon" className="mr-2 h-8 w-8 lg:hidden" onClick={() => router.back()}>
+            <Button variant="ghost" size="icon" className="mr-2 h-8 w-8" onClick={() => router.back()}>
               <ArrowLeft className="h-5 w-5" />
               <span className="sr-only">Back</span>
             </Button>
@@ -80,32 +80,34 @@ export default function Header() {
         </div>
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
-          <div className="hidden items-center rounded-md bg-muted p-1 sm:flex">
-            <Button
-              variant={layout === 'grid' ? 'secondary' : 'ghost'}
-              size="sm"
-              onClick={() => setLayout('grid')}
-              className={cn(
-                'h-8 px-2 sm:px-3',
-                layout === 'grid' && 'bg-background shadow-sm'
-              )}
-            >
-              <LayoutGrid className="h-5 w-5" />
-              <span className="sr-only">Grid View</span>
-            </Button>
-            <Button
-              variant={layout === 'list' ? 'secondary' : 'ghost'}
-              size="sm"
-              onClick={() => setLayout('list')}
-              className={cn(
-                'h-8 px-2 sm:px-3',
-                layout === 'list' && 'bg-background shadow-sm'
-              )}
-            >
-              <List className="h-5 w-5" />
-              <span className="sr-only">List View</span>
-            </Button>
-          </div>
+          {!isVehicleDetailPage && (
+            <div className="hidden items-center rounded-md bg-muted p-1 sm:flex">
+              <Button
+                variant={layout === 'grid' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setLayout('grid')}
+                className={cn(
+                  'h-8 px-2 sm:px-3',
+                  layout === 'grid' && 'bg-background shadow-sm'
+                )}
+              >
+                <LayoutGrid className="h-5 w-5" />
+                <span className="sr-only">Grid View</span>
+              </Button>
+              <Button
+                variant={layout === 'list' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setLayout('list')}
+                className={cn(
+                  'h-8 px-2 sm:px-3',
+                  layout === 'list' && 'bg-background shadow-sm'
+                )}
+              >
+                <List className="h-5 w-5" />
+                <span className="sr-only">List View</span>
+              </Button>
+            </div>
+          )}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
