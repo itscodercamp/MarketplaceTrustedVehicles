@@ -8,18 +8,29 @@ import { Button } from '@/components/ui/button';
 import { Heart, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+
 
 interface VehicleCardProps {
   vehicle: Vehicle;
 }
 
 export default function VehicleCard({ vehicle }: VehicleCardProps) {
-  const { isVehicleSaved, toggleSaveVehicle } = useAuth();
-  const isSaved = isVehicleSaved(vehicle.id);
+  const { isVehicleSaved, toggleSaveVehicle, user } = useAuth();
+  const { toast } = useToast();
+  const isSaved = user ? isVehicleSaved(vehicle.id) : false;
 
   const handleSaveClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!user) {
+       toast({
+        variant: 'destructive',
+        title: 'Authentication Required',
+        description: 'You need to be logged in to save vehicles.',
+      });
+      return;
+    }
     toggleSaveVehicle(vehicle.id);
   }
 

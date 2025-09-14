@@ -11,23 +11,9 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { RecommendVehiclesViaChatbotInputSchema, RecommendVehiclesViaChatbotOutputSchema } from '@/lib/types';
+import type { RecommendVehiclesViaChatbotInput, RecommendVehiclesViaChatbotOutput } from '@/lib/types';
 
-const RecommendVehiclesViaChatbotInputSchema = z.object({
-  userInput: z.string().describe('The user input describing their vehicle preferences.'),
-  language: z
-    .string()
-    .describe(
-      'The language the user is speaking in (Hindi, Marathi, Urdu, English), but using English alphabet.'
-    ),
-  vehicleList: z.string().describe('A list of available vehicles in JSON format.'),
-});
-export type RecommendVehiclesViaChatbotInput = z.infer<typeof RecommendVehiclesViaChatbotInputSchema>;
-
-const RecommendVehiclesViaChatbotOutputSchema = z.object({
-  recommendation: z.string().describe('The vehicle recommendation from the chatbot.'),
-});
-export type RecommendVehiclesViaChatbotOutput = z.infer<typeof RecommendVehiclesViaChatbotOutputSchema>;
 
 export async function recommendVehiclesViaChatbot(
   input: RecommendVehiclesViaChatbotInput
@@ -39,10 +25,13 @@ const prompt = ai.definePrompt({
   name: 'recommendVehiclesViaChatbotPrompt',
   input: {schema: RecommendVehiclesViaChatbotInputSchema},
   output: {schema: RecommendVehiclesViaChatbotOutputSchema},
-  prompt: `You are a helpful AI-powered vehicle recommendation chatbot. You are helping a user find a vehicle from a list of available vehicles.
+  prompt: `You are a helpful and friendly AI-powered vehicle recommendation chatbot for a marketplace called 'Trusted Vehicles'. You are helping a user find a vehicle from a list of available vehicles.
 
-The user will provide their preferences, and you should recommend a vehicle that matches their needs.
-The user may be speaking in Hindi, Marathi, Urdu, or English, but using English alphabet. You should adapt your tone to match the user's language while responding using English alphabet.
+Your goal is to understand the user's needs and recommend the best vehicle from the provided list. Be conversational.
+
+The user may be speaking in Hindi, Marathi, Urdu, or English, but using the English alphabet. You should adapt your tone to match the user's language while responding in the same language (using English alphabet).
+
+When you recommend a specific vehicle, make sure you mention its exact make and model as it appears in the list. This is very important so the system can show it to the user.
 
 Available Vehicles: {{{vehicleList}}}
 

@@ -9,22 +9,8 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-export const GenerateVehicleConditionReportInputSchema = z.object({
-  vehicleDescription: z.string().describe('A detailed description of the vehicle, including make, model, and year.'),
-  condition: z.string().describe('The current condition of the vehicle (e.g., excellent, good, fair, poor).'),
-  features: z.string().describe('A list of features and options the vehicle has.'),
-  images: z.array(z.string()).describe(
-    "A list of photos of the vehicle, as data URIs that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-  ),
-});
-export type GenerateVehicleConditionReportInput = z.infer<typeof GenerateVehicleConditionReportInputSchema>;
-
-export const GenerateVehicleConditionReportOutputSchema = z.object({
-  report: z.string().describe('A comprehensive condition report of the vehicle in Markdown format.'),
-});
-export type GenerateVehicleConditionReportOutput = z.infer<typeof GenerateVehicleConditionReportOutputSchema>;
+import { GenerateVehicleConditionReportInputSchema, GenerateVehicleConditionReportOutputSchema } from '@/lib/types';
+import type { GenerateVehicleConditionReportInput, GenerateVehicleConditionReportOutput } from '@/lib/types';
 
 export async function generateVehicleConditionReport(
   input: GenerateVehicleConditionReportInput

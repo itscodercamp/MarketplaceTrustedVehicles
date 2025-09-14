@@ -49,11 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleSaveVehicle = (vehicleId: string) => {
     if (!user) {
-      toast({
-        variant: 'destructive',
-        title: 'Authentication Required',
-        description: 'You need to be logged in to save vehicles.',
-      });
+      // This case is handled in the component to avoid duplicate toasts
       return;
     }
 

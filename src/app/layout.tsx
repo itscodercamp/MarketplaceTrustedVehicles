@@ -7,6 +7,7 @@ import Header from "@/components/layout/header";
 import { Toaster } from "@/components/ui/toaster";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Footer from "@/components/layout/footer";
+import AiChatbot from "@/components/chatbot/ai-chatbot";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function RootLayout({
               <Footer />
             </div>
             <Toaster />
+            <AiChatbot />
           </SidebarProvider>
         </AuthProvider>
       </body>
