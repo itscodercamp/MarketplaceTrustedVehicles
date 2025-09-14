@@ -27,7 +27,7 @@ export default function AiChatbot() {
   const dragControls = useDragControls();
   const constraintsRef = useRef(null);
 
-  const { displayText, startTyping, isTyping } = useTypingEffect();
+  const { displayText, startTyping, isTyping } = useTypingEffect(20);
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
@@ -72,7 +72,7 @@ export default function AiChatbot() {
   // Handle typing effect for the last AI message
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage && lastMessage.sender === 'ai' && !isTyping) {
+    if (lastMessage && lastMessage.sender === 'ai' && !isTyping && messages.length > 1) {
       startTyping(lastMessage.text);
     }
   }, [messages, isTyping, startTyping]);
@@ -97,7 +97,7 @@ export default function AiChatbot() {
       >
         <Button
           size="icon"
-          className="rounded-full w-14 h-14 bg-primary text-primary-foreground shadow-2xl"
+          className="rounded-full w-12 h-12 bg-primary text-primary-foreground shadow-2xl"
           onPointerDown={(e) => {
             e.preventDefault();
             dragControls.start(e);
@@ -105,7 +105,7 @@ export default function AiChatbot() {
           onClick={() => setIsOpen(true)}
           aria-label="Open AI Chatbot"
         >
-          <Bot className="w-7 h-7" />
+          <Bot className="w-6 h-6" />
         </Button>
       </motion.div>
 
@@ -135,11 +135,12 @@ export default function AiChatbot() {
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {messages.map((msg, index) => {
               const isLastMessage = index === messages.length - 1;
+              const isInitialMessage = index === 0;
               return (
               <div key={index} className={`flex items-end gap-3 ${msg.sender === 'user' ? 'justify-end' : ''}`}>
                 {msg.sender === 'ai' && <Bot className="w-8 h-8 text-primary self-start flex-shrink-0" />}
                 <div className={`rounded-lg p-3 max-w-lg ${msg.sender === 'ai' ? 'bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground'}`}>
-                  <p>{(isLastMessage && isTyping) ? displayText : msg.text}</p>
+                  <p>{(isLastMessage && isTyping && !isInitialMessage) ? displayText : msg.text}</p>
                   {msg.vehicle && (
                     <div className="mt-4 bg-background rounded-lg overflow-hidden">
                        <VehicleCard vehicle={msg.vehicle} />
