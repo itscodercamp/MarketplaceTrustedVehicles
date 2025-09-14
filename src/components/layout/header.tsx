@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -11,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { PanelLeftOpen, LayoutGrid, List, User } from 'lucide-react';
+import { PanelLeftOpen, LayoutGrid, List, User, ArrowLeft } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useLayoutStore } from '@/store/layout-store';
 import { cn } from '@/lib/utils';
@@ -19,17 +20,28 @@ import { cn } from '@/lib/utils';
 export default function Header() {
   const { user, login, logout } = useAuth();
   const { layout, setLayout } = useLayoutStore();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const isVehicleDetailPage = pathname.startsWith('/vehicle/');
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
-      <div className="flex h-16 items-center px-4 sm:px-6 lg:px-8">
+      <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
-          <SidebarTrigger asChild className="mr-2 lg:hidden">
-            <Button variant="ghost" size="icon">
-              <PanelLeftOpen className="h-6 w-6" />
-              <span className="sr-only">Toggle Sidebar</span>
+          {isVehicleDetailPage ? (
+            <Button variant="ghost" size="icon" className="mr-2 h-8 w-8 lg:hidden" onClick={() => router.back()}>
+              <ArrowLeft className="h-5 w-5" />
+              <span className="sr-only">Back</span>
             </Button>
-          </SidebarTrigger>
+          ) : (
+            <SidebarTrigger asChild className="mr-2 h-8 w-8 lg:hidden">
+              <Button variant="ghost" size="icon">
+                <PanelLeftOpen className="h-5 w-5" />
+                <span className="sr-only">Toggle Sidebar</span>
+              </Button>
+            </SidebarTrigger>
+          )}
           <Link href="/" className="flex flex-col -my-2">
             <span className="text-xl font-bold tracking-tight text-primary leading-tight">
               Marketplace
@@ -41,7 +53,7 @@ export default function Header() {
         </div>
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
-          <div className="flex items-center rounded-md bg-muted p-1">
+          <div className="hidden sm:flex items-center rounded-md bg-muted p-1">
             <Button
               variant={layout === 'grid' ? 'secondary' : 'ghost'}
               size="sm"

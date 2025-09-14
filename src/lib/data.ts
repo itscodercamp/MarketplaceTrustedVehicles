@@ -13,6 +13,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/swift/600/400',
     imageHint: 'red hatchback',
     verified: true,
+    transmission: 'Manual',
+    engine: '1.2L',
+    ownership: '1st Owner',
+    serviceHistory: 'Available'
   },
   {
     id: '2',
@@ -26,6 +30,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/creta/600/400',
     imageHint: 'white suv',
     verified: true,
+    transmission: 'Automatic',
+    engine: '1.5L',
+    ownership: '1st Owner',
+    serviceHistory: 'Available'
   },
   {
     id: '3',
@@ -39,6 +47,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/city/600/400',
     imageHint: 'silver sedan',
     verified: false,
+    transmission: 'Automatic',
+    engine: '1.5L',
+    ownership: '2nd Owner',
+    serviceHistory: 'Not Available'
   },
   {
     id: '4',
@@ -52,6 +64,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/nexon/600/400',
     imageHint: 'blue suv',
     verified: true,
+    transmission: 'Automatic',
+    engine: 'N/A',
+    ownership: '1st Owner',
+    serviceHistory: 'Available'
   },
   {
     id: '5',
@@ -65,6 +81,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/innova/600/400',
     imageHint: 'grey mpv',
     verified: true,
+    transmission: 'Manual',
+    engine: '2.4L',
+    ownership: '2nd Owner',
+    serviceHistory: 'Available'
   },
   {
     id: '6',
@@ -78,6 +98,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/seltos/600/400',
     imageHint: 'black suv',
     verified: true,
+    transmission: 'Automatic',
+    engine: '1.5L',
+    ownership: '1st Owner',
+    serviceHistory: 'Available'
   },
   {
     id: '7',
@@ -91,6 +115,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/thar/600/400',
     imageHint: 'black jeep',
     verified: false,
+    transmission: 'Manual',
+    engine: '2.2L',
+    ownership: '1st Owner',
+    serviceHistory: 'Available'
   },
   {
     id: '8',
@@ -104,6 +132,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/polo/600/400',
     imageHint: 'blue hatchback',
     verified: true,
+    transmission: 'Manual',
+    engine: '1.0L',
+    ownership: '2nd Owner',
+    serviceHistory: 'Not Available'
   },
   {
     id: '9',
@@ -117,6 +149,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/ecosport/600/400',
     imageHint: 'orange suv',
     verified: true,
+    transmission: 'Manual',
+    engine: '1.5L',
+    ownership: '1st Owner',
+    serviceHistory: 'Available'
   },
   {
     id: '10',
@@ -130,6 +166,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/kwid/600/400',
     imageHint: 'white hatchback',
     verified: true,
+    transmission: 'Manual',
+    engine: '1.0L',
+    ownership: '1st Owner',
+    serviceHistory: 'Available'
   },
   {
     id: '11',
@@ -143,6 +183,10 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/ertiga/600/400',
     imageHint: 'brown mpv',
     verified: false,
+    transmission: 'Manual',
+    engine: '1.5L',
+    ownership: '1st Owner',
+    serviceHistory: 'Available'
   },
   {
     id: '12',
@@ -156,5 +200,9 @@ export const vehicles: Vehicle[] = [
     imageUrl: 'https://picsum.photos/seed/i20/600/400',
     imageHint: 'red hatchback',
     verified: true,
+    transmission: 'Automatic',
+    engine: '1.2L',
+    ownership: '1st Owner',
+    serviceHistory: 'Available'
   },
 ];

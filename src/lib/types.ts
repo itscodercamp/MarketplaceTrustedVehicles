@@ -1,6 +1,9 @@
 export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'CNG';
 export type Condition = 'New' | 'Like New' | 'Good' | 'Fair';
 export type SortOption = 'price-asc' | 'price-desc' | 'year-desc' | 'year-asc' | 'kms-asc' | 'kms-desc';
+export type Transmission = 'Automatic' | 'Manual';
+export type Ownership = '1st Owner' | '2nd Owner' | '3rd Owner';
+export type ServiceHistory = 'Available' | 'Not Available';
 
 export interface Vehicle {
   id: string;
@@ -14,6 +17,10 @@ export interface Vehicle {
   imageUrl: string;
   imageHint: string;
   verified: boolean;
+  transmission: Transmission;
+  engine: string; // e.g., "1.2L"
+  ownership: Ownership;
+  serviceHistory: ServiceHistory;
 }
 
 export interface User {

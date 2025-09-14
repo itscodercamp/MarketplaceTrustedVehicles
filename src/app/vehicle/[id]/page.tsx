@@ -5,7 +5,7 @@ import { formatCurrency, cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, CheckCircle } from 'lucide-react';
+import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommitHorizontal } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 
 export default function VehicleDetailPage() {
@@ -28,7 +28,7 @@ export default function VehicleDetailPage() {
   const isSaved = isVehicleSaved(vehicle.id);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         <div className="relative aspect-video">
           <Image
@@ -90,12 +90,40 @@ export default function VehicleDetailPage() {
             </div>
           </div>
           
-          <div className="mt-8">
-            <h3 className="text-xl font-bold mb-4">Condition Report</h3>
-            <div className="bg-muted/50 p-4 rounded-lg">
-                <p>Detailed condition report coming soon. This section will contain an AI-generated analysis of the vehicle's condition based on images and user descriptions.</p>
+           <div className="mt-8">
+            <h3 className="text-xl font-bold mb-4">Key Features</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-md">
+                    <GitCommitHorizontal className="w-5 h-5 text-muted-foreground" />
+                    <div>
+                        <p className="text-muted-foreground">Transmission</p>
+                        <p className="font-semibold">{vehicle.transmission}</p>
+                    </div>
+                </div>
+                 <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-md">
+                    <Gauge className="w-5 h-5 text-muted-foreground" />
+                    <div>
+                        <p className="text-muted-foreground">Engine</p>
+                        <p className="font-semibold">{vehicle.engine}</p>
+                    </div>
+                </div>
+                 <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-md">
+                    <Users className="w-5 h-5 text-muted-foreground" />
+                    <div>
+                        <p className="text-muted-foreground">Ownership</p>
+                        <p className="font-semibold">{vehicle.ownership}</p>
+                    </div>
+                </div>
+                 <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-md">
+                    <Wrench className="w-5 h-5 text-muted-foreground" />
+                    <div>
+                        <p className="text-muted-foreground">Service History</p>
+                        <p className="font-semibold">{vehicle.serviceHistory}</p>
+                    </div>
+                </div>
             </div>
           </div>
+
 
         </div>
       </div>
