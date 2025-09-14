@@ -8,6 +8,120 @@ import { Button } from '@/components/ui/button';
 import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommitHorizontal, Car, MapPin, Shield, Palette, Sparkles, Armchair } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 
+const inspectionPoints = [
+  {
+    category: 'Exterior Angles',
+    points: [
+      'Front view (daylight)',
+      'Rear view',
+      'Left side profile',
+      'Right side profile',
+      'Front-left 45° angle',
+      'Front-right 45° angle',
+      'Rear-left 45° angle',
+      'Rear-right 45° angle',
+      'Top-down view',
+      'Underbody view'
+    ]
+  },
+  {
+    category: 'Close-ups of Body',
+    points: [
+      'Front grille',
+      'Headlights (both sides)',
+      'Fog lamps',
+      'Tail lights',
+      'Indicators',
+      'Bonnet',
+      'Boot',
+      'Windshield (front)',
+      'Rear windshield',
+      'Wipers'
+    ]
+  },
+  {
+    category: 'Tyres & Wheels',
+    points: [
+      'Front-left tyre',
+      'Front-right tyre',
+      'Rear-left tyre',
+      'Rear-right tyre',
+      'Spare tyre',
+      'Alloy wheels',
+      'Tyre tread close-up',
+      'Wheel arches',
+      'Brake calipers',
+      'Mud flaps'
+    ]
+  },
+  {
+    category: 'Pillars & Roof',
+    points: [
+      'A-pillar (driver side)',
+      'B-pillar (both sides)',
+      'C-pillar (rear side)',
+      'Roof (sunroof if any)',
+      'Roof rails',
+      'Antenna'
+    ]
+  },
+  {
+    category: 'Interior – Cabin',
+    points: [
+      'Dashboard full view',
+      'Instrument cluster (speedometer, odometer)',
+      'Steering wheel',
+      'Center console',
+      'Gear lever',
+      'AC vents',
+      'Infotainment system',
+      'Driver seat',
+      'Passenger seat',
+      'Rear seats'
+    ]
+  },
+  {
+    category: 'Interior – Details',
+    points: [
+      'Seat upholstery close-up',
+      'Door panels (all 4)',
+      'Power window controls',
+      'Interior roof lining',
+      'Cabin lights',
+      'Glove box',
+      'Cup holders',
+      'Floor mats',
+      'Pedals (accelerator, brake, clutch)',
+      'Rear AC vents'
+    ]
+  },
+  {
+    category: 'Engine & Boot',
+    points: [
+      'Engine bay (full view)',
+      'Battery close-up',
+      'Fluid reservoirs (coolant, brake, etc.)',
+      'Air filter box',
+      'Boot space (empty)',
+      'Boot with luggage',
+      'Tool kit',
+      'Jack & accessories'
+    ]
+  },
+  {
+    category: 'Documents & Extras',
+    points: [
+      'RC card/photo',
+      'Insurance paper',
+      'Service history file',
+      'Owner’s manual',
+      'Extra key',
+      'Any accessories (camera, dashcam, seat covers)'
+    ]
+  }
+];
+
+
 export default function VehicleDetailPage() {
   const { id } = useParams();
   const { isVehicleSaved, toggleSaveVehicle } = useAuth();
@@ -107,9 +221,28 @@ export default function VehicleDetailPage() {
                 ))}
             </div>
           </div>
-
         </div>
       </div>
+      
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6 border-b pb-2">Vehicle Inspection Checklist</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {inspectionPoints.map((section) => (
+              <div key={section.category}>
+                <h3 className="text-lg font-semibold mb-3 text-primary">{section.category}</h3>
+                <ul className="space-y-2 text-sm">
+                  {section.points.map((point) => (
+                    <li key={point} className="flex items-center">
+                       <CheckCircle className="w-4 h-4 mr-2 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+        </div>
+      </div>
+
     </div>
   );
 }
