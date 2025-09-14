@@ -59,7 +59,7 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
          )}
        >
           {filteredAndSortedVehicles.map((vehicle) => (
-            <CardComponent key={vehicle.id} vehicle={vehicle} />
+             <CardComponent key={vehicle.id} vehicle={vehicle} />
           ))}
         </div>
       ) : (

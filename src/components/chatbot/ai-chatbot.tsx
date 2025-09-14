@@ -59,6 +59,10 @@ export default function AiChatbot() {
   const handleClearChat = () => {
     setMessages([initialMessage]);
   };
+
+  const handleVehicleClick = () => {
+    setIsOpen(false);
+  };
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = useCallback(() => {
@@ -143,7 +147,7 @@ export default function AiChatbot() {
                   <p>{(isLastMessage && isTyping && !isInitialMessage) ? displayText : msg.text}</p>
                   {msg.vehicle && (
                     <div className="mt-4 bg-background rounded-lg overflow-hidden w-[300px]">
-                       <VehicleCard vehicle={msg.vehicle} />
+                       <VehicleCard vehicle={msg.vehicle} onClick={handleVehicleClick}/>
                     </div>
                   )}
                 </div>

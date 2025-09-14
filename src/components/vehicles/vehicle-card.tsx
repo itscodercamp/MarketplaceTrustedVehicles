@@ -13,9 +13,10 @@ import { useToast } from '@/hooks/use-toast';
 
 interface VehicleCardProps {
   vehicle: Vehicle;
+  onClick?: () => void;
 }
 
-export default function VehicleCard({ vehicle }: VehicleCardProps) {
+export default function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
   const { isVehicleSaved, toggleSaveVehicle, user } = useAuth();
   const { toast } = useToast();
   const isSaved = user ? isVehicleSaved(vehicle.id) : false;
@@ -35,7 +36,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
   }
 
   return (
-    <Link href={`/vehicle/${vehicle.id}`} className="block">
+    <Link href={`/vehicle/${vehicle.id}`} className="block" onClick={onClick}>
       <div className="group relative block overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-lg h-full flex flex-col">
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
