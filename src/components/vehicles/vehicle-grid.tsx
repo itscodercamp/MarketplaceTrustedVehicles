@@ -54,7 +54,7 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
          className={cn(
            'gap-4',
            layout === 'grid'
-             ? 'grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3'
+             ? 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4'
              : 'flex flex-col'
          )}
        >

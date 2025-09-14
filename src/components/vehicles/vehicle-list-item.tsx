@@ -25,9 +25,9 @@ export default function VehicleListItem({ vehicle }: VehicleListItemProps) {
 
   return (
     <Link href={`/vehicle/${vehicle.id}`} className="block">
-      <div className="group relative block overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-lg">
-        <div className="flex">
-          <div className="relative aspect-square w-24 flex-shrink-0 sm:aspect-[4/3] sm:w-1/4">
+      <div className="group relative block overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-lg h-[150px]">
+        <div className="flex h-full">
+          <div className="relative w-1/3 flex-shrink-0">
             <Image
               src={vehicle.imageUrl}
               alt={`${vehicle.make} ${vehicle.model}`}
