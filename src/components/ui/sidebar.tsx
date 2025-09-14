@@ -1,5 +1,3 @@
-// This file is machine-generated - edit with care!
-
 'use client';
 import * as React from 'react';
 import {cva} from 'class-variance-authority';
@@ -11,7 +9,7 @@ import {Slot} from '@radix-ui/react-slot';
 const SidebarContext = React.createContext<{
   open: boolean;
   setOpen: (open: boolean) => void;
-  collapsible: 'desktop' | 'offcanvas';
+  isDesktop: boolean;
 } | null>(null);
 
 function useSidebar() {
@@ -24,15 +22,15 @@ function useSidebar() {
 
 function SidebarProvider({children}: {children: React.ReactNode}) {
   const isMobile = useIsMobile();
-  const [open, setOpen] = React.useState(false);
-  const collapsible = isMobile ? 'offcanvas' : 'desktop';
+  const isDesktop = !isMobile;
+  const [open, setOpen] = React.useState(isDesktop);
 
   React.useEffect(() => {
-    setOpen(false);
-  }, [collapsible]);
+    setOpen(isDesktop);
+  }, [isDesktop]);
 
   return (
-    <SidebarContext.Provider value={{open, setOpen, collapsible}}>
+    <SidebarContext.Provider value={{open, setOpen, isDesktop}}>
       {children}
     </SidebarContext.Provider>
   );
@@ -46,69 +44,39 @@ const sidebarVariants = cva(
         left: 'border-r',
         right: 'border-l',
       },
-      collapsible: {
-        desktop: '',
-        offcanvas: 'fixed bg-background top-0 h-full',
+      isDesktop: {
+        true: 'w-72 p-4',
+        false: 'fixed bg-background top-0 h-full p-4',
       },
       state: {
         open: '',
         closed: '',
       },
-      hasInset: {
-        true: '',
-        false: '',
-      },
     },
     compoundVariants: [
-      // Desktop
       {
-        collapsible: 'desktop',
-        side: 'left',
-        state: 'closed',
-        className: '-translate-x-full w-0',
-      },
-      {
-        collapsible: 'desktop',
-        side: 'left',
-        state: 'open',
-        className: 'translate-x-0 w-72 p-4',
-      },
-      {
-        collapsible: 'desktop',
-        side: 'right',
-        state: 'closed',
-        className: 'translate-x-full w-0',
-      },
-      {
-        collapsible: 'desktop',
-        side: 'right',
-        state: 'open',
-        className: 'translate-x-0 w-72 p-4',
-      },
-      // Off-canvas
-      {
-        collapsible: 'offcanvas',
+        isDesktop: false,
         side: 'left',
         state: 'closed',
         className: '-translate-x-full',
       },
       {
-        collapsible: 'offcanvas',
+        isDesktop: false,
         side: 'left',
         state: 'open',
-        className: 'translate-x-0 w-72 p-4',
+        className: 'translate-x-0',
       },
-      {
-        collapsible: 'offcanvas',
+       {
+        isDesktop: false,
         side: 'right',
         state: 'closed',
         className: 'translate-x-full',
       },
       {
-        collapsible: 'offcanvas',
+        isDesktop: false,
         side: 'right',
         state: 'open',
-        className: 'translate-x-0 w-72 p-4',
+        className: 'translate-x-0',
       },
     ],
   }
@@ -118,22 +86,19 @@ const Sidebar = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
     side: 'left' | 'right';
-    collapsible?: 'desktop' | 'offcanvas';
   }
->(({className, side, collapsible: controlledCollapsible, ...props}, ref) => {
-  const {open, setOpen, collapsible: contextCollapsible} = useSidebar();
-  const collapsible = controlledCollapsible || contextCollapsible;
+>(({className, side, ...props}, ref) => {
+  const {open, setOpen, isDesktop} = useSidebar();
   const state = open ? 'open' : 'closed';
-  const isOffcanvas = collapsible === 'offcanvas';
 
   return (
     <>
       <aside
         ref={ref}
-        className={cn(sidebarVariants({side, collapsible, state, className}))}
+        className={cn(sidebarVariants({side, isDesktop, state, className}))}
         {...props}
       >
-        {isOffcanvas && (
+        {!isDesktop && (
           <button
             onClick={() => setOpen(false)}
             className="absolute top-2 right-2 p-2 rounded-full text-muted-foreground hover:bg-muted"
@@ -143,7 +108,7 @@ const Sidebar = React.forwardRef<
         )}
         <div className="overflow-y-auto h-full">{props.children}</div>
       </aside>
-      {isOffcanvas && open && (
+      {!isDesktop && open && (
         <div
           onClick={() => setOpen(false)}
           className="fixed inset-0 bg-black/50 z-30"
@@ -154,66 +119,18 @@ const Sidebar = React.forwardRef<
 });
 Sidebar.displayName = 'Sidebar';
 
-const sidebarInsetVariants = cva('transition-all duration-300 ease-in-out', {
-  variants: {
-    collapsible: {
-      desktop: 'w-full',
-      offcanvas: 'w-full',
-    },
-    state: {
-      open: '',
-      closed: '',
-    },
-    side: {
-      left: '',
-      right: '',
-    },
-  },
-  compoundVariants: [
-    {
-      collapsible: 'desktop',
-      state: 'open',
-      side: 'left',
-      className: 'lg:ml-72',
-    },
-    {
-      collapsible: 'desktop',
-      state: 'open',
-      side: 'right',
-      className: 'lg:mr-72',
-    },
-  ],
-});
-
-const SidebarInset = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({className, ...props}, ref) => {
-  const {open, collapsible} = useSidebar();
-  const side = 'left'; // This can be made a prop if right-side is needed.
-  const state = open ? 'open' : 'closed';
-
-  return (
-    <div
-      ref={ref}
-      className={cn(sidebarInsetVariants({collapsible, state, side, className}))}
-      {...props}
-    />
-  );
-});
-SidebarInset.displayName = 'SidebarInset';
 
 const SidebarTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean }
 >(({ className, asChild, ...props }, ref) => {
-  const { setOpen } = useSidebar();
+  const { open, setOpen } = useSidebar();
   const Comp = asChild ? Slot : 'button';
   return (
     <Comp
       ref={ref}
       className={cn(className)}
-      onClick={() => setOpen(true)}
+      onClick={() => setOpen(!open)}
       {...props}
     />
   );
@@ -240,7 +157,6 @@ SidebarClose.displayName = 'SidebarClose';
 
 export {
   Sidebar,
-  SidebarInset,
   SidebarTrigger,
   SidebarClose,
   SidebarProvider,

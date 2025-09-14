@@ -45,12 +45,6 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
         <p className="text-sm text-muted-foreground">
           Showing {resultCount} of {vehicles.length} vehicles
         </p>
-        <SidebarTrigger asChild className="lg:hidden">
-          <Button variant="outline">
-            <SlidersHorizontal className="mr-2 h-4 w-4" />
-            <span>Filters & Sort</span>
-          </Button>
-        </SidebarTrigger>
       </div>
 
       {filteredAndSortedVehicles.length > 0 ? (
