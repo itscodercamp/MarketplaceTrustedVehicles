@@ -10,7 +10,7 @@ export default function Home() {
         <VehicleFilters />
       </Sidebar>
       <SidebarInset>
-        <div className="container mx-auto px-4 py-8">
+        <div className="py-8">
           <header className="mb-6 text-center">
             <h1 className="text-3xl font-headline font-bold tracking-tight text-primary md:text-4xl">
               Trusted Vehicles Marketplace
