@@ -16,6 +16,7 @@ import { PanelLeftOpen, LayoutGrid, List, User, ArrowLeft } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useLayoutStore } from '@/store/layout-store';
 import { cn } from '@/lib/utils';
+import { Logo } from '../icons';
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -24,6 +25,31 @@ export default function Header() {
   const router = useRouter();
 
   const isVehicleDetailPage = pathname.startsWith('/vehicle/');
+  const isAuthPage = pathname === '/login' || pathname === '/register';
+
+  if (isAuthPage) {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
+        <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="flex items-center gap-2">
+            <Logo className="h-8 w-8" />
+            <span className="text-xl font-bold tracking-tight text-primary">
+              Marketplace
+            </span>
+          </Link>
+          {pathname === '/login' ? (
+            <Button asChild variant="outline">
+              <Link href="/register">Create Account</Link>
+            </Button>
+          ) : (
+             <Button asChild variant="outline">
+              <Link href="/login">Login</Link>
+            </Button>
+          )}
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
@@ -53,7 +79,7 @@ export default function Header() {
         </div>
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
-          <div className="flex items-center rounded-md bg-muted p-1">
+          <div className="hidden sm:flex items-center rounded-md bg-muted p-1">
             <Button
               variant={layout === 'grid' ? 'secondary' : 'ghost'}
               size="sm"
