@@ -3,9 +3,9 @@ import { useEffect } from 'react';
 import type { Vehicle } from '@/lib/types';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
 import VehicleCard from './vehicle-card';
-import { Button } from '@/components/ui/button';
-import { SlidersHorizontal } from 'lucide-react';
-import { SidebarTrigger } from '../ui/sidebar';
+import { useLayoutStore } from '@/store/layout-store';
+import { cn } from '@/lib/utils';
+import VehicleListItem from './vehicle-list-item';
 
 interface VehicleGridProps {
   vehicles: Vehicle[];
@@ -13,6 +13,7 @@ interface VehicleGridProps {
 
 export default function VehicleGrid({ vehicles }: VehicleGridProps) {
   const { filters, sort, setResultCount } = useVehicleFilterStore();
+  const { layout } = useLayoutStore();
 
   const filteredAndSortedVehicles = vehicles
     .filter((vehicle) => {
@@ -38,6 +39,7 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
   }, [filteredAndSortedVehicles.length, setResultCount]);
 
   const resultCount = useVehicleFilterStore(state => state.resultCount);
+  const CardComponent = layout === 'grid' ? VehicleCard : VehicleListItem;
 
   return (
     <section>
@@ -48,9 +50,16 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
       </div>
 
       {filteredAndSortedVehicles.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+         <div
+         className={cn(
+           'gap-6',
+           layout === 'grid'
+             ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'
+             : 'flex flex-col'
+         )}
+       >
           {filteredAndSortedVehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+            <CardComponent key={vehicle.id} vehicle={vehicle} />
           ))}
         </div>
       ) : (
