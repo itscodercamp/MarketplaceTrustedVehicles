@@ -5,7 +5,7 @@ import { formatCurrency } from '@/lib/utils';
 import type { Vehicle } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, CheckCircle, Car, Gauge, Fuel, Wrench } from 'lucide-react';
+import { Heart, CheckCircle, Gauge, Fuel, Wrench } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 import { cn } from '@/lib/utils';
 
@@ -26,66 +26,55 @@ export default function VehicleListItem({ vehicle }: VehicleListItemProps) {
   return (
     <Link href={`/vehicle/${vehicle.id}`} className="block">
       <div className="group relative block overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-lg">
-        <div className="flex flex-col sm:flex-row">
-          <div className="relative aspect-[4/3] sm:w-1/4 sm:flex-shrink-0">
+        <div className="flex">
+          <div className="relative aspect-square w-24 flex-shrink-0 sm:aspect-[4/3] sm:w-1/4">
             <Image
               src={vehicle.imageUrl}
               alt={`${vehicle.make} ${vehicle.model}`}
               fill
-              className="object-cover sm:rounded-l-lg sm:rounded-r-none"
-              sizes="(max-width: 640px) 100vw, 25vw"
+              className="object-cover rounded-l-lg"
+              sizes="25vw"
               data-ai-hint={vehicle.imageHint}
             />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-2 right-2 h-8 w-8 shrink-0 rounded-full bg-background/70 hover:bg-background sm:hidden"
-              onClick={handleSaveClick}
-              aria-label={isSaved ? 'Unsave vehicle' : 'Save vehicle'}
-            >
-              <Heart className={cn('h-5 w-5', isSaved ? 'fill-destructive text-destructive' : 'text-muted-foreground')} />
-            </Button>
           </div>
 
-          <div className="flex-grow p-4 flex flex-col sm:flex-row sm:items-center">
-            <div className="flex-grow">
-              <h3 className="text-lg font-semibold leading-tight truncate group-hover:underline">
+          <div className="flex-grow p-2 sm:p-4 flex flex-col justify-between">
+            <div>
+              <h3 className="text-sm sm:text-base font-semibold leading-tight truncate group-hover:underline">
                 {vehicle.make} {vehicle.model}
               </h3>
-               <p className="text-sm text-muted-foreground">{vehicle.year}</p>
-
-              <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">{vehicle.year} &bull; {vehicle.kmsDriven.toLocaleString('en-IN')} km</p>
+              
+              <div className="hidden sm:grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-xs text-muted-foreground mt-2">
                 <div className="flex items-center gap-1.5">
-                    <Gauge className="w-4 h-4" />
-                    <span>{vehicle.kmsDriven.toLocaleString('en-IN')} km</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <Fuel className="w-4 h-4" />
+                    <Fuel className="w-3 h-3" />
                     <span>{vehicle.fuelType}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                    <Wrench className="w-4 h-4" />
+                    <Wrench className="w-3 h-3" />
                     <span>{vehicle.condition}</span>
                 </div>
               </div>
             </div>
             
-            <div className="mt-4 sm:mt-0 sm:ml-4 sm:w-1/4 flex flex-col items-start sm:items-end justify-between shrink-0">
-              <p className="text-xl font-bold text-primary">{formatCurrency(vehicle.price)}</p>
-               {vehicle.verified && (
-                <Badge variant="outline" className="mt-2 border-success text-success font-medium">
-                  <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
-                  Verified
-                </Badge>
-              )}
+            <div className="mt-1 flex items-end justify-between">
+              <div>
+                <p className="text-base sm:text-lg font-bold text-primary">{formatCurrency(vehicle.price)}</p>
+                {vehicle.verified && (
+                  <Badge variant="outline" className="mt-1 border-success text-success font-medium text-xs px-1.5 py-0.5">
+                    <CheckCircle className="mr-1 h-3 w-3" />
+                    Verified
+                  </Badge>
+                )}
+              </div>
                <Button
                 variant="ghost"
                 size="icon"
-                className="hidden sm:inline-flex h-8 w-8 shrink-0 rounded-full bg-background/70 hover:bg-background mt-2"
+                className="h-8 w-8 shrink-0 rounded-full bg-background/70 hover:bg-background"
                 onClick={handleSaveClick}
                 aria-label={isSaved ? 'Unsave vehicle' : 'Save vehicle'}
               >
-                <Heart className={cn('h-5 w-5', isSaved ? 'fill-destructive text-destructive' : 'text-muted-foreground')} />
+                <Heart className={cn('h-4 w-4', isSaved ? 'fill-destructive text-destructive' : 'text-muted-foreground')} />
               </Button>
             </div>
           </div>
