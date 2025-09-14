@@ -59,11 +59,11 @@ export default function VehicleGrid({ vehicles }: VehicleGridProps) {
   return (
     <section>
       <div className="mb-4 text-center md:hidden">
-        <SidebarTrigger asChild>
-            <Button variant="outline">
-                <SlidersHorizontal className="mr-2 h-4 w-4" />
-                Filters & Sort
-            </Button>
+        <SidebarTrigger>
+          <Button variant="outline">
+            <SlidersHorizontal className="h-4 w-4" />
+            <span>Filters & Sort</span>
+          </Button>
         </SidebarTrigger>
       </div>
       
