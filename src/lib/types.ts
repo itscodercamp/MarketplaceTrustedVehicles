@@ -1,3 +1,4 @@
+
 export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'CNG';
 export type Condition = 'New' | 'Like New' | 'Good' | 'Fair';
 export type SortOption = 'price-asc' | 'price-desc' | 'year-desc' | 'year-asc' | 'kms-asc' | 'kms-desc';
@@ -30,6 +31,12 @@ export interface Vehicle {
   color: string;
   mileage: string; // e.g. "18.5 kmpl"
   seatingCapacity: number;
+  detailImages: {
+    Exterior: string[];
+    Interior: string[];
+    Engine: string[];
+    Tyres: string[];
+  };
 }
 
 export interface User {

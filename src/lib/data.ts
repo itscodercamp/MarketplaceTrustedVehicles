@@ -1,3 +1,4 @@
+
 import type { Vehicle } from './types';
 
 export const vehicles: Vehicle[] = [
@@ -22,7 +23,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Comprehensive',
     color: 'Red',
     mileage: '23.2 kmpl',
-    seatingCapacity: 5
+    seatingCapacity: 5,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/swift-ext1/800/600', 'https://picsum.photos/seed/swift-ext2/800/600', 'https://picsum.photos/seed/swift-ext3/800/600'],
+      Interior: ['https://picsum.photos/seed/swift-int1/800/600', 'https://picsum.photos/seed/swift-int2/800/600'],
+      Engine: ['https://picsum.photos/seed/swift-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/swift-tyre1/800/600', 'https://picsum.photos/seed/swift-tyre2/800/600'],
+    }
   },
   {
     id: '2',
@@ -45,7 +52,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Comprehensive',
     color: 'White',
     mileage: '18.5 kmpl',
-    seatingCapacity: 5
+    seatingCapacity: 5,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/creta-ext1/800/600', 'https://picsum.photos/seed/creta-ext2/800/600'],
+      Interior: ['https://picsum.photos/seed/creta-int1/800/600', 'https://picsum.photos/seed/creta-int2/800/600', 'https://picsum.photos/seed/creta-int3/800/600'],
+      Engine: ['https://picsum.photos/seed/creta-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/creta-tyre1/800/600'],
+    }
   },
   {
     id: '3',
@@ -68,7 +81,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Third Party',
     color: 'Silver',
     mileage: '17.4 kmpl',
-    seatingCapacity: 5
+    seatingCapacity: 5,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/city-ext1/800/600', 'https://picsum.photos/seed/city-ext2/800/600'],
+      Interior: ['https://picsum.photos/seed/city-int1/800/600', 'https://picsum.photos/seed/city-int2/800/600'],
+      Engine: ['https://picsum.photos/seed/city-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/city-tyre1/800/600', 'https://picsum.photos/seed/city-tyre2/800/600'],
+    }
   },
   {
     id: '4',
@@ -91,7 +110,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Comprehensive',
     color: 'Blue',
     mileage: '312 km/charge',
-    seatingCapacity: 5
+    seatingCapacity: 5,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/nexon-ext1/800/600', 'https://picsum.photos/seed/nexon-ext2/800/600'],
+      Interior: ['https://picsum.photos/seed/nexon-int1/800/600', 'https://picsum.photos/seed/nexon-int2/800/600'],
+      Engine: [],
+      Tyres: ['https://picsum.photos/seed/nexon-tyre1/800/600'],
+    }
   },
   {
     id: '5',
@@ -114,7 +139,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Expired',
     color: 'Grey',
     mileage: '12 kmpl',
-    seatingCapacity: 7
+    seatingCapacity: 7,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/innova-ext1/800/600', 'https://picsum.photos/seed/innova-ext2/800/600'],
+      Interior: ['https://picsum.photos/seed/innova-int1/800/600', 'https://picsum.photos/seed/innova-int2/800/600'],
+      Engine: ['https://picsum.photos/seed/innova-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/innova-tyre1/800/600'],
+    }
   },
   {
     id: '6',
@@ -137,7 +168,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Comprehensive',
     color: 'Black',
     mileage: '16.8 kmpl',
-    seatingCapacity: 5
+    seatingCapacity: 5,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/seltos-ext1/800/600', 'https://picsum.photos/seed/seltos-ext2/800/600'],
+      Interior: ['https://picsum.photos/seed/seltos-int1/800/600'],
+      Engine: ['https://picsum.photos/seed/seltos-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/seltos-tyre1/800/600', 'https://picsum.photos/seed/seltos-tyre2/800/600', 'https://picsum.photos/seed/seltos-tyre3/800/600'],
+    }
   },
   {
     id: '7',
@@ -160,7 +197,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Third Party',
     color: 'Black',
     mileage: '15.2 kmpl',
-    seatingCapacity: 4
+    seatingCapacity: 4,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/thar-ext1/800/600', 'https://picsum.photos/seed/thar-ext2/800/600', 'https://picsum.photos/seed/thar-ext3/800/600'],
+      Interior: ['https://picsum.photos/seed/thar-int1/800/600'],
+      Engine: ['https://picsum.photos/seed/thar-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/thar-tyre1/800/600'],
+    }
   },
   {
     id: '8',
@@ -183,7 +226,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Comprehensive',
     color: 'Blue',
     mileage: '17.75 kmpl',
-    seatingCapacity: 5
+    seatingCapacity: 5,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/polo-ext1/800/600'],
+      Interior: ['https://picsum.photos/seed/polo-int1/800/600', 'https://picsum.photos/seed/polo-int2/800/600'],
+      Engine: ['https://picsum.photos/seed/polo-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/polo-tyre1/800/600'],
+    }
   },
   {
     id: '9',
@@ -206,7 +255,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Comprehensive',
     color: 'Orange',
     mileage: '21.7 kmpl',
-    seatingCapacity: 5
+    seatingCapacity: 5,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/ecosport-ext1/800/600', 'https://picsum.photos/seed/ecosport-ext2/800/600'],
+      Interior: ['https://picsum.photos/seed/ecosport-int1/800/600'],
+      Engine: ['https://picsum.photos/seed/ecosport-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/ecosport-tyre1/800/600'],
+    }
   },
   {
     id: '10',
@@ -229,7 +284,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Third Party',
     color: 'White',
     mileage: '22.3 kmpl',
-    seatingCapacity: 5
+    seatingCapacity: 5,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/kwid-ext1/800/600'],
+      Interior: ['https://picsum.photos/seed/kwid-int1/800/600', 'https://picsum.photos/seed/kwid-int2/800/600'],
+      Engine: ['https://picsum.photos/seed/kwid-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/kwid-tyre1/800/600'],
+    }
   },
   {
     id: '11',
@@ -252,7 +313,13 @@ export const vehicles: Vehicle[] = [
     insurance: 'Comprehensive',
     color: 'Brown',
     mileage: '26.08 km/kg',
-    seatingCapacity: 7
+    seatingCapacity: 7,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/ertiga-ext1/800/600', 'https://picsum.photos/seed/ertiga-ext2/800/600'],
+      Interior: ['https://picsum.photos/seed/ertiga-int1/800/600', 'https://picsum.photos/seed/ertiga-int2/800/600'],
+      Engine: ['https://picsum.photos/seed/ertiga-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/ertiga-tyre1/800/600'],
+    }
   },
   {
     id: '12',
@@ -275,6 +342,12 @@ export const vehicles: Vehicle[] = [
     insurance: 'Comprehensive',
     color: 'Red',
     mileage: '20.28 kmpl',
-    seatingCapacity: 5
+    seatingCapacity: 5,
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/i20-ext1/800/600', 'https://picsum.photos/seed/i20-ext2/800/600'],
+      Interior: ['https://picsum.photos/seed/i20-int1/800/600', 'https://picsum.photos/seed/i20-int2/800/600'],
+      Engine: ['https://picsum.photos/seed/i20-eng1/800/600'],
+      Tyres: ['https://picsum.photos/seed/i20-tyre1/800/600'],
+    }
   },
 ];
