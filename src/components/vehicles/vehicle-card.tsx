@@ -25,42 +25,40 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
 
   return (
     <Link href={`/vehicle/${vehicle.id}`} className="block">
-      <div className="group relative block overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-lg">
+      <div className="group relative block overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-lg h-full flex flex-col">
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
             src={vehicle.imageUrl}
             alt={`${vehicle.make} ${vehicle.model}`}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
             data-ai-hint={vehicle.imageHint}
           />
         </div>
 
-        <div className="p-4">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <p className="text-sm text-muted-foreground">{vehicle.year} &bull; {vehicle.kmsDriven.toLocaleString('en-IN')} km</p>
-              <h3 className="mt-1 font-semibold leading-tight truncate">
-                {vehicle.make} {vehicle.model}
-              </h3>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-2 right-2 h-8 w-8 shrink-0 rounded-full bg-background/70 hover:bg-background"
-              onClick={handleSaveClick}
-              aria-label={isSaved ? 'Unsave vehicle' : 'Save vehicle'}
-            >
-              <Heart className={cn('h-5 w-5', isSaved ? 'fill-destructive text-destructive' : 'text-muted-foreground')} />
-            </Button>
+        <div className="p-3 flex flex-col flex-grow">
+          <div className="flex-grow">
+            <p className="text-xs text-muted-foreground">{vehicle.year} &bull; {vehicle.kmsDriven.toLocaleString('en-IN')} km</p>
+            <h3 className="mt-1 font-semibold leading-tight truncate text-sm">
+              {vehicle.make} {vehicle.model}
+            </h3>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-1 right-1 h-8 w-8 shrink-0 rounded-full bg-background/70 hover:bg-background"
+            onClick={handleSaveClick}
+            aria-label={isSaved ? 'Unsave vehicle' : 'Save vehicle'}
+          >
+            <Heart className={cn('h-4 w-4', isSaved ? 'fill-destructive text-destructive' : 'text-muted-foreground')} />
+          </Button>
 
-          <div className="mt-4 flex items-center justify-between">
-            <p className="text-lg font-bold text-primary">{formatCurrency(vehicle.price)}</p>
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-base font-bold text-primary">{formatCurrency(vehicle.price)}</p>
             {vehicle.verified && (
-              <Badge variant="outline" className="border-success text-success font-medium">
-                <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
+              <Badge variant="outline" className="border-success text-success font-medium text-xs px-1.5 py-0.5">
+                <CheckCircle className="mr-1 h-3 w-3" />
                 Verified
               </Badge>
             )}
