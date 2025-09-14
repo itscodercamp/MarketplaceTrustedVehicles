@@ -5,7 +5,7 @@ import { formatCurrency, cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommitHorizontal } from 'lucide-react';
+import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommitHorizontal, Car, MapPin, Shield, Palette, Sparkles, Armchair } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 
 export default function VehicleDetailPage() {
@@ -26,6 +26,19 @@ export default function VehicleDetailPage() {
   }
 
   const isSaved = isVehicleSaved(vehicle.id);
+
+  const detailItems = [
+    { icon: Car, label: "Body Type", value: vehicle.bodyType },
+    { icon: MapPin, label: "Registration", value: vehicle.registration },
+    { icon: Shield, label: "Insurance", value: vehicle.insurance },
+    { icon: Palette, label: "Color", value: vehicle.color },
+    { icon: Gauge, label: "Mileage", value: vehicle.mileage },
+    { icon: Armchair, label: "Seating", value: `${vehicle.seatingCapacity} Seater`},
+    { icon: GitCommitHorizontal, label: "Transmission", value: vehicle.transmission },
+    { icon: Sparkles, label: "Engine", value: vehicle.engine },
+    { icon: Users, label: "Ownership", value: vehicle.ownership },
+    { icon: Wrench, label: "Service History", value: vehicle.serviceHistory },
+  ];
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -65,7 +78,7 @@ export default function VehicleDetailPage() {
             </Button>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
             <div className="bg-muted/50 p-3 rounded-md">
               <p className="text-muted-foreground">KMs Driven</p>
               <p className="font-semibold text-lg">{vehicle.kmsDriven.toLocaleString('en-IN')} km</p>
@@ -78,52 +91,22 @@ export default function VehicleDetailPage() {
               <p className="text-muted-foreground">Condition</p>
               <p className="font-semibold text-lg">{vehicle.condition}</p>
             </div>
-             <div className="bg-muted/50 p-3 rounded-md">
-              <p className="text-muted-foreground">Verification</p>
-              <p className="font-semibold text-lg flex items-center">
-                {vehicle.verified ? (
-                  <>
-                    <CheckCircle className="w-4 h-4 mr-1.5 text-success" /> Verified by Trusted Vehicle
-                  </>
-                ) : 'Not Verified'}
-              </p>
-            </div>
           </div>
           
            <div className="mt-8">
-            <h3 className="text-xl font-bold mb-4">Key Features</h3>
+            <h3 className="text-xl font-bold mb-4">Key Details</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-                <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-md">
-                    <GitCommitHorizontal className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                        <p className="text-muted-foreground">Transmission</p>
-                        <p className="font-semibold">{vehicle.transmission}</p>
-                    </div>
-                </div>
-                 <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-md">
-                    <Gauge className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                        <p className="text-muted-foreground">Engine</p>
-                        <p className="font-semibold">{vehicle.engine}</p>
-                    </div>
-                </div>
-                 <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-md">
-                    <Users className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                        <p className="text-muted-foreground">Ownership</p>
-                        <p className="font-semibold">{vehicle.ownership}</p>
-                    </div>
-                </div>
-                 <div className="flex items-center gap-2 bg-muted/50 p-3 rounded-md">
-                    <Wrench className="w-5 h-5 text-muted-foreground" />
-                    <div>
-                        <p className="text-muted-foreground">Service History</p>
-                        <p className="font-semibold">{vehicle.serviceHistory}</p>
-                    </div>
-                </div>
+                {detailItems.map(item => (
+                  <div key={item.label} className="flex items-start gap-3 bg-muted/50 p-3 rounded-md">
+                      <item.icon className="w-5 h-5 text-muted-foreground mt-0.5 shrink-0" />
+                      <div>
+                          <p className="text-muted-foreground">{item.label}</p>
+                          <p className="font-semibold">{item.value}</p>
+                      </div>
+                  </div>
+                ))}
             </div>
           </div>
-
 
         </div>
       </div>

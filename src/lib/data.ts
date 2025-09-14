@@ -16,7 +16,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Manual',
     engine: '1.2L',
     ownership: '1st Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'Hatchback',
+    registration: 'MH-12',
+    insurance: 'Comprehensive',
+    color: 'Red',
+    mileage: '23.2 kmpl',
+    seatingCapacity: 5
   },
   {
     id: '2',
@@ -33,7 +39,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Automatic',
     engine: '1.5L',
     ownership: '1st Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'SUV',
+    registration: 'DL-03',
+    insurance: 'Comprehensive',
+    color: 'White',
+    mileage: '18.5 kmpl',
+    seatingCapacity: 5
   },
   {
     id: '3',
@@ -50,7 +62,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Automatic',
     engine: '1.5L',
     ownership: '2nd Owner',
-    serviceHistory: 'Not Available'
+    serviceHistory: 'Not Available',
+    bodyType: 'Sedan',
+    registration: 'KA-01',
+    insurance: 'Third Party',
+    color: 'Silver',
+    mileage: '17.4 kmpl',
+    seatingCapacity: 5
   },
   {
     id: '4',
@@ -67,7 +85,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Automatic',
     engine: 'N/A',
     ownership: '1st Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'SUV',
+    registration: 'MH-04',
+    insurance: 'Comprehensive',
+    color: 'Blue',
+    mileage: '312 km/charge',
+    seatingCapacity: 5
   },
   {
     id: '5',
@@ -84,7 +108,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Manual',
     engine: '2.4L',
     ownership: '2nd Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'MPV',
+    registration: 'TN-07',
+    insurance: 'Expired',
+    color: 'Grey',
+    mileage: '12 kmpl',
+    seatingCapacity: 7
   },
   {
     id: '6',
@@ -101,7 +131,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Automatic',
     engine: '1.5L',
     ownership: '1st Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'SUV',
+    registration: 'PB-10',
+    insurance: 'Comprehensive',
+    color: 'Black',
+    mileage: '16.8 kmpl',
+    seatingCapacity: 5
   },
   {
     id: '7',
@@ -118,7 +154,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Manual',
     engine: '2.2L',
     ownership: '1st Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'Off-road',
+    registration: 'RJ-14',
+    insurance: 'Third Party',
+    color: 'Black',
+    mileage: '15.2 kmpl',
+    seatingCapacity: 4
   },
   {
     id: '8',
@@ -135,7 +177,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Manual',
     engine: '1.0L',
     ownership: '2nd Owner',
-    serviceHistory: 'Not Available'
+    serviceHistory: 'Not Available',
+    bodyType: 'Hatchback',
+    registration: 'GA-08',
+    insurance: 'Comprehensive',
+    color: 'Blue',
+    mileage: '17.75 kmpl',
+    seatingCapacity: 5
   },
   {
     id: '9',
@@ -152,7 +200,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Manual',
     engine: '1.5L',
     ownership: '1st Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'SUV',
+    registration: 'GJ-05',
+    insurance: 'Comprehensive',
+    color: 'Orange',
+    mileage: '21.7 kmpl',
+    seatingCapacity: 5
   },
   {
     id: '10',
@@ -169,7 +223,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Manual',
     engine: '1.0L',
     ownership: '1st Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'Hatchback',
+    registration: 'UP-32',
+    insurance: 'Third Party',
+    color: 'White',
+    mileage: '22.3 kmpl',
+    seatingCapacity: 5
   },
   {
     id: '11',
@@ -186,7 +246,13 @@ export const vehicles: Vehicle[] = [
     transmission: 'Manual',
     engine: '1.5L',
     ownership: '1st Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'MPV',
+    registration: 'WB-02',
+    insurance: 'Comprehensive',
+    color: 'Brown',
+    mileage: '26.08 km/kg',
+    seatingCapacity: 7
   },
   {
     id: '12',
@@ -203,6 +269,12 @@ export const vehicles: Vehicle[] = [
     transmission: 'Automatic',
     engine: '1.2L',
     ownership: '1st Owner',
-    serviceHistory: 'Available'
+    serviceHistory: 'Available',
+    bodyType: 'Hatchback',
+    registration: 'CH-01',
+    insurance: 'Comprehensive',
+    color: 'Red',
+    mileage: '20.28 kmpl',
+    seatingCapacity: 5
   },
 ];

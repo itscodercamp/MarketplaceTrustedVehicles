@@ -4,6 +4,9 @@ export type SortOption = 'price-asc' | 'price-desc' | 'year-desc' | 'year-asc' |
 export type Transmission = 'Automatic' | 'Manual';
 export type Ownership = '1st Owner' | '2nd Owner' | '3rd Owner';
 export type ServiceHistory = 'Available' | 'Not Available';
+export type Insurance = 'Comprehensive' | 'Third Party' | 'Expired';
+export type BodyType = 'SUV' | 'Sedan' | 'Hatchback' | 'MPV' | 'Off-road';
+
 
 export interface Vehicle {
   id: string;
@@ -21,6 +24,12 @@ export interface Vehicle {
   engine: string; // e.g., "1.2L"
   ownership: Ownership;
   serviceHistory: ServiceHistory;
+  bodyType: BodyType;
+  registration: string; // e.g. "MH-01"
+  insurance: Insurance;
+  color: string;
+  mileage: string; // e.g. "18.5 kmpl"
+  seatingCapacity: number;
 }
 
 export interface User {
