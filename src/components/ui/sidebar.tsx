@@ -46,7 +46,7 @@ const sidebarVariants = cva(
       },
       isDesktop: {
         true: 'w-72 p-4',
-        false: 'fixed bg-background top-0 h-full p-4',
+        false: 'fixed bg-background top-16 h-[calc(100vh-4rem)] p-4',
       },
       state: {
         open: '',
