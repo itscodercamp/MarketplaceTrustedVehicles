@@ -1,7 +1,7 @@
 'use client';
 import { useParams } from 'next/navigation';
 import { vehicles } from '@/lib/data';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
