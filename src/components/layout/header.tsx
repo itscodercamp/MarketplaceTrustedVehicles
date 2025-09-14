@@ -81,7 +81,7 @@ export default function Header() {
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
           {!isVehicleDetailPage && (
-            <div className="hidden items-center rounded-md bg-muted p-1 sm:flex">
+            <div className="flex items-center rounded-md bg-muted p-1">
               <Button
                 variant={layout === 'grid' ? 'secondary' : 'ghost'}
                 size="sm"
