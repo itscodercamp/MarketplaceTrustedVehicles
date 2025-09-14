@@ -76,10 +76,10 @@ export default function AiChatbot() {
   // Handle typing effect for the last AI message
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage && lastMessage.sender === 'ai' && !isTyping && messages.length > 1) {
+    if (lastMessage && lastMessage.sender === 'ai' && messages.length > 1) { // Check if it's an AI message and not the initial one
       startTyping(lastMessage.text);
     }
-  }, [messages, isTyping, startTyping]);
+  }, [messages, startTyping]); // Only re-run when messages change
   
    useEffect(() => {
     if (isTyping) {
@@ -139,12 +139,14 @@ export default function AiChatbot() {
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {messages.map((msg, index) => {
               const isLastMessage = index === messages.length - 1;
-              const isInitialMessage = index === 0;
+              const isAiMessage = msg.sender === 'ai';
+              const showTypingEffect = isLastMessage && isAiMessage && isTyping;
+
               return (
               <div key={index} className={`flex items-end gap-3 ${msg.sender === 'user' ? 'justify-end' : ''}`}>
                 {msg.sender === 'ai' && <Bot className="w-8 h-8 text-primary self-start flex-shrink-0" />}
                 <div className={`rounded-lg p-3 max-w-lg ${msg.sender === 'ai' ? 'bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground'}`}>
-                  <p>{(isLastMessage && isTyping && !isInitialMessage) ? displayText : msg.text}</p>
+                  <p>{showTypingEffect ? displayText : msg.text}</p>
                   {msg.vehicle && (
                     <div className="mt-4 bg-background rounded-lg overflow-hidden w-[300px]">
                        <VehicleCard vehicle={msg.vehicle} onClick={handleVehicleClick}/>
