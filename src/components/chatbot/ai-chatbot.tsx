@@ -119,11 +119,18 @@ export default function AiChatbot() {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const showTimer = setTimeout(() => {
       setShowPopup(true);
-    }, 10000); // 10 seconds
+    }, 10000); // Show after 10 seconds
 
-    return () => clearTimeout(timer);
+    const hideTimer = setTimeout(() => {
+        setShowPopup(false);
+    }, 25000); // Hide after 15 more seconds (total 25s)
+
+    return () => {
+        clearTimeout(showTimer);
+        clearTimeout(hideTimer);
+    };
   }, []);
 
 
@@ -237,7 +244,7 @@ export default function AiChatbot() {
           {showPopup && <AIAssistantPopup onClose={() => setShowPopup(false)} />}
           <Button
             size="icon"
-            className="rounded-full w-16 h-16 bg-transparent hover:bg-primary/10 shadow-2xl transition-all"
+            className="rounded-full w-14 h-14 bg-primary hover:bg-primary/90 shadow-2xl transition-all"
             onPointerDown={(e) => {
               e.preventDefault();
               dragControls.start(e);
@@ -245,13 +252,13 @@ export default function AiChatbot() {
             onClick={handleOpenChat}
             aria-label="Open AI Chatbot"
           >
-            <Image src="/images/ai-assistant.png" alt="AI Assistant" width={64} height={64} />
+            <Bot className="w-7 h-7 text-primary-foreground"/>
           </Button>
         </div>
       </motion.div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-lg md:max-w-2xl h-full sm:h-[80vh] flex flex-col p-0">
+        <DialogContent className="sm:max-w-lg md:max-w-2xl lg:max-w-3xl h-full sm:h-[80vh] flex flex-col p-0">
           <DialogHeader className="p-4 border-b flex-row items-center justify-between space-y-0">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-lg">
