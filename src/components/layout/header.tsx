@@ -12,16 +12,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { PanelLeftOpen, LayoutGrid, List, User, ArrowLeft } from 'lucide-react';
+import { PanelLeftOpen, LayoutGrid, List, User, ArrowLeft, Languages } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useLayoutStore } from '@/store/layout-store';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
 export default function Header() {
   const { user, logout } = useAuth();
   const { layout, setLayout } = useLayoutStore();
   const pathname = usePathname();
   const router = useRouter();
+  const [language, setLanguage] = React.useState('English');
 
   const isVehicleDetailPage = pathname.startsWith('/vehicle/');
   const isAuthPage = pathname === '/login' || pathname === '/register';
@@ -81,17 +83,17 @@ export default function Header() {
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
           {!isVehicleDetailPage && (
-            <div className="flex items-center rounded-md bg-muted p-1">
+            <div className="hidden sm:flex items-center rounded-md bg-muted p-0.5">
               <Button
                 variant={layout === 'grid' ? 'secondary' : 'ghost'}
                 size="sm"
                 onClick={() => setLayout('grid')}
                 className={cn(
-                  'h-8 px-2 sm:px-3',
+                  'h-7 px-2',
                   layout === 'grid' && 'bg-background shadow-sm'
                 )}
               >
-                <LayoutGrid className="h-4 w-4 sm:h-5 sm:w-5" />
+                <LayoutGrid className="h-4 w-4" />
                 <span className="sr-only">Grid View</span>
               </Button>
               <Button
@@ -99,15 +101,32 @@ export default function Header() {
                 size="sm"
                 onClick={() => setLayout('list')}
                 className={cn(
-                  'h-8 px-2 sm:px-3',
+                  'h-7 px-2',
                   layout === 'list' && 'bg-background shadow-sm'
                 )}
               >
-                <List className="h-4 w-4 sm:h-5 sm:w-5" />
+                <List className="h-4 w-4" />
                 <span className="sr-only">List View</span>
               </Button>
             </div>
           )}
+           <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-9 w-9">
+                <Languages className="h-5 w-5" />
+                <span className="sr-only">Select language</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Language</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={() => setLanguage('Roman Hindi')}>Roman Hindi</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLanguage('Hindi')}>Hindi</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLanguage('Roman Marathi')}>Roman Marathi</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLanguage('Marathi')}>Marathi</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
