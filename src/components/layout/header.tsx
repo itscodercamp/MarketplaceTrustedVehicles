@@ -17,13 +17,15 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useLayoutStore } from '@/store/layout-store';
 import { cn } from '@/lib/utils';
 import React from 'react';
+import { useLanguageStore } from '@/store/language-store';
 
 export default function Header() {
   const { user, logout } = useAuth();
   const { layout, setLayout } = useLayoutStore();
+  const { language, setLanguage } = useLanguageStore();
   const pathname = usePathname();
   const router = useRouter();
-  const [language, setLanguage] = React.useState('English');
+  
 
   const isVehicleDetailPage = pathname.startsWith('/vehicle/');
   const isAuthPage = pathname === '/login' || pathname === '/register';
@@ -83,7 +85,7 @@ export default function Header() {
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
           {!isVehicleDetailPage && (
-            <div className="flex items-center rounded-md bg-muted p-0.5">
+            <div className="hidden sm:flex items-center rounded-md bg-muted p-0.5">
               <Button
                 variant={layout === 'grid' ? 'secondary' : 'ghost'}
                 size="sm"
@@ -124,6 +126,7 @@ export default function Header() {
               <DropdownMenuItem onSelect={() => setLanguage('Hindi')}>Hindi</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setLanguage('Roman Marathi')}>Roman Marathi</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setLanguage('Marathi')}>Marathi</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLanguage('English')}>English</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 

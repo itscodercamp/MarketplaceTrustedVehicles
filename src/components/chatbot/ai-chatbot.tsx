@@ -12,7 +12,7 @@ import VehicleCard from '@/components/vehicles/vehicle-card';
 import { useTypingEffect } from '@/hooks/use-typing-effect';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
+import { useLanguageStore } from '@/store/language-store';
 
 interface ChatMessage {
   sender: 'user' | 'ai';
@@ -117,6 +117,7 @@ export default function AiChatbot() {
   const dragControls = useDragControls();
   const constraintsRef = useRef(null);
   const [showPopup, setShowPopup] = useState(false);
+  const { language } = useLanguageStore();
 
   useEffect(() => {
     const showTimer = setTimeout(() => {
@@ -150,7 +151,7 @@ export default function AiChatbot() {
       const vehicleList = JSON.stringify(vehicles.map(v => `${v.year} ${v.make} ${v.model} for ${v.price}, with ${v.kmsDriven} kms and ${v.fuelType} fuel type.`));
       const response = await recommendVehiclesViaChatbot({
         userInput: currentInput,
-        language: 'English',
+        language: language,
         vehicleList,
       });
 
