@@ -91,7 +91,7 @@ export default function Header() {
                   layout === 'grid' && 'bg-background shadow-sm'
                 )}
               >
-                <LayoutGrid className="h-5 w-5" />
+                <LayoutGrid className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span className="sr-only">Grid View</span>
               </Button>
               <Button
@@ -103,7 +103,7 @@ export default function Header() {
                   layout === 'list' && 'bg-background shadow-sm'
                 )}
               >
-                <List className="h-5 w-5" />
+                <List className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span className="sr-only">List View</span>
               </Button>
             </div>
