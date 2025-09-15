@@ -164,6 +164,7 @@ export default function AiChatbot() {
         userInput: currentInput,
         vehicleList,
         chatHistory: chatHistory,
+        vehicleType: vehicleType,
       });
 
       if (response.responseType === 'filter_suggestion' && response.brandToFilter) {

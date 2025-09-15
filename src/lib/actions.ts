@@ -1,7 +1,7 @@
 'use server';
 
 import { recommendVehiclesViaChatbot as recommendVehiclesFlow } from '@/ai/flows/recommend-vehicles-via-chatbot';
-import type { RecommendVehiclesViaChatbotInput, RecommendVehiclesViaChatbotOutput } from '@/lib/types';
+import type { RecommendVehiclesViaChatbotInput, RecommendVehiclesViaChatbotOutput, VehicleType } from '@/lib/types';
 import { vehicles } from './data';
 import type { Vehicle } from './types';
 
@@ -10,15 +10,23 @@ export type RecommendVehiclesViaChatbotActionOutput = Omit<RecommendVehiclesViaC
     recommendedVehicles?: Vehicle[];
 }
 
-export async function recommendVehiclesViaChatbot(input: RecommendVehiclesViaChatbotInput): Promise<RecommendVehiclesViaChatbotActionOutput> {
+// Extend the input to include vehicleType
+export type RecommendVehiclesActionInput = RecommendVehiclesViaChatbotInput & {
+    vehicleType: VehicleType;
+}
+
+export async function recommendVehiclesViaChatbot(input: RecommendVehiclesActionInput): Promise<RecommendVehiclesViaChatbotActionOutput> {
     try {
         const result = await recommendVehiclesFlow(input);
         
         let recommendedVehicles: Vehicle[] = [];
 
         if (result.recommendations && result.recommendations.length > 0) {
+            // Filter vehicles by the selected type BEFORE matching recommendations
+            const availableVehicles = vehicles.filter(v => v.vehicleType === input.vehicleType);
+            
             recommendedVehicles = result.recommendations.map(rec => {
-                return vehicles.find(vehicle => 
+                return availableVehicles.find(vehicle => 
                     vehicle.make.toLowerCase() === rec.make.toLowerCase() &&
                     vehicle.model.toLowerCase() === rec.model.toLowerCase()
                 );
