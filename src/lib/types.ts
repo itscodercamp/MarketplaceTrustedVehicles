@@ -8,6 +8,7 @@ export type Ownership = '1st Owner' | '2nd Owner' | '3rd Owner';
 export type ServiceHistory = 'Available' | 'Not Available';
 export type Insurance = 'Comprehensive' | 'Third Party' | 'Expired';
 export type BodyType = 'SUV' | 'Sedan' | 'Hatchback' | 'MPV' | 'Off-road';
+export type VehicleType = '4-wheeler' | '2-wheeler';
 
 
 export interface Vehicle {
@@ -52,6 +53,7 @@ export interface User {
 export interface Filters {
   fuelType: FuelType[];
   condition: Condition[];
+  vehicleType: VehicleType;
 }
 
 export interface VehicleFilterState {
@@ -59,7 +61,8 @@ export interface VehicleFilterState {
     sort: SortOption;
     resultCount: number;
     setSort: (sort: SortOption) => void;
-    toggleFilter: (filterType: keyof Filters, value: string) => void;
+    toggleFilter: (filterType: keyof Omit<Filters, 'vehicleType'>, value: string) => void;
+    setVehicleType: (vehicleType: VehicleType) => void;
     clearFilters: () => void;
     setResultCount: (count: number) => void;
 }

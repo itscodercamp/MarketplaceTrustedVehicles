@@ -1,11 +1,14 @@
 import { create } from 'zustand';
-import type { VehicleFilterState, Filters, SortOption } from '@/lib/types';
+import type { VehicleFilterState, VehicleType } from '@/lib/types';
+
+const initialState = {
+  fuelType: [],
+  condition: [],
+  vehicleType: '4-wheeler' as VehicleType,
+};
 
 export const useVehicleFilterStore = create<VehicleFilterState>((set) => ({
-  filters: {
-    fuelType: [],
-    condition: [],
-  },
+  filters: initialState,
   sort: 'price-asc',
   resultCount: 0,
   setSort: (sort) => set({ sort }),
@@ -22,12 +25,13 @@ export const useVehicleFilterStore = create<VehicleFilterState>((set) => ({
         },
       };
     }),
-  clearFilters: () =>
-    set({
+  setVehicleType: (vehicleType) =>
+    set((state) => ({
       filters: {
-        fuelType: [],
-        condition: [],
+        ...state.filters,
+        vehicleType,
       },
-    }),
-    setResultCount: (count) => set({ resultCount: count }),
+    })),
+  clearFilters: () => set((state) => ({ filters: {...initialState, vehicleType: state.filters.vehicleType} })),
+  setResultCount: (count) => set({ resultCount: count }),
 }));

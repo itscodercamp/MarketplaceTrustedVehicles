@@ -29,6 +29,7 @@ export default function Header() {
 
   const isVehicleDetailPage = pathname.startsWith('/vehicle/');
   const isAuthPage = pathname === '/login' || pathname === '/register';
+  const showSubHeader = pathname === '/';
 
   if (isAuthPage) {
     return (
@@ -85,7 +86,7 @@ export default function Header() {
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
           {!isVehicleDetailPage && (
-            <div className="hidden sm:flex items-center rounded-md bg-muted p-0.5">
+            <div className="flex items-center rounded-md bg-muted p-0.5">
               <Button
                 variant={layout === 'grid' ? 'secondary' : 'ghost'}
                 size="sm"
