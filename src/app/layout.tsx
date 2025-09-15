@@ -20,6 +20,7 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "Trusted Vehicles Marketplace",
   description: "Find your next trusted and verified vehicle.",
+  manifest: "/manifest.json",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+        <meta name="theme-color" content="#2962FF" />
       </head>
       <body className={cn("font-body antialiased", roboto.variable)}>
         <AuthProvider>
