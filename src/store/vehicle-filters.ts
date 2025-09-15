@@ -45,9 +45,9 @@ export const useVehicleFilterStore = create<VehicleFilterState>()(
     {
       name: 'vehicle-filter-storage',
       storage: createJSONStorage(() => localStorage),
-      // Only persist the vehicleType
+      // Persist the entire filters object
       partialize: (state) => ({
-        filters: { vehicleType: state.filters.vehicleType },
+        filters: state.filters,
       }),
     }
   )
