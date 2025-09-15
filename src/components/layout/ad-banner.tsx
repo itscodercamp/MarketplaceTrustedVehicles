@@ -1,4 +1,5 @@
 'use client';
+import { useRef } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -8,22 +9,32 @@ import {
 } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
+import Autoplay from "embla-carousel-autoplay"
 
 export default function AdBanner() {
+  const plugin = useRef(
+    Autoplay({ delay: 15000, stopOnInteraction: true })
+  )
+
   const adImages = [
     { seed: 'ad1', hint: 'car discount' },
     { seed: 'ad2', hint: 'motorcycle sale' },
     { seed: 'ad3', hint: 'car loan' },
     { seed: 'ad4', hint: 'vehicle insurance' },
+    { seed: 'ad5', hint: 'car service' },
+    { seed: 'ad6', hint: 'used bikes' },
   ]
   return (
     <div className="bg-muted">
       <div className="container mx-auto px-2 sm:px-6 lg:px-8 py-2">
         <Carousel
+          plugins={[plugin.current]}
           opts={{
             align: "start",
             loop: true,
           }}
+          onMouseEnter={plugin.current.stop}
+          onMouseLeave={plugin.current.reset}
          className="w-full">
           <CarouselContent>
             {adImages.map((ad, index) => (
