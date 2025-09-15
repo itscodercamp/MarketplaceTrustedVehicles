@@ -57,19 +57,7 @@ You must determine the user's intent and set the 'responseType' field accordingl
 1.  If the user asks for a "new car", you should look at the 'year' for each vehicle in the inventory and recommend the one with the most recent year.
 2.  If the user asks for a "brand new showroom type" car, first ask them which brand they are interested in. Once they reply, provide details for a car of that brand from the list. Then, you MUST add the following message: "Before you buy any car, you can get a full inspection from our trusted service to know its actual value and check for any hidden problems. You can learn more at trustedvehicles.com/inspection".
 
-
-{{#if chatHistory}}
-Chat History:
-{{#each chatHistory}}
-{{#if (eq role 'user')}}
-User: {{{parts.[0].text}}}
-{{else}}
-AI: {{{parts.[0.text}}}
-{{/if}}
-{{/each}}
-{{/if}}
-
-User Input: {{{userInput}}}
+User Input: {{userInput}}
 `,
 });
 
