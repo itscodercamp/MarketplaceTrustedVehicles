@@ -318,7 +318,7 @@ export default function AiChatbot() {
               <div key={msg.id} className="flex items-end gap-3">
                 <Bot className="w-8 h-8 text-primary self-start flex-shrink-0" />
                 <div className="rounded-lg p-3 max-w-lg bg-muted text-muted-foreground w-full">
-                  <p className="whitespace-pre-wrap">{showTypingEffect ? displayText : response.responseText}</p>
+                  <p className="whitespace-pre-wrap text-sm">{showTypingEffect ? displayText : response.responseText}</p>
 
                   {response.responseType === 'count' && response.vehicleCount !== undefined && response.brandToFilter && (
                     <div className="mt-2 text-base font-semibold">
