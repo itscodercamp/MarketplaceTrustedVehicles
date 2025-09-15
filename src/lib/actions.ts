@@ -17,10 +17,11 @@ export async function recommendVehiclesViaChatbot(input: RecommendVehiclesViaCha
         let recommendedVehicles: Vehicle[] = [];
 
         if (result.recommendations && result.recommendations.length > 0) {
-            // Filter vehicles by the selected type BEFORE matching recommendations
+            // The AI will return recommendations. We need to find the full vehicle object.
             const availableVehicles = vehicles.filter(v => v.vehicleType === input.vehicleType);
             
             recommendedVehicles = result.recommendations.map(rec => {
+                // Find the vehicle in our data that matches the AI's recommendation
                 return availableVehicles.find(vehicle => 
                     vehicle.make.toLowerCase() === rec.make.toLowerCase() &&
                     vehicle.model.toLowerCase() === rec.model.toLowerCase()
@@ -28,12 +29,15 @@ export async function recommendVehiclesViaChatbot(input: RecommendVehiclesViaCha
             }).filter((v): v is Vehicle => !!v); // Filter out any undefined results
         }
         
+        // Exclude the raw recommendations from the final result, since we've processed them
         const { recommendations, ...rest } = result;
 
+        // Return the AI's response text, plus our processed list of full vehicle objects
         return { ...rest, recommendedVehicles };
 
     } catch(e) {
         console.error(e);
-        throw new Error("Failed to get recommendation from AI.");
+        // We can throw a more specific error to be handled by the UI
+        throw new Error("An error occurred while fetching recommendations from the AI.");
     }
 }

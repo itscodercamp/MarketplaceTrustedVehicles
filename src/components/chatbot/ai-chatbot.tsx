@@ -151,7 +151,15 @@ export default function AiChatbot() {
 
     try {
       const availableVehicles = vehicles.filter(v => v.vehicleType === vehicleType);
-      const vehicleList = JSON.stringify(availableVehicles.map(v => `${v.year} ${v.make} ${v.model} for ${v.price}, with ${v.kmsDriven} kms and ${v.fuelType} fuel type.`));
+      const vehicleList = JSON.stringify(availableVehicles.map(v => ({
+        make: v.make,
+        model: v.model,
+        price: v.price,
+        kmsDriven: v.kmsDriven,
+        fuelType: v.fuelType,
+        year: v.year,
+        mileage: v.mileage
+      })));
       
       const chatHistory = newMessages.slice(0, -1).map(msg => {
         if (msg.sender === 'user') {
@@ -190,6 +198,7 @@ export default function AiChatbot() {
 
 
     } catch (error) {
+      console.error('Chatbot error:', error);
       const errorMessage: ChatMessage = { 
         sender: 'ai', 
         id: `err-${Date.now()}`,
