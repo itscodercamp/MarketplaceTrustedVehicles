@@ -12,17 +12,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { PanelLeftOpen, LayoutGrid, List, User, ArrowLeft, Languages } from 'lucide-react';
+import { PanelLeftOpen, LayoutGrid, List, User, ArrowLeft } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useLayoutStore } from '@/store/layout-store';
 import { cn } from '@/lib/utils';
 import React from 'react';
-import { useLanguageStore } from '@/store/language-store';
 
 export default function Header() {
   const { user, logout } = useAuth();
   const { layout, setLayout } = useLayoutStore();
-  const { language, setLanguage } = useLanguageStore();
   const pathname = usePathname();
   const router = useRouter();
   
@@ -113,23 +111,6 @@ export default function Header() {
               </Button>
             </div>
           )}
-           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Languages className="h-5 w-5" />
-                <span className="sr-only">Select language</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Language</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => setLanguage('Roman Hindi')}>Roman Hindi</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setLanguage('Hindi')}>Hindi</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setLanguage('Roman Marathi')}>Roman Marathi</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setLanguage('Marathi')}>Marathi</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setLanguage('English')}>English</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
 
           {user ? (
             <DropdownMenu>

@@ -12,7 +12,6 @@ import VehicleCard from '@/components/vehicles/vehicle-card';
 import { useTypingEffect } from '@/hooks/use-typing-effect';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
 import { cn } from '@/lib/utils';
-import { useLanguageStore } from '@/store/language-store';
 
 interface ChatMessage {
   sender: 'user' | 'ai';
@@ -79,7 +78,7 @@ const initialMessage: ChatMessage = {
   sender: 'ai', 
   response: {
     responseType: 'general',
-    responseText: "Hello! I'm your personal vehicle assistant. How can I help you find the perfect car today? You can tell me about your budget, preferred brands, or family needs.",
+    responseText: "Hello! I'm your personal vehicle assistant. How can I help you find the perfect car or bike today? You can tell me about your budget, preferred brands, or your needs.",
   }
 };
 
@@ -117,7 +116,7 @@ export default function AiChatbot() {
   const dragControls = useDragControls();
   const constraintsRef = useRef(null);
   const [showPopup, setShowPopup] = useState(false);
-  const { language } = useLanguageStore();
+  const { filters: { vehicleType } } = useVehicleFilterStore();
 
   useEffect(() => {
     const showTimer = setTimeout(() => {
@@ -151,7 +150,8 @@ export default function AiChatbot() {
     setIsLoading(true);
 
     try {
-      const vehicleList = JSON.stringify(vehicles.map(v => `${v.year} ${v.make} ${v.model} for ${v.price}, with ${v.kmsDriven} kms and ${v.fuelType} fuel type.`));
+      const availableVehicles = vehicles.filter(v => v.vehicleType === vehicleType);
+      const vehicleList = JSON.stringify(availableVehicles.map(v => `${v.year} ${v.make} ${v.model} for ${v.price}, with ${v.kmsDriven} kms and ${v.fuelType} fuel type.`));
       
       const chatHistory = newMessages.slice(0, -1).map(msg => {
         if (msg.sender === 'user') {
@@ -162,7 +162,6 @@ export default function AiChatbot() {
       
       const response = await recommendVehiclesViaChatbot({
         userInput: currentInput,
-        language: language,
         vehicleList,
         chatHistory: chatHistory,
       });

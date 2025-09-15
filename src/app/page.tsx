@@ -12,10 +12,7 @@ export default function Home() {
   } = useVehicleFilterStore();
 
   const getVehicles = (): Vehicle[] => {
-    if (vehicleType === '2-wheeler') {
-      return [];
-    }
-    return vehicles;
+    return vehicles.filter(v => v.vehicleType === vehicleType);
   };
 
   return (

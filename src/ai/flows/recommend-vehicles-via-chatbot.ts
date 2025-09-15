@@ -3,7 +3,6 @@
  * @fileOverview This file defines a Genkit flow for an AI-powered vehicle recommendation chatbot.
  *
  * The chatbot recommends vehicles based on user preferences such as make, model, price, performance, and family needs.
- * The AI adapts its tone to match the user's language (Hindi, Marathi, Urdu, English) while using English alphabets.
  *
  * - recommendVehiclesViaChatbot - A function that handles the vehicle recommendation process.
  * - RecommendVehiclesViaChatbotInput - The input type for the recommendVehiclesViaChatbot function.
@@ -28,8 +27,6 @@ const prompt = ai.definePrompt({
   prompt: `You are a helpful and friendly AI-powered vehicle recommendation chatbot for a marketplace called 'Trusted Vehicles'. You are helping a user find a vehicle from a list of available vehicles.
 
 Your goal is to understand the user's needs and recommend the best vehicle(s) from the provided list. Be conversational.
-
-The user may be speaking in Hindi, Marathi, Urdu, or English, but using the English alphabet. You should adapt your tone to match the user's language while responding in the same language (using English alphabet).
 
 **Response Types:**
 You must determine the user's intent and set the 'responseType' field accordingly:
@@ -57,7 +54,6 @@ You must determine the user's intent and set the 'responseType' field accordingl
 2.  If the user asks for a "brand new showroom type" car, first ask them which brand they are interested in. Once they reply, provide details for a car of that brand from the list. Then, you MUST add the following message: "Before you buy any car, you can get a full inspection from our trusted service to know its actual value and check for any hidden problems. You can learn more at trustedvehicles.com/inspection".
 
 Available Vehicles: {{{vehicleList}}}
-Language: {{{language}}}
 
 {{#if chatHistory}}
 Chat History:

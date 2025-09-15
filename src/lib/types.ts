@@ -7,7 +7,7 @@ export type Transmission = 'Automatic' | 'Manual';
 export type Ownership = '1st Owner' | '2nd Owner' | '3rd Owner';
 export type ServiceHistory = 'Available' | 'Not Available';
 export type Insurance = 'Comprehensive' | 'Third Party' | 'Expired';
-export type BodyType = 'SUV' | 'Sedan' | 'Hatchback' | 'MPV' | 'Off-road';
+export type BodyType = 'SUV' | 'Sedan' | 'Hatchback' | 'MPV' | 'Off-road' | 'Cruiser' | 'Sports' | 'Scooter';
 export type VehicleType = '4-wheeler' | '2-wheeler';
 
 
@@ -33,6 +33,7 @@ export interface Vehicle {
   color: string;
   mileage: string; // e.g. "18.5 kmpl"
   seatingCapacity: number;
+  vehicleType: VehicleType;
   detailImages: {
     Exterior: string[];
     Interior: string[];
@@ -92,11 +93,6 @@ const ChatHistoryMessageSchema = z.object({
 // Schema for recommendVehiclesViaChatbot flow
 export const RecommendVehiclesViaChatbotInputSchema = z.object({
   userInput: z.string().describe('The user input describing their vehicle preferences.'),
-  language: z
-    .string()
-    .describe(
-      'The language the user is speaking in (Hindi, Marathi, Urdu, English), but using English alphabet.'
-    ),
   vehicleList: z.string().describe('A list of available vehicles in JSON format. Each item is a string with year, make, model, price, kms driven and fuel type.'),
   chatHistory: z.array(ChatHistoryMessageSchema).optional().describe('The previous messages in the chat.'),
 });

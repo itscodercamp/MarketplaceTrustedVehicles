@@ -86,8 +86,8 @@ export default function SubHeader() {
               <DropdownMenuItem onSelect={() => setVehicleType('4-wheeler')}>
                 4-Wheeler
               </DropdownMenuItem>
-              <DropdownMenuItem disabled>
-                2-Wheeler (Coming Soon)
+              <DropdownMenuItem onSelect={() => setVehicleType('2-wheeler')}>
+                2-Wheeler
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
