@@ -23,18 +23,18 @@ export default function SubHeader() {
     setVehicleType,
   } = useVehicleFilterStore();
   
-  const { hasLocationAccess, requestLocation } = useLocationStore();
+  const { hasLocationAccess, requestLocation, _hasHydrated } = useLocationStore();
   const { user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Request location once on component mount
-    if (typeof window !== 'undefined') {
-        requestLocation();
+    // Once the store is hydrated, request location if we don't have it
+    if (_hasHydrated) {
+      requestLocation();
     }
-  }, [requestLocation]);
+  }, [_hasHydrated, requestLocation]);
 
   const handleStartSellingClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -64,7 +64,14 @@ export default function SubHeader() {
     }
   };
 
-  if (pathname.startsWith('/vehicle/') || pathname === '/login' || pathname === '/register') {
+  const showSubHeader = ![
+    '/login', 
+    '/register',
+    '/generate-report'
+  ].includes(pathname) && !pathname.startsWith('/vehicle/');
+
+
+  if (!showSubHeader) {
     return null;
   }
 
@@ -131,3 +138,5 @@ export default function SubHeader() {
     </div>
   );
 }
+
+    

@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommitHorizontal, Car, MapPin, Shield, Palette, Sparkles, Armchair, Camera, Image as ImageIcon, FileText, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import GetBestPrice from '@/components/vehicles/get-best-price';
 
 const inspectionPoints = [
   { category: 'Exterior Angles', points: ['Front view (daylight)', 'Rear view', 'Left side profile', 'Right side profile', 'Front-left 45° angle', 'Front-right 45° angle', 'Rear-left 45° angle', 'Rear-right 45° angle', 'Top-down view', 'Underbody view'] },
@@ -32,7 +33,7 @@ const categoryIcons: { [key: string]: React.ElementType } = {
 
 export default function VehicleDetailPage() {
   const { id } = useParams();
-  const { isVehicleSaved, toggleSaveVehicle } = useAuth();
+  const { user, isVehicleSaved, toggleSaveVehicle } = useAuth();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const vehicle = vehicles.find((v) => v.id === id);
@@ -149,6 +150,10 @@ export default function VehicleDetailPage() {
       </div>
       
        <div className="mt-12">
+        <GetBestPrice vehicleId={vehicle.id} />
+       </div>
+
+       <div className="mt-12">
         <h2 className="text-2xl font-bold mb-6 border-b pb-2 flex items-center gap-2">
           <ImageIcon className="w-6 h-6" />
           Vehicle Gallery
@@ -196,6 +201,10 @@ export default function VehicleDetailPage() {
         </div>
       </div>
 
+       <div className="mt-12">
+          <GetBestPrice vehicleId={vehicle.id} />
+       </div>
+
        <Dialog open={!!previewImage} onOpenChange={(open) => !open && setPreviewImage(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-transparent border-0 flex items-center justify-center">
           {previewImage && (
@@ -217,3 +226,5 @@ export default function VehicleDetailPage() {
     </div>
   );
 }
+
+    
