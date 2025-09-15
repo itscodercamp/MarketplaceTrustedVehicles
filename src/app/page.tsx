@@ -3,7 +3,6 @@ import { vehicles } from '@/lib/data';
 import { Sidebar } from '@/components/ui/sidebar';
 import VehicleFilters from '@/components/vehicles/vehicle-filters';
 import VehicleGrid from '@/components/vehicles/vehicle-grid';
-import SubHeader from '@/components/layout/sub-header';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
 import type { Vehicle } from '@/lib/types';
 
@@ -21,7 +20,6 @@ export default function Home() {
 
   return (
     <>
-      <SubHeader />
       <div className="flex">
         <Sidebar side="left">
           <VehicleFilters />

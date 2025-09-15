@@ -14,7 +14,7 @@ import { useLocationStore } from '@/store/location-store';
 import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/auth-provider';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 
 export default function SubHeader() {
@@ -26,6 +26,7 @@ export default function SubHeader() {
   const { hasLocationAccess, requestLocation } = useLocationStore();
   const { user } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -62,6 +63,10 @@ export default function SubHeader() {
       router.push('/profile');
     }
   };
+
+  if (pathname.startsWith('/vehicle/') || pathname === '/login' || pathname === '/register') {
+    return null;
+  }
 
   return (
     <div className="sticky top-16 z-40 border-b bg-card shadow-sm">
