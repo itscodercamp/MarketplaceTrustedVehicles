@@ -9,15 +9,26 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, MapPin } from 'lucide-react';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
+import { useLocationStore } from '@/store/location-store';
+import { useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 export default function SubHeader() {
   const {
     filters: { vehicleType },
     setVehicleType,
   } = useVehicleFilterStore();
+  
+  const { hasLocationAccess, requestLocation } = useLocationStore();
+
+  useEffect(() => {
+    // Request location once on component mount
+    requestLocation();
+  }, [requestLocation]);
+
   return (
     <div className="sticky top-16 z-40 border-b bg-card shadow-sm">
-      <div className="container mx-auto flex h-auto min-h-12 items-center justify-start px-2 sm:px-6 lg:px-8 py-1">
+      <div className="container mx-auto flex h-auto min-h-12 items-center justify-between px-2 sm:px-6 lg:px-8 py-1">
         <div className="flex flex-wrap items-center gap-x-1 gap-y-1 sm:gap-x-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -38,11 +49,6 @@ export default function SubHeader() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          <Button variant="ghost" className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium">
-            <MapPin className="mr-1 h-4 w-4" />
-            Auto Detect
-          </Button>
 
           <div className="flex flex-wrap items-center gap-x-1 gap-y-1 sm:gap-x-2">
             <Button
@@ -72,6 +78,10 @@ export default function SubHeader() {
             </Button>
           </div>
         </div>
+         <Button onClick={requestLocation} variant="ghost" size="icon" className="h-8 w-8">
+            <MapPin className={cn("h-5 w-5", hasLocationAccess ? 'text-green-500' : 'text-muted-foreground')} />
+            <span className="sr-only">Detect Location</span>
+          </Button>
       </div>
     </div>
   );
