@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import VehicleCard from '@/components/vehicles/vehicle-card';
 import { useTypingEffect } from '@/hooks/use-typing-effect';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 interface ChatMessage {
   sender: 'user' | 'ai';
@@ -82,6 +83,32 @@ const initialMessage: ChatMessage = {
   }
 };
 
+const AIAssistantPopup = ({ onClose }: { onClose: () => void }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      className="absolute bottom-16 right-0 w-64"
+    >
+      <div className="relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 z-10 p-1 bg-black/20 rounded-full text-white hover:bg-black/50"
+          aria-label="Close popup"
+        >
+          <X className="w-4 h-4" />
+        </button>
+        <div className="bg-card p-3 rounded-lg shadow-xl border relative">
+          <p className="text-sm text-foreground">Hi! I am your AI assistant. Search for your dream vehicle with me.</p>
+        </div>
+        <div className="absolute -bottom-2 right-4 w-4 h-4 bg-card transform rotate-45 border-b border-r" />
+      </div>
+    </motion.div>
+  );
+};
+
+
 export default function AiChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
@@ -89,13 +116,23 @@ export default function AiChatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const dragControls = useDragControls();
   const constraintsRef = useRef(null);
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPopup(true);
+    }, 10000); // 10 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
 
   const { displayText, startTyping, isTyping } = useTypingEffect(1);
   const { toggleFilter } = useVehicleFilterStore();
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
-
+    setShowPopup(false);
     const userMessage: ChatMessage = { sender: 'user', text: input, id: `user-${Date.now()}` };
     setMessages(prev => [...prev, userMessage]);
     const currentInput = input;
@@ -180,6 +217,10 @@ export default function AiChatbot() {
     }
   }, [displayText, isTyping, scrollToBottom]);
 
+  const handleOpenChat = () => {
+    setIsOpen(true);
+    setShowPopup(false);
+  };
 
   return (
     <>
@@ -192,18 +233,21 @@ export default function AiChatbot() {
         className="fixed bottom-4 right-4 z-50"
         whileTap={{ scale: 0.95 }}
       >
-        <Button
-          size="icon"
-          className="rounded-full w-12 h-12 bg-primary text-primary-foreground shadow-2xl"
-          onPointerDown={(e) => {
-            e.preventDefault();
-            dragControls.start(e);
-          }}
-          onClick={() => setIsOpen(true)}
-          aria-label="Open AI Chatbot"
-        >
-          <Bot className="w-6 h-6" />
-        </Button>
+        <div className="relative">
+          {showPopup && <AIAssistantPopup onClose={() => setShowPopup(false)} />}
+          <Button
+            size="icon"
+            className="rounded-full w-16 h-16 bg-transparent hover:bg-primary/10 shadow-2xl transition-all"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              dragControls.start(e);
+            }}
+            onClick={handleOpenChat}
+            aria-label="Open AI Chatbot"
+          >
+            <Image src="/images/ai-assistant.png" alt="AI Assistant" width={64} height={64} />
+          </Button>
+        </div>
       </motion.div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -225,7 +269,6 @@ export default function AiChatbot() {
               <DialogClose asChild>
                 <Button variant="ghost" size="icon">
                   <X className="w-5 h-5"/>
-                  <span className="sr-only">Close Chat</span>
                 </Button>
               </DialogClose>
             </div>
