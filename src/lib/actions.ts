@@ -10,12 +10,7 @@ export type RecommendVehiclesViaChatbotActionOutput = Omit<RecommendVehiclesViaC
     recommendedVehicles?: Vehicle[];
 }
 
-// Extend the input to include vehicleType
-export type RecommendVehiclesActionInput = RecommendVehiclesViaChatbotInput & {
-    vehicleType: VehicleType;
-}
-
-export async function recommendVehiclesViaChatbot(input: RecommendVehiclesActionInput): Promise<RecommendVehiclesViaChatbotActionOutput> {
+export async function recommendVehiclesViaChatbot(input: RecommendVehiclesViaChatbotInput): Promise<RecommendVehiclesViaChatbotActionOutput> {
     try {
         const result = await recommendVehiclesFlow(input);
         

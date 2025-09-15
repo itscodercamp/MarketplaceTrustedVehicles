@@ -63,7 +63,7 @@ Chat History:
 {{#if (eq role 'user')}}
 User: {{{parts.[0].text}}}
 {{else}}
-AI: {{{parts.[0].text}}}
+AI: {{{parts.[0.text}}}
 {{/if}}
 {{/each}}
 {{/if}}
