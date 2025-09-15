@@ -40,8 +40,8 @@ export default function RootLayout({
           <SidebarProvider>
             <div className="relative flex min-h-screen flex-col">
               <Header />
-              <AdBanner />
               <SubHeader />
+              <AdBanner />
               <main className="flex-1">{children}</main>
               <Footer />
             </div>
