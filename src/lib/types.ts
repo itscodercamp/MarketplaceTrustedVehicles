@@ -100,9 +100,11 @@ const RecommendedVehicleSchema = z.object({
 });
 
 export const RecommendVehiclesViaChatbotOutputSchema = z.object({
-  responseType: z.enum(['single', 'list', 'comparison', 'general']).describe("The type of response, indicating the user's intent."),
+  responseType: z.enum(['single', 'list', 'comparison', 'count', 'filter_suggestion', 'general']).describe("The type of response, indicating the user's intent."),
   responseText: z.string().describe("The textual response from the chatbot. This can include the main message, comparison summary, etc."),
   recommendations: z.array(RecommendedVehicleSchema).optional().describe("A list of recommended vehicles. Should be present for 'single', 'list', and 'comparison' types."),
   comparisonTable: z.string().optional().describe("A markdown table comparing the key specifications of two vehicles. Only for 'comparison' type."),
+  vehicleCount: z.number().optional().describe("The number of vehicles found for a specific brand. Only for 'count' type."),
+  brandToFilter: z.string().optional().describe("The brand name to use for filtering the main list. Only for 'filter_suggestion' and 'count' types."),
 });
 export type RecommendVehiclesViaChatbotOutput = z.infer<typeof RecommendVehiclesViaChatbotOutputSchema>;

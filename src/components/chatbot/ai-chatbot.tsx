@@ -3,13 +3,15 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, useDragControls } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { Bot, Send, Loader2, X, CornerDownLeft, RefreshCw } from 'lucide-react';
 import { vehicles } from '@/lib/data';
 import { recommendVehiclesViaChatbot, RecommendVehiclesViaChatbotActionOutput } from '@/lib/actions';
 import { Vehicle } from '@/lib/types';
 import VehicleCard from '@/components/vehicles/vehicle-card';
 import { useTypingEffect } from '@/hooks/use-typing-effect';
+import { useVehicleFilterStore } from '@/store/vehicle-filters';
+import { cn } from '@/lib/utils';
 
 interface ChatMessage {
   sender: 'user' | 'ai';
@@ -21,17 +23,52 @@ interface ChatMessage {
 // Simple markdown to HTML renderer for the comparison table
 const Markdown = ({ content }: { content: string }) => {
   if (!content) return null;
-  const tableHtml = content
-    .replace(/\|/g, '</td><td class="px-4 py-2 border">')
-    .replace(/\n/g, '</tr><tr>')
-    .replace(/---/g, '') // remove separator line
-    .replace(/^<\/td>/, '')
-    .replace(/<tr><\/tr>/, '');
+
+  const rows = content.trim().split('\n').map(row => 
+    row.split('|').map(cell => cell.trim()).filter(cell => cell)
+  );
   
+  if (rows.length < 2) return null; // Header and at least one data row
+
+  const headers = rows[0];
+  const dataRows = rows.slice(1);
+
+  // Filter out the separator line if it exists
+  const cleanDataRows = dataRows.filter(row => !row.every(cell => /^-+$/.test(cell)));
+
   return (
-    <table className="w-full text-sm border-collapse border mt-4 bg-background">
-      <tbody dangerouslySetInnerHTML={{ __html: `<tr>${tableHtml}</tr>` }} />
-    </table>
+    <div className="mt-4 overflow-x-auto">
+      <table className="w-full text-sm text-left bg-background border-collapse">
+          <thead className="hidden md:table-header-group">
+              <tr className="bg-muted/50">
+                  {headers.map((header, index) => (
+                      <th key={index} className="p-3 font-semibold border-b">{header}</th>
+                  ))}
+              </tr>
+          </thead>
+          <tbody>
+              {cleanDataRows.map((row, rowIndex) => (
+                  <React.Fragment key={rowIndex}>
+                      {/* Desktop view */}
+                      <tr className="hidden md:table-row border-b">
+                          {row.map((cell, cellIndex) => (
+                              <td key={cellIndex} className="p-3">{cell}</td>
+                          ))}
+                      </tr>
+                      {/* Mobile view */}
+                      <tr className="grid grid-cols-2 md:hidden gap-x-2 py-3 border-b">
+                          {headers.map((header, headerIndex) => (
+                              <React.Fragment key={headerIndex}>
+                                  <td className="font-semibold p-1">{header}</td>
+                                  <td className="p-1">{row[headerIndex] || '-'}</td>
+                              </React.Fragment>
+                          ))}
+                      </tr>
+                  </React.Fragment>
+              ))}
+          </tbody>
+      </table>
+    </div>
   );
 };
 
@@ -54,6 +91,7 @@ export default function AiChatbot() {
   const constraintsRef = useRef(null);
 
   const { displayText, startTyping, isTyping } = useTypingEffect(1);
+  const { toggleFilter } = useVehicleFilterStore();
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
@@ -71,9 +109,28 @@ export default function AiChatbot() {
         language: 'English',
         vehicleList,
       });
-      
-      const aiMessage: ChatMessage = { sender: 'ai', response, id: `ai-${Date.now()}` };
-      setMessages(prev => [...prev, aiMessage]);
+
+      if (response.responseType === 'filter_suggestion' && response.brandToFilter) {
+          const userChoice = await new Promise<'recommend' | 'filter' | null>((resolve) => {
+              const confirmationMessage: ChatMessage = {
+                  sender: 'ai',
+                  id: `confirm-${Date.now()}`,
+                  response: {
+                      ...response,
+                      // Custom UI for this choice
+                      responseType: 'general', // To prevent rendering cards
+                      responseText: response.responseText || `I can filter the list to show only ${response.brandToFilter} cars, or I can give you some recommendations in the chat. What would you prefer?`
+                  },
+              };
+              setMessages(prev => [...prev, confirmationMessage]);
+          });
+          // This part is tricky without a good way to get user input from buttons in chat
+          // For now, we'll just log it. A real implementation would need a state management solution (e.g. Zustand/Redux) to handle this flow.
+      } else {
+        const aiMessage: ChatMessage = { sender: 'ai', response, id: `ai-${Date.now()}` };
+        setMessages(prev => [...prev, aiMessage]);
+      }
+
 
     } catch (error) {
       const errorMessage: ChatMessage = { 
@@ -115,7 +172,7 @@ export default function AiChatbot() {
          startTyping(lastMessage.response.responseText);
       }
     }
-  }, [messages, startTyping]);
+  }, [messages, startTyping, initialMessage.id]);
   
    useEffect(() => {
     if (isTyping) {
@@ -150,7 +207,7 @@ export default function AiChatbot() {
       </motion.div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-lg h-full sm:h-[80vh] flex flex-col p-0">
+        <DialogContent className="sm:max-w-lg md:max-w-2xl h-full sm:h-[80vh] flex flex-col p-0">
           <DialogHeader className="p-4 border-b flex-row items-center justify-between space-y-0">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-lg">
@@ -165,10 +222,12 @@ export default function AiChatbot() {
                 <RefreshCw className="w-5 h-5"/>
                 <span className="sr-only">Clear Chat</span>
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-                <X className="w-5 h-5"/>
-                <span className="sr-only">Close Chat</span>
-              </Button>
+              <DialogClose asChild>
+                <Button variant="ghost" size="icon">
+                  <X className="w-5 h-5"/>
+                  <span className="sr-only">Close Chat</span>
+                </Button>
+              </DialogClose>
             </div>
           </DialogHeader>
 
@@ -196,12 +255,21 @@ export default function AiChatbot() {
               <div key={msg.id} className="flex items-end gap-3">
                 <Bot className="w-8 h-8 text-primary self-start flex-shrink-0" />
                 <div className="rounded-lg p-3 max-w-lg bg-muted text-muted-foreground w-full">
-                  <p>{showTypingEffect ? displayText : response.responseText}</p>
+                  <p className="whitespace-pre-wrap">{showTypingEffect ? displayText : response.responseText}</p>
+
+                  {response.responseType === 'count' && response.vehicleCount !== undefined && response.brandToFilter && (
+                    <div className="mt-2 text-base font-semibold">
+                      I found {response.vehicleCount} car(s) from {response.brandToFilter}.
+                    </div>
+                  )}
 
                   {response.recommendedVehicles && response.recommendedVehicles.length > 0 && (
-                    <div className={`mt-4 grid gap-4 ${response.responseType === 'comparison' ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                     <div className={cn(
+                       "mt-4 grid gap-4",
+                       response.responseType === 'comparison' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'
+                     )}>
                        {response.recommendedVehicles.map(vehicle => (
-                         <div key={vehicle.id} className="bg-background rounded-lg overflow-hidden">
+                         <div key={vehicle.id} className="bg-background rounded-lg overflow-hidden border">
                            <VehicleCard vehicle={vehicle} onClick={handleVehicleClick}/>
                          </div>
                        ))}
