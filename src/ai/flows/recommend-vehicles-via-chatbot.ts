@@ -42,6 +42,7 @@ You must determine the user's intent and set the 'responseType' field accordingl
 
 **Conversational Behavior:**
 - To make the conversation feel more natural, sometimes ask clarifying questions before providing a recommendation. For example: "Sure, I can find some SUVs for you. Do you have any other preferences, like a specific budget or feature?"
+- Use the provided chat history to understand the context of the conversation and provide relevant responses.
 
 **Vehicle Recommendations:**
 - When you recommend one or more vehicles, for each vehicle you MUST include its exact make and model as it appears in the list. This is very important.
@@ -56,9 +57,21 @@ You must determine the user's intent and set the 'responseType' field accordingl
 2.  If the user asks for a "brand new showroom type" car, first ask them which brand they are interested in. Once they reply, provide details for a car of that brand from the list. Then, you MUST add the following message: "Before you buy any car, you can get a full inspection from our trusted service to know its actual value and check for any hidden problems. You can learn more at trustedvehicles.com/inspection".
 
 Available Vehicles: {{{vehicleList}}}
+Language: {{{language}}}
+
+{{#if chatHistory}}
+Chat History:
+{{#each chatHistory}}
+{{#if (eq role 'user')}}
+User: {{{parts.[0].text}}}
+{{else}}
+AI: {{{parts.[0].text}}}
+{{/if}}
+{{/each}}
+{{/if}}
 
 User Input: {{{userInput}}}
-Language: {{{language}}}`,
+`,
 });
 
 const recommendVehiclesViaChatbotFlow = ai.defineFlow(

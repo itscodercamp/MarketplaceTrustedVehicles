@@ -84,6 +84,10 @@ export const GenerateVehicleConditionReportOutputSchema = z.object({
 });
 export type GenerateVehicleConditionReportOutput = z.infer<typeof GenerateVehicleConditionReportOutputSchema>;
 
+const ChatHistoryMessageSchema = z.object({
+  role: z.enum(['user', 'model']),
+  parts: z.array(z.object({ text: z.string() })),
+});
 
 // Schema for recommendVehiclesViaChatbot flow
 export const RecommendVehiclesViaChatbotInputSchema = z.object({
@@ -94,6 +98,7 @@ export const RecommendVehiclesViaChatbotInputSchema = z.object({
       'The language the user is speaking in (Hindi, Marathi, Urdu, English), but using English alphabet.'
     ),
   vehicleList: z.string().describe('A list of available vehicles in JSON format. Each item is a string with year, make, model, price, kms driven and fuel type.'),
+  chatHistory: z.array(ChatHistoryMessageSchema).optional().describe('The previous messages in the chat.'),
 });
 export type RecommendVehiclesViaChatbotInput = z.infer<typeof RecommendVehiclesViaChatbotInputSchema>;
 

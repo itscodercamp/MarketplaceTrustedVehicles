@@ -141,18 +141,30 @@ export default function AiChatbot() {
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
     setShowPopup(false);
+
     const userMessage: ChatMessage = { sender: 'user', text: input, id: `user-${Date.now()}` };
-    setMessages(prev => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+
     const currentInput = input;
     setInput('');
     setIsLoading(true);
 
     try {
       const vehicleList = JSON.stringify(vehicles.map(v => `${v.year} ${v.make} ${v.model} for ${v.price}, with ${v.kmsDriven} kms and ${v.fuelType} fuel type.`));
+      
+      const chatHistory = newMessages.slice(0, -1).map(msg => {
+        if (msg.sender === 'user') {
+          return { role: 'user' as const, parts: [{ text: msg.text || '' }] };
+        }
+        return { role: 'model' as const, parts: [{ text: msg.response?.responseText || '' }] };
+      });
+      
       const response = await recommendVehiclesViaChatbot({
         userInput: currentInput,
         language: language,
         vehicleList,
+        chatHistory: chatHistory,
       });
 
       if (response.responseType === 'filter_suggestion' && response.brandToFilter) {
