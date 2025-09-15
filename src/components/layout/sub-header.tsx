@@ -78,59 +78,63 @@ export default function SubHeader() {
   return (
     <div className="sticky top-16 z-40 border-b bg-card shadow-sm">
       <div className="container mx-auto flex h-auto min-h-12 items-center justify-between px-2 sm:px-6 lg:px-8 py-1">
-        <div className="flex flex-wrap items-center gap-x-1 gap-y-1 sm:gap-x-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium"
-              >
-                {vehicleType === '4-wheeler' ? '4-Wheeler' : '2-Wheeler'}
-                <ChevronDown className="ml-1 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onSelect={() => setVehicleType('4-wheeler')}>
-                4-Wheeler
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setVehicleType('2-wheeler')}>
-                2-Wheeler
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex-1 overflow-hidden">
+          <div className="flex items-center gap-x-1 gap-y-1 sm:gap-x-2 overflow-x-auto hide-scrollbar">
+            <div className="flex-shrink-0">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium"
+                  >
+                    {vehicleType === '4-wheeler' ? '4-Wheeler' : '2-Wheeler'}
+                    <ChevronDown className="ml-1 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onSelect={() => setVehicleType('4-wheeler')}>
+                    4-Wheeler
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setVehicleType('2-wheeler')}>
+                    2-Wheeler
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
 
-          <div className="flex flex-wrap items-center gap-x-1 gap-y-1 sm:gap-x-2">
-            <Button
-              onClick={handleMyFavouritesClick}
-              variant="link"
-              className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
-            >
-             My Favourites
-            </Button>
-            <Button
-              onClick={handleStartSellingClick}
-              variant="link"
-              className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
-            >
-              Start Selling
-            </Button>
-            <Button
-              asChild
-              variant="link"
-              className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
-            >
-              <Link href="/faq">FAQ</Link>
-            </Button>
-            <Button
-              asChild
-              variant="link"
-              className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
-            >
-              <Link href="/contact">Support</Link>
-            </Button>
+            <div className="flex items-center gap-x-1 gap-y-1 sm:gap-x-2 whitespace-nowrap pr-4">
+              <Button
+                onClick={handleMyFavouritesClick}
+                variant="link"
+                className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
+              >
+              My Favourites
+              </Button>
+              <Button
+                onClick={handleStartSellingClick}
+                variant="link"
+                className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
+              >
+                Start Selling
+              </Button>
+              <Button
+                asChild
+                variant="link"
+                className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
+              >
+                <Link href="/faq">FAQ</Link>
+              </Button>
+              <Button
+                asChild
+                variant="link"
+                className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
+              >
+                <Link href="/contact">Support</Link>
+              </Button>
+            </div>
           </div>
         </div>
-         <Button onClick={requestLocation} variant="ghost" size="icon" className="h-8 w-8">
+         <Button onClick={requestLocation} variant="ghost" size="icon" className="h-8 w-8 ml-2 flex-shrink-0">
             <MapPin className={cn("h-5 w-5", hasLocationAccess ? 'text-green-500' : 'text-muted-foreground')} />
             <span className="sr-only">Detect Location</span>
           </Button>
@@ -138,5 +142,3 @@ export default function SubHeader() {
     </div>
   );
 }
-
-    
