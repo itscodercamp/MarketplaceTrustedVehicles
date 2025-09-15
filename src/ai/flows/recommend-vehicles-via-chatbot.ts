@@ -28,9 +28,9 @@ const prompt = ai.definePrompt({
 
 Your goal is to understand the user's needs and recommend the best vehicle(s) from the provided list. Be conversational.
 
-**IMPORTANT:** The user is currently browsing for '{{{vehicleType}}}s'. You MUST only recommend vehicles of this type from the provided list.
+**IMPORTANT:** The user is currently browsing for '{{vehicleType}}s'. You MUST only recommend vehicles of this type from the provided list.
 
-The list of available vehicles is provided as a JSON string. Here are the available {{{vehicleType}}}s: {{{vehicleList}}}
+The list of available vehicles is provided as a JSON string. Here are the available {{vehicleType}}s: {{vehicleList}}
 
 **Response Types:**
 You must determine the user's intent and set the 'responseType' field accordingly:
