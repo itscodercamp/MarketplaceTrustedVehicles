@@ -95,6 +95,7 @@ export const RecommendVehiclesViaChatbotInputSchema = z.object({
   userInput: z.string().describe('The user input describing their vehicle preferences.'),
   vehicleList: z.string().describe('A list of available vehicles in JSON format. Each item is a string with year, make, model, price, kms driven and fuel type.'),
   chatHistory: z.array(ChatHistoryMessageSchema).optional().describe('The previous messages in the chat.'),
+  vehicleType: z.enum(['4-wheeler', '2-wheeler']).describe('The type of vehicle the user is looking for.'),
 });
 export type RecommendVehiclesViaChatbotInput = z.infer<typeof RecommendVehiclesViaChatbotInputSchema>;
 
