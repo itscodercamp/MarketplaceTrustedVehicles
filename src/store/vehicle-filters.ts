@@ -1,20 +1,24 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { VehicleFilterState, VehicleType, Filters } from '@/lib/types';
+import type { VehicleFilterState, VehicleType, Filters, SortOption } from '@/lib/types';
 
-const initialState: Omit<Filters, 'vehicleType'> = {
+const initialFilters: Omit<Filters, 'vehicleType'> = {
   fuelType: [],
   condition: [],
+};
+
+const defaultState = {
+  filters: {
+    ...initialFilters,
+    vehicleType: '4-wheeler' as VehicleType,
+  },
+  sort: 'price-asc' as SortOption,
 };
 
 export const useVehicleFilterStore = create<VehicleFilterState>()(
   persist(
     (set, get) => ({
-      filters: {
-        ...initialState,
-        vehicleType: '4-wheeler',
-      },
-      sort: 'price-asc',
+      ...defaultState,
       resultCount: 0,
       setSort: (sort) => set({ sort }),
       toggleFilter: (filterType, value) =>
@@ -32,20 +36,27 @@ export const useVehicleFilterStore = create<VehicleFilterState>()(
         }),
       setVehicleType: (vehicleType) => {
         set((state) => ({
-          // Clear filters when vehicle type changes
           filters: {
-            ...initialState,
+            ...initialFilters,
             vehicleType,
           },
         }));
       },
-      clearFilters: () => set((state) => ({ filters: { ...initialState, vehicleType: state.filters.vehicleType } })),
+      clearFilters: () => set((state) => ({ filters: { ...initialFilters, vehicleType: state.filters.vehicleType } })),
       setResultCount: (count) => set({ resultCount: count }),
     }),
     {
       name: 'vehicle-filter-storage',
       storage: createJSONStorage(() => localStorage),
-      // Persist the entire state that needs to be remembered
+      // Merge the stored state with the default state to prevent undefined properties
+      merge: (persistedState, currentState) => {
+        const state = { ...currentState, ...(persistedState as Partial<VehicleFilterState>) };
+        state.filters = {
+            ...currentState.filters,
+            ...(persistedState as Partial<VehicleFilterState>).filters,
+        };
+        return state;
+      },
       partialize: (state) => ({
         filters: state.filters,
         sort: state.sort,
