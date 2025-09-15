@@ -5,17 +5,29 @@ import type { RecommendVehiclesViaChatbotInput, RecommendVehiclesViaChatbotOutpu
 import { vehicles } from './data';
 import type { Vehicle } from './types';
 
-export async function recommendVehiclesViaChatbot(input: RecommendVehiclesViaChatbotInput): Promise<RecommendVehiclesViaChatbotOutput & { recommendedVehicle?: Vehicle }> {
+// Augment the output type to include the full vehicle objects
+export type RecommendVehiclesViaChatbotActionOutput = Omit<RecommendVehiclesViaChatbotOutput, 'recommendations'> & {
+    recommendedVehicles?: Vehicle[];
+}
+
+export async function recommendVehiclesViaChatbot(input: RecommendVehiclesViaChatbotInput): Promise<RecommendVehiclesViaChatbotActionOutput> {
     try {
         const result = await recommendVehiclesFlow(input);
         
-        // Find a matching vehicle from the list based on the AI's recommendation text
-        const recommendedVehicle = vehicles.find(vehicle => 
-            result.recommendation.toLowerCase().includes(vehicle.make.toLowerCase()) &&
-            result.recommendation.toLowerCase().includes(vehicle.model.toLowerCase())
-        );
+        let recommendedVehicles: Vehicle[] = [];
 
-        return { ...result, recommendedVehicle };
+        if (result.recommendations && result.recommendations.length > 0) {
+            recommendedVehicles = result.recommendations.map(rec => {
+                return vehicles.find(vehicle => 
+                    vehicle.make.toLowerCase() === rec.make.toLowerCase() &&
+                    vehicle.model.toLowerCase() === rec.model.toLowerCase()
+                );
+            }).filter((v): v is Vehicle => !!v); // Filter out any undefined results
+        }
+        
+        const { recommendations, ...rest } = result;
+
+        return { ...rest, recommendedVehicles };
 
     } catch(e) {
         console.error(e);

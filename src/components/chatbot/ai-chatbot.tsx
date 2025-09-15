@@ -6,18 +6,44 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Bot, Send, Loader2, X, CornerDownLeft, RefreshCw } from 'lucide-react';
 import { vehicles } from '@/lib/data';
-import { recommendVehiclesViaChatbot } from '@/lib/actions';
+import { recommendVehiclesViaChatbot, RecommendVehiclesViaChatbotActionOutput } from '@/lib/actions';
 import { Vehicle } from '@/lib/types';
 import VehicleCard from '@/components/vehicles/vehicle-card';
 import { useTypingEffect } from '@/hooks/use-typing-effect';
 
 interface ChatMessage {
   sender: 'user' | 'ai';
-  text: string;
-  vehicle?: Vehicle;
+  id: string;
+  response?: RecommendVehiclesViaChatbotActionOutput;
+  text?: string; // for user messages
 }
 
-const initialMessage: ChatMessage = { sender: 'ai', text: "Hello! I'm your personal vehicle assistant. How can I help you find the perfect car today? You can tell me about your budget, preferred brands, or family needs." };
+// Simple markdown to HTML renderer for the comparison table
+const Markdown = ({ content }: { content: string }) => {
+  if (!content) return null;
+  const tableHtml = content
+    .replace(/\|/g, '</td><td class="px-4 py-2 border">')
+    .replace(/\n/g, '</tr><tr>')
+    .replace(/---/g, '') // remove separator line
+    .replace(/^<\/td>/, '')
+    .replace(/<tr><\/tr>/, '');
+  
+  return (
+    <table className="w-full text-sm border-collapse border mt-4 bg-background">
+      <tbody dangerouslySetInnerHTML={{ __html: `<tr>${tableHtml}</tr>` }} />
+    </table>
+  );
+};
+
+
+const initialMessage: ChatMessage = { 
+  id: `ai-${Date.now()}`,
+  sender: 'ai', 
+  response: {
+    responseType: 'general',
+    responseText: "Hello! I'm your personal vehicle assistant. How can I help you find the perfect car today? You can tell me about your budget, preferred brands, or family needs.",
+  }
+};
 
 export default function AiChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,24 +58,32 @@ export default function AiChatbot() {
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
 
-    const userMessage: ChatMessage = { sender: 'user', text: input };
+    const userMessage: ChatMessage = { sender: 'user', text: input, id: `user-${Date.now()}` };
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = input;
     setInput('');
     setIsLoading(true);
 
     try {
       const vehicleList = JSON.stringify(vehicles.map(v => `${v.year} ${v.make} ${v.model} for ${v.price}, with ${v.kmsDriven} kms and ${v.fuelType} fuel type.`));
       const response = await recommendVehiclesViaChatbot({
-        userInput: input,
+        userInput: currentInput,
         language: 'English',
         vehicleList,
       });
       
-      const aiMessage: ChatMessage = { sender: 'ai', text: response.recommendation, vehicle: response.recommendedVehicle };
+      const aiMessage: ChatMessage = { sender: 'ai', response, id: `ai-${Date.now()}` };
       setMessages(prev => [...prev, aiMessage]);
 
     } catch (error) {
-      const errorMessage: ChatMessage = { sender: 'ai', text: "Sorry, I couldn't process that request. Please try again." };
+      const errorMessage: ChatMessage = { 
+        sender: 'ai', 
+        id: `err-${Date.now()}`,
+        response: {
+          responseType: 'general',
+          responseText: "Sorry, I couldn't process that request. Please try again."
+        }
+      };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -76,10 +110,12 @@ export default function AiChatbot() {
   // Handle typing effect for the last AI message
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage && lastMessage.sender === 'ai' && messages.length > 1) { // Check if it's an AI message and not the initial one
-      startTyping(lastMessage.text);
+    if (lastMessage?.sender === 'ai' && lastMessage.id !== initialMessage.id) {
+      if(lastMessage.response?.responseText) {
+         startTyping(lastMessage.response.responseText);
+      }
     }
-  }, [messages, startTyping]); // Only re-run when messages change
+  }, [messages, startTyping]);
   
    useEffect(() => {
     if (isTyping) {
@@ -137,20 +173,43 @@ export default function AiChatbot() {
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
-            {messages.map((msg, index) => {
-              const isLastMessage = index === messages.length - 1;
-              const isAiMessage = msg.sender === 'ai';
-              const showTypingEffect = isLastMessage && isAiMessage && isTyping;
+            {messages.map((msg) => {
+               const isLastMessage = msg.id === messages[messages.length - 1].id;
+               const isAiMessage = msg.sender === 'ai';
+               const showTypingEffect = isLastMessage && isAiMessage && isTyping && msg.id !== initialMessage.id;
+              
+              if (msg.sender === 'user') {
+                return (
+                   <div key={msg.id} className="flex items-end gap-3 justify-end">
+                      <div className="rounded-lg p-3 max-w-lg bg-primary text-primary-foreground">
+                         <p>{msg.text}</p>
+                      </div>
+                   </div>
+                )
+              }
+
+              // AI Message
+              const { response } = msg;
+              if (!response) return null;
 
               return (
-              <div key={index} className={`flex items-end gap-3 ${msg.sender === 'user' ? 'justify-end' : ''}`}>
-                {msg.sender === 'ai' && <Bot className="w-8 h-8 text-primary self-start flex-shrink-0" />}
-                <div className={`rounded-lg p-3 max-w-lg ${msg.sender === 'ai' ? 'bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground'}`}>
-                  <p>{showTypingEffect ? displayText : msg.text}</p>
-                  {msg.vehicle && (
-                    <div className="mt-4 bg-background rounded-lg overflow-hidden w-[300px]">
-                       <VehicleCard vehicle={msg.vehicle} onClick={handleVehicleClick}/>
+              <div key={msg.id} className="flex items-end gap-3">
+                <Bot className="w-8 h-8 text-primary self-start flex-shrink-0" />
+                <div className="rounded-lg p-3 max-w-lg bg-muted text-muted-foreground w-full">
+                  <p>{showTypingEffect ? displayText : response.responseText}</p>
+
+                  {response.recommendedVehicles && response.recommendedVehicles.length > 0 && (
+                    <div className={`mt-4 grid gap-4 ${response.responseType === 'comparison' ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                       {response.recommendedVehicles.map(vehicle => (
+                         <div key={vehicle.id} className="bg-background rounded-lg overflow-hidden">
+                           <VehicleCard vehicle={vehicle} onClick={handleVehicleClick}/>
+                         </div>
+                       ))}
                     </div>
+                  )}
+
+                  {response.responseType === 'comparison' && response.comparisonTable && (
+                      <Markdown content={response.comparisonTable} />
                   )}
                 </div>
               </div>

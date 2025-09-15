@@ -94,7 +94,15 @@ export const RecommendVehiclesViaChatbotInputSchema = z.object({
 });
 export type RecommendVehiclesViaChatbotInput = z.infer<typeof RecommendVehiclesViaChatbotInputSchema>;
 
+const RecommendedVehicleSchema = z.object({
+  make: z.string().describe("The make of the recommended vehicle. e.g., 'Maruti Suzuki'"),
+  model: z.string().describe("The model of the recommended vehicle. e.g., 'Swift'"),
+});
+
 export const RecommendVehiclesViaChatbotOutputSchema = z.object({
-  recommendation: z.string().describe("The vehicle recommendation from the chatbot. If you recommend a specific vehicle, mention its exact make and model from the list. If no specific vehicle is recommended, this can be a general response."),
+  responseType: z.enum(['single', 'list', 'comparison', 'general']).describe("The type of response, indicating the user's intent."),
+  responseText: z.string().describe("The textual response from the chatbot. This can include the main message, comparison summary, etc."),
+  recommendations: z.array(RecommendedVehicleSchema).optional().describe("A list of recommended vehicles. Should be present for 'single', 'list', and 'comparison' types."),
+  comparisonTable: z.string().optional().describe("A markdown table comparing the key specifications of two vehicles. Only for 'comparison' type."),
 });
 export type RecommendVehiclesViaChatbotOutput = z.infer<typeof RecommendVehiclesViaChatbotOutputSchema>;
