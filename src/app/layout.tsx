@@ -9,6 +9,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import Footer from "@/components/layout/footer";
 import AiChatbot from "@/components/chatbot/ai-chatbot";
 import SubHeader from "@/components/layout/sub-header";
+import AdBanner from "@/components/layout/ad-banner";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
           <SidebarProvider>
             <div className="relative flex min-h-screen flex-col">
               <Header />
+              <AdBanner />
               <SubHeader />
               <main className="flex-1">{children}</main>
               <Footer />
