@@ -17,13 +17,13 @@ export default function SubHeader() {
   } = useVehicleFilterStore();
   return (
     <div className="sticky top-16 z-40 border-b bg-card shadow-sm">
-      <div className="container mx-auto flex h-12 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 md:gap-4">
+      <div className="container mx-auto flex h-auto min-h-12 items-center justify-start px-2 sm:px-6 lg:px-8 py-1">
+        <div className="flex flex-wrap items-center gap-x-1 gap-y-1 sm:gap-x-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-8 px-2 text-sm font-medium"
+                className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium"
               >
                 {vehicleType === '4-wheeler' ? '4-Wheeler' : '2-Wheeler'}
                 <ChevronDown className="ml-1 h-4 w-4" />
@@ -39,34 +39,34 @@ export default function SubHeader() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button variant="ghost" className="h-8 px-2 text-sm font-medium">
+          <Button variant="ghost" className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium">
             <MapPin className="mr-1 h-4 w-4" />
             Auto Detect
           </Button>
 
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="flex flex-wrap items-center gap-x-1 gap-y-1 sm:gap-x-2">
             <Button
               asChild
               variant="link"
-              className="h-8 px-2 text-sm font-medium text-muted-foreground"
+              className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
             >
               <Link href="/profile">My Favourites</Link>
             </Button>
             <Button
               variant="link"
-              className="h-8 px-2 text-sm font-medium text-muted-foreground"
+              className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
             >
               Start Selling
             </Button>
             <Button
               variant="link"
-              className="h-8 px-2 text-sm font-medium text-muted-foreground"
+              className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
             >
               FAQ
             </Button>
             <Button
               variant="link"
-              className="h-8 px-2 text-sm font-medium text-muted-foreground"
+              className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
             >
               Support
             </Button>
