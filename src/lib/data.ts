@@ -484,4 +484,34 @@ export const vehicles: Vehicle[] = [
       Tyres: ['https://picsum.photos/seed/pulsar150-tyre1/800/600'],
     }
   },
+  {
+    id: '17',
+    make: 'Ola',
+    model: 'S1 Pro',
+    year: 2023,
+    price: 130000,
+    kmsDriven: 5000,
+    fuelType: 'Electric',
+    condition: 'Like New',
+    imageUrl: 'https://picsum.photos/seed/olas1/600/400',
+    imageHint: 'white scooter',
+    verified: true,
+    transmission: 'Automatic',
+    engine: 'N/A',
+    ownership: '1st Owner',
+    serviceHistory: 'Available',
+    bodyType: 'Scooter',
+    registration: 'MH-12',
+    insurance: 'Comprehensive',
+    color: 'White',
+    mileage: '181 km/charge',
+    seatingCapacity: 2,
+    vehicleType: '2-wheeler',
+    detailImages: {
+      Exterior: ['https://picsum.photos/seed/olas1-ext1/800/600'],
+      Interior: [],
+      Engine: [],
+      Tyres: ['https://picsum.photos/seed/olas1-tyre1/800/600'],
+    }
+  }
 ];

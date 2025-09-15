@@ -13,7 +13,8 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 
-const fuelTypes: FuelType[] = ['Petrol', 'Diesel', 'Electric', 'CNG'];
+const fourWheelerFuelTypes: FuelType[] = ['Petrol', 'Diesel', 'Electric', 'CNG'];
+const twoWheelerFuelTypes: FuelType[] = ['Petrol', 'Electric'];
 const conditions: Condition[] = ['New', 'Like New', 'Good', 'Fair'];
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'price-asc', label: 'Price: Low to High' },
@@ -26,9 +27,12 @@ const sortOptions: { value: SortOption; label: string }[] = [
 
 export default function VehicleFilters() {
   const { filters, sort, toggleFilter, setSort, clearFilters } = useVehicleFilterStore();
+  const { vehicleType } = filters;
+
+  const fuelTypes = vehicleType === '4-wheeler' ? fourWheelerFuelTypes : twoWheelerFuelTypes;
 
   const handleCheckboxToggle = (filterType: keyof typeof filters, value: string) => {
-    toggleFilter(filterType, value);
+    toggleFilter(filterType as 'fuelType' | 'condition', value);
   };
   
   return (
