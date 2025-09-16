@@ -1,9 +1,10 @@
+
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FacebookIcon, GoogleIcon } from '@/components/icons';
+import { GoogleIcon } from '@/components/icons';
 import { useAuth } from '@/context/auth-provider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -50,14 +51,10 @@ export default function LoginPage() {
           </p>
         </div>
         <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-3">
+          <div>
             <Button variant="outline" className="w-full" onClick={() => login('google')}>
               <GoogleIcon className="mr-2 h-5 w-5" />
               Google
-            </Button>
-            <Button variant="outline" className="w-full" onClick={() => login('facebook')}>
-              <FacebookIcon className="mr-2 h-5 w-5" />
-              Facebook
             </Button>
           </div>
 

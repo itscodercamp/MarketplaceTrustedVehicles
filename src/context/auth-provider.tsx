@@ -1,8 +1,9 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { User as AuthUser } from 'firebase/auth';
-import { onAuthStateChanged, FacebookAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import type { User } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
@@ -10,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
-  login: (provider: 'google' | 'facebook' | 'phone') => void;
+  login: (provider: 'google' | 'phone') => void;
   logout: () => void;
   isVehicleSaved: (vehicleId: string) => boolean;
   toggleSaveVehicle: (vehicleId: string) => void;
@@ -46,10 +47,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, [user?.savedVehicles]);
   
-  const login = async (provider: 'google' | 'facebook' | 'phone') => {
+  const login = async (provider: 'google' | 'phone') => {
     let authProvider;
-    if (provider === 'facebook') {
-      authProvider = new FacebookAuthProvider();
+    if (provider === 'google') {
+      authProvider = new GoogleAuthProvider();
     } else {
        toast({
         variant: 'destructive',
