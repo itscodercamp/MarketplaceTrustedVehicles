@@ -27,13 +27,14 @@ const firebaseConfig = {
 // This code is set up for localhost development by default.
 // =================================================================
 
-// Dynamically set the authDomain for development environments
-if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !window.location.hostname.endsWith('firebaseapp.com') && !window.location.hostname.endsWith('web.app')) {
-  firebaseConfig.authDomain = window.location.hostname;
-}
-
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
+
+// Connect to Auth Emulator if running on localhost
+if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+  connectAuthEmulator(auth, "http://127.0.0.1:9099");
+}
+
 
 export { app, auth };
