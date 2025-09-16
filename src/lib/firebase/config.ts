@@ -1,3 +1,4 @@
+
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
@@ -27,7 +28,7 @@ const firebaseConfig = {
 // =================================================================
 
 // Dynamically set the authDomain for development environments
-if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !window.location.hostname.endsWith('firebaseapp.com')) {
+if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !window.location.hostname.endsWith('firebaseapp.com') && !window.location.hostname.endsWith('web.app')) {
   firebaseConfig.authDomain = window.location.hostname;
 }
 
