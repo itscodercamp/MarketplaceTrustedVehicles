@@ -1,6 +1,6 @@
 
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,8 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { GoogleIcon } from '@/components/icons';
 import { User, Building } from 'lucide-react';
+import { useAuth } from '@/context/auth-provider';
+import { useRouter } from 'next/navigation';
 
 type Role = 'customer' | 'dealer';
 type Step = 1 | 2;
@@ -16,6 +18,23 @@ type Step = 1 | 2;
 export default function RegisterPage() {
   const [step, setStep] = useState<Step>(1);
   const [role, setRole] = useState<Role>('customer');
+  const { login, user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/profile');
+    }
+  }, [user, loading, router]);
+  
+  if (loading || (!loading && user)) {
+     return (
+      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
 
   const renderStepOne = () => (
     <div className="text-center">
@@ -29,7 +48,10 @@ export default function RegisterPage() {
       </Link>
       <h2 className="mt-6 text-3xl font-extrabold text-foreground">Create a new account</h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        Are you a customer looking to buy, or a dealer looking to sell?
+        Already have an account?{' '}
+        <Link href="/login" className="font-medium text-primary hover:text-primary/90">
+          Sign in
+        </Link>
       </p>
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div
@@ -76,9 +98,9 @@ export default function RegisterPage() {
 
       <div className="mt-8 space-y-6">
         <div>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={() => login('google')}>
             <GoogleIcon className="mr-2 h-5 w-5" />
-            Google
+            Sign up with Google
           </Button>
         </div>
 
