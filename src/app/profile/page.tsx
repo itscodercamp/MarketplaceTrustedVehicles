@@ -4,18 +4,28 @@ import { vehicles } from '@/lib/data';
 import VehicleCard from '@/components/vehicles/vehicle-card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function ProfilePage() {
-  const { user, logout } = useAuth();
-  const savedVehicles = vehicles.filter(
-    (vehicle) => user?.savedVehicles.includes(vehicle.id)
-  );
+  const { user, logout, loading } = useAuth();
+  const router = useRouter();
 
-  if (!user) {
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+  
+  const savedVehicles = user ? vehicles.filter(
+    (vehicle) => user.savedVehicles.includes(vehicle.id)
+  ) : [];
+
+  if (loading || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
-        <h2 className="text-2xl font-bold mb-4">You are not logged in</h2>
-        <p className="text-muted-foreground">Please log in to see your profile.</p>
+        <h2 className="text-2xl font-bold mb-4">Loading...</h2>
+        <p className="text-muted-foreground">Please wait while we fetch your profile.</p>
       </div>
     );
   }

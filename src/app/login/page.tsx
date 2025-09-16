@@ -6,15 +6,26 @@ import { Label } from '@/components/ui/label';
 import { FacebookIcon, GoogleIcon } from '@/components/icons';
 import { useAuth } from '@/context/auth-provider';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, user, loading } = useAuth();
   const router = useRouter();
 
-  const handleLogin = () => {
-    login();
-    router.push('/profile');
-  };
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/profile');
+    }
+  }, [user, loading, router]);
+
+
+  if (loading || (!loading && user)) {
+     return (
+      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
@@ -40,11 +51,11 @@ export default function LoginPage() {
         </div>
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" onClick={() => login('google')}>
               <GoogleIcon className="mr-2 h-5 w-5" />
               Google
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" onClick={() => login('facebook')}>
               <FacebookIcon className="mr-2 h-5 w-5" />
               Facebook
             </Button>
@@ -67,7 +78,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <Button onClick={handleLogin} className="w-full">
+            <Button onClick={() => login('phone')} className="w-full">
               Send OTP
             </Button>
           </div>
