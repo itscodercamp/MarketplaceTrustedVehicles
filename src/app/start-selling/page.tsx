@@ -2,38 +2,52 @@
 'use client';
 import { useAuth } from '@/context/auth-provider';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { Loader2, TrendingUp, Users, Bot, CheckCircle } from 'lucide-react';
-import Link from 'next/link';
+import { useState } from 'react';
+import { Loader2, Car, Store, User, Upload, Phone, MapPin, Hash, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
-const benefits = [
-  {
-    icon: TrendingUp,
-    title: 'Reach More Buyers',
-    description: 'Tap into a vast network of verified buyers actively looking for their next vehicle.',
-  },
-  {
-    icon: Users,
-    title: 'Build Trust',
-    description: 'Showcase your verified listings and build a reputation for quality and transparency.',
-  },
-  {
-    icon: Bot,
-    title: 'Leverage AI Tools',
-    description: 'Use our AI-powered condition report generator to create detailed and impressive listings effortlessly.',
-  },
-    {
-    icon: CheckCircle,
-    title: 'Simple Listing Process',
-    description: 'Our streamlined process makes it easy to list your vehicles and manage your inventory.',
-  },
-];
+type UserType = 'customer' | 'dealer';
 
 export default function StartSellingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
+  const [userType, setUserType] = useState<UserType | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  const handleCustomerSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setIsSubmitting(false);
+    (e.target as HTMLFormElement).reset();
+    setImagePreview(null);
+
+    toast({
+      title: 'Submission Received!',
+      description: "Thank you! Our inspection team will contact you shortly to schedule a visit.",
+    });
+  };
 
   if (loading) {
     return (
@@ -45,75 +59,151 @@ export default function StartSellingPage() {
       </div>
     );
   }
-  
-  if (user) {
-    // If user is already logged in, maybe they want to see a dashboard in the future.
-    // For now, we'll show them the same marketing page, but with a different CTA.
-  }
 
   return (
     <div className="bg-background">
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <section className="text-center">
           <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl">
-            Join the Future of Vehicle Sales
+            Sell Your Vehicle, Your Way
           </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground">
-            Sell your vehicles faster and more efficiently by joining the most trusted digital marketplace.
+          <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground">
+            Whether you're an individual seller or a professional dealer, we provide the best platform to reach genuine buyers.
           </p>
-          <div className="mt-10">
-            <Button size="lg" asChild>
-              <Link href="/register">Become a Dealer Today</Link>
-            </Button>
-             <p className="mt-4 text-sm text-muted-foreground">
-              Already have an account?{' '}
-              <Link href="/login" className="font-medium text-primary hover:underline">
-                Sign In
-              </Link>
-            </p>
-          </div>
         </section>
 
-        <section className="mt-20">
-          <div className="max-w-4xl mx-auto">
-             <h2 className="text-3xl font-bold text-center mb-12">
-                Why Sell with <span className="text-primary">Trusted Vehicles</span>?
-            </h2>
-            <div className="grid gap-8 md:grid-cols-2">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex gap-6 items-start">
-                  <div className="flex-shrink-0">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <benefit.icon className="h-6 w-6" aria-hidden="true" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold">{benefit.title}</h3>
-                    <p className="mt-2 text-muted-foreground">{benefit.description}</p>
-                  </div>
+        <section className="mt-12 max-w-4xl mx-auto">
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">Are you a Customer or a Dealer?</CardTitle>
+              <CardDescription>Choose your role to get started.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div
+                  className={cn('step-card cursor-pointer', userType === 'customer' && 'step-card-active')}
+                  onClick={() => setUserType('customer')}
+                >
+                  <User className="mx-auto h-12 w-12 text-primary" />
+                  <h3 className="mt-4 text-lg font-medium text-foreground">Customer</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">I want to sell my single vehicle quickly and easily.</p>
                 </div>
-              ))}
-            </div>
-          </div>
+                 <div
+                  className={cn('step-card cursor-pointer', userType === 'dealer' && 'step-card-active')}
+                  onClick={() => setUserType('dealer')}
+                >
+                  <Store className="mx-auto h-12 w-12 text-primary" />
+                  <h3 className="mt-4 text-lg font-medium text-foreground">Dealer</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">I want to list and manage my inventory of vehicles.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </section>
-        
-        <section className="mt-20">
-            <Card className="max-w-4xl mx-auto text-center shadow-lg border-primary/20">
+
+        {userType && (
+          <section className="mt-12 max-w-4xl mx-auto">
+            {userType === 'customer' ? (
+              <Card className="shadow-lg">
                 <CardHeader>
-                    <CardTitle className="text-3xl">Ready to Boost Your Sales?</CardTitle>
+                  <CardTitle className="flex items-center gap-3">
+                    <Car className="w-6 h-6 text-primary" />
+                    <span>List Your Vehicle</span>
+                  </CardTitle>
+                  <CardDescription>
+                    Fill out the details below. Our team will call you to schedule a free inspection, and we'll list your vehicle for you at the best price.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground mb-6">
-                        Create your dealer account in minutes and start listing your inventory today. No hidden fees, no complex paperwork.
-                    </p>
-                     <Button size="lg" asChild>
-                      <Link href="/register">Get Started for Free</Link>
+                  <form onSubmit={handleCustomerSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div className="space-y-2">
+                        <Label htmlFor="customerName">Your Name</Label>
+                        <Input id="customerName" placeholder="Enter your full name" required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="customerContact">Contact Number</Label>
+                        <Input id="customerContact" type="tel" placeholder="Enter your mobile number" required />
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="vehicleNumber">Vehicle Number</Label>
+                        <Input id="vehicleNumber" placeholder="e.g., MH-12-AB-1234" required />
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="vehicleLocation">Vehicle Location</Label>
+                        <Input id="vehicleLocation" placeholder="Enter city and state" required />
+                      </div>
+                    </div>
+                     <div className="space-y-2">
+                      <Label htmlFor="vehiclePhoto" className="flex items-center gap-2">
+                        <Upload className="w-4 h-4" />
+                        Front Photo (with Number Plate)
+                      </Label>
+                      <Input id="vehiclePhoto" type="file" accept="image/*" onChange={handleImageChange} required className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"/>
+                       {imagePreview && (
+                        <div className="mt-4">
+                          <Image src={imagePreview} alt="Vehicle preview" width={150} height={100} className="rounded-md object-cover" />
+                        </div>
+                      )}
+                    </div>
+                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                       {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        'Submit for Inspection'
+                      )}
                     </Button>
+                  </form>
                 </CardContent>
-            </Card>
-        </section>
+              </Card>
+            ) : (
+               <Card className="shadow-lg">
+                <CardHeader>
+                   <CardTitle className="flex items-center gap-3">
+                    <Store className="w-6 h-6 text-primary" />
+                    <span>Dealer Options</span>
+                  </CardTitle>
+                  <CardDescription>
+                    Manage your inventory with our dedicated tools or list your vehicles directly.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="bg-primary/10 p-6 rounded-lg text-center">
+                        <h3 className="text-lg font-semibold">Inventory Management System</h3>
+                        <p className="text-muted-foreground mt-2 mb-4">Use our powerful IMS to manage your listings, track leads, and grow your business.</p>
+                        <Button>
+                            Continue with IMS by Trusted Vehicles
+                            <ExternalLink className="ml-2 w-4 h-4" />
+                        </Button>
+                    </div>
+                     <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                          <span className="bg-card px-2 text-muted-foreground">
+                            OR
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <h3 className="text-lg font-semibold">List Directly</h3>
+                        <p className="text-muted-foreground mt-2 mb-4">
+                          Want to list vehicles one by one? We'll perform an inspection for each vehicle before it goes live to ensure quality.
+                        </p>
+                        <Button variant="secondary" onClick={() => router.push('/register?role=dealer')}>Register as a Dealer</Button>
+                      </div>
+                </CardContent>
+              </Card>
+            )}
+          </section>
+        )}
       </div>
     </div>
   );
 }
 
+    
