@@ -1,4 +1,3 @@
-
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -22,12 +21,4 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
-// Dynamically set the auth domain for development/preview environments
-if (typeof window !== 'undefined' && window.location.hostname !== 'marketplacetrustedvehicles.firebaseapp.com') {
-  auth.tenantId = null;
-  auth.settings.authDomain = window.location.hostname;
-}
-
-
 export { app, auth };
-
