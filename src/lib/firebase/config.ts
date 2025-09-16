@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -25,6 +25,11 @@ const firebaseConfig = {
 //
 // This code is set up for localhost development by default.
 // =================================================================
+
+// Dynamically set the authDomain for development environments
+if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !window.location.hostname.endsWith('firebaseapp.com')) {
+  firebaseConfig.authDomain = window.location.hostname;
+}
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
