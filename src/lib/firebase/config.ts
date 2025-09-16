@@ -17,14 +17,8 @@ const firebaseConfig = {
   measurementId: "G-5671SNRK8G"
 };
 
-// Dynamically set authDomain for dev environments before initializing
-if (typeof window !== 'undefined' && !window.location.hostname.includes('firebaseapp.com')) {
-    firebaseConfig.authDomain = window.location.hostname;
-}
-
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
-
 
 export { app, auth };
