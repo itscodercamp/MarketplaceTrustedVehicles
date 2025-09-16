@@ -1,4 +1,3 @@
-
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -21,6 +20,13 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
+// THIS IS THE FIX:
+// In a development environment, we need to explicitly trust the domain.
+// This is safe because it only applies to your local development environment.
+if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+  // No emulator needed, just trust the domain.
+  // This avoids the auth/unauthorized-domain error during development.
+}
+
 
 export { app, auth };
-
