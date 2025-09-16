@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,5 +19,20 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
+
+// Dynamically authorize the domain in development/preview
+if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
+    auth.tenantId = null;
+    const protocol = window.location.protocol;
+    const host = window.location.hostname;
+    const port = window.location.port;
+    try {
+        connectAuthEmulator(auth, `${protocol}//${host}:${port}`, { disableWarnings: true });
+    } catch (e) {
+        // This can sometimes fail on hot reloads, but it's fine to ignore
+        // console.warn('Auth emulator connection failed:', e);
+    }
+}
+
 
 export { app, auth };
