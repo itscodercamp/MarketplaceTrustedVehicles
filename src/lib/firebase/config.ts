@@ -1,7 +1,6 @@
-
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,8 +16,20 @@ const firebaseConfig = {
   measurementId: "G-5671SNRK8G"
 };
 
+
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
+
+// Use the auth emulator in development
+if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    try {
+        connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
+        console.log("Connected to Firebase Auth Emulator");
+    } catch (error) {
+        console.error("Error connecting to Firebase Auth Emulator", error);
+    }
+}
+
 
 export { app, auth };
