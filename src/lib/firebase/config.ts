@@ -22,7 +22,7 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
 // Use the auth emulator in development
-if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
     try {
         connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
         console.log("Connected to Firebase Auth Emulator");
