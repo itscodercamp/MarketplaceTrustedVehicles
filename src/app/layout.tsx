@@ -1,3 +1,4 @@
+'use client';
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
@@ -5,11 +6,12 @@ import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/context/auth-provider";
 import Header from "@/components/layout/header";
 import { Toaster } from "@/components/ui/toaster";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, Sidebar } from "@/components/ui/sidebar";
 import Footer from "@/components/layout/footer";
 import AiChatbot from "@/components/chatbot/ai-chatbot";
 import SubHeader from "@/components/layout/sub-header";
-import AdBanner from "@/components/layout/ad-banner";
+import { usePathname } from 'next/navigation';
+import VehicleFilters from "@/components/vehicles/vehicle-filters";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -17,18 +19,14 @@ const roboto = Roboto({
   variable: "--font-roboto",
 });
 
-export const metadata: Metadata = {
-  title: "Trusted Vehicles Marketplace",
-  description: "Find your next trusted and verified vehicle.",
-  manifest: "/manifest.json",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const showSidebar = pathname === '/';
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -36,6 +34,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
         <meta name="theme-color" content="#2962FF" />
+        <meta name="manifest" content="/manifest.json" />
+        <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={cn("font-body antialiased", roboto.variable)}>
         <AuthProvider>
@@ -43,7 +43,16 @@ export default function RootLayout({
             <div className="relative flex min-h-screen flex-col">
               <Header />
               <SubHeader />
-              <main className="flex-1">{children}</main>
+              <div className="flex flex-1">
+                {showSidebar && (
+                  <Sidebar side="left">
+                    <VehicleFilters />
+                  </Sidebar>
+                )}
+                <main className={cn("flex-1", showSidebar && "lg:ml-72")}>
+                  {children}
+                </main>
+              </div>
               <Footer />
             </div>
             <Toaster />

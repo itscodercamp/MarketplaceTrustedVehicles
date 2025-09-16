@@ -23,11 +23,12 @@ export default function Header() {
   const { layout, setLayout } = useLayoutStore();
   const pathname = usePathname();
   const router = useRouter();
-  
 
-  const isVehicleDetailPage = pathname.startsWith('/vehicle/');
+  const isHomePage = pathname === '/';
   const isAuthPage = pathname === '/login' || pathname === '/register';
   const showSubHeader = pathname === '/';
+  
+  const showBackButton = !isHomePage && !isAuthPage;
 
   if (isAuthPage) {
     return (
@@ -59,7 +60,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
-          {isVehicleDetailPage ? (
+          {showBackButton ? (
             <Button variant="ghost" size="icon" className="mr-2 h-8 w-8" onClick={() => router.back()}>
               <ArrowLeft className="h-5 w-5" />
               <span className="sr-only">Back</span>
@@ -83,7 +84,7 @@ export default function Header() {
         </div>
 
         <div className="ml-auto flex items-center space-x-2 sm:space-x-4">
-          {!isVehicleDetailPage && (
+          {isHomePage && (
             <div className="flex items-center rounded-md bg-muted p-0.5">
               <Button
                 variant={layout === 'grid' ? 'secondary' : 'ghost'}

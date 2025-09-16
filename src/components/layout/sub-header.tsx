@@ -1,4 +1,3 @@
-
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -64,12 +63,7 @@ export default function SubHeader() {
     }
   };
 
-  const showSubHeader = ![
-    '/login', 
-    '/register',
-    '/generate-report'
-  ].includes(pathname) && !pathname.startsWith('/vehicle/');
-
+  const showSubHeader = pathname === '/';
 
   if (!showSubHeader) {
     return null;
