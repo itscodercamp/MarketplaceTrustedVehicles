@@ -25,11 +25,13 @@ export default function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
     e.preventDefault();
     e.stopPropagation();
     if (!user) {
-       toast({
-        variant: 'destructive',
-        title: 'Authentication Required',
-        description: 'You need to be logged in to save vehicles.',
-      });
+      setTimeout(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Authentication Required',
+          description: 'You need to be logged in to save vehicles.',
+        });
+      }, 0);
       return;
     }
     toggleSaveVehicle(vehicle.id);

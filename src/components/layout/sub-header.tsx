@@ -38,11 +38,13 @@ export default function SubHeader() {
   const handleStartSellingClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!user) {
-      toast({
-        variant: 'destructive',
-        title: 'Authentication Required',
-        description: 'Please log in to start selling.',
-      });
+      setTimeout(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Authentication Required',
+          description: 'Please log in to start selling.',
+        });
+      }, 0);
       router.push('/login?redirect=/start-selling');
     } else {
       router.push('/start-selling');
@@ -52,11 +54,13 @@ export default function SubHeader() {
   const handleMyFavouritesClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!user) {
-      toast({
-        variant: 'destructive',
-        title: 'Authentication Required',
-        description: 'Please log in to view your favourites.',
-      });
+      setTimeout(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Authentication Required',
+          description: 'Please log in to view your favourites.',
+        });
+      }, 0);
       router.push('/login?redirect=/profile');
     } else {
       router.push('/profile');

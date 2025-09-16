@@ -52,29 +52,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (provider === 'google') {
       authProvider = new GoogleAuthProvider();
     } else {
-       toast({
-        variant: 'destructive',
-        title: 'Coming Soon',
-        description: `${provider} login is not yet implemented.`,
-      });
+       setTimeout(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Coming Soon',
+          description: `${provider} login is not yet implemented.`,
+        });
+      }, 0);
       return;
     }
 
     try {
       const result = await signInWithPopup(auth, authProvider);
       const firebaseUser = result.user;
-       toast({
-        title: 'Login Successful',
-        description: `Welcome back, ${firebaseUser.displayName}!`,
-      });
+       setTimeout(() => {
+        toast({
+          title: 'Login Successful',
+          description: `Welcome back, ${firebaseUser.displayName}!`,
+        });
+      }, 0);
       router.push('/profile');
     } catch (error: any) {
       console.error("Authentication Error: ", error);
-      toast({
-        variant: 'destructive',
-        title: 'Authentication Failed',
-        description: error.message,
-      });
+      setTimeout(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Authentication Failed',
+          description: error.message,
+        });
+      }, 0);
     }
   };
 
@@ -82,18 +88,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await signOut(auth);
       setUser(null);
-      toast({
-        title: 'Logged Out',
-        description: 'You have been successfully logged out.',
-      });
+      setTimeout(() => {
+        toast({
+          title: 'Logged Out',
+          description: 'You have been successfully logged out.',
+        });
+      }, 0);
        router.push('/');
     } catch (error: any) {
       console.error("Logout Error: ", error);
-       toast({
-        variant: 'destructive',
-        title: 'Logout Failed',
-        description: error.message,
-      });
+       setTimeout(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Logout Failed',
+          description: error.message,
+        });
+      }, 0);
     }
   };
   
@@ -103,11 +113,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleSaveVehicle = (vehicleId: string) => {
     if (!user) {
-      toast({
-        variant: 'destructive',
-        title: 'Login Required',
-        description: 'Please log in to save vehicles.',
-      });
+      setTimeout(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Login Required',
+          description: 'Please log in to save vehicles.',
+        });
+      }, 0);
       router.push('/login');
       return;
     }
@@ -121,9 +133,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         : [...currentUser.savedVehicles, vehicleId];
         
       if (isSaved) {
-        toast({ title: 'Vehicle Removed', description: 'Removed from your saved list.' });
+        setTimeout(() => {
+          toast({ title: 'Vehicle Removed', description: 'Removed from your saved list.' });
+        }, 0);
       } else {
-        toast({ title: 'Vehicle Saved!', description: 'Added to your saved list.' });
+        setTimeout(() => {
+          toast({ title: 'Vehicle Saved!', description: 'Added to your saved list.' });
+        }, 0);
       }
 
       return { ...currentUser, savedVehicles: updatedSavedVehicles };
