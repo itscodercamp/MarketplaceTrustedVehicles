@@ -20,4 +20,9 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
+// Dynamically authorize the development domain
+if (typeof window !== 'undefined' && !window.location.hostname.includes('firebaseapp.com')) {
+    auth.config.authDomain = window.location.hostname;
+}
+
 export { app, auth };
