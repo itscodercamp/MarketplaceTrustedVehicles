@@ -16,10 +16,15 @@ const firebaseConfig = {
   measurementId: "G-5671SNRK8G"
 };
 
-// Dynamically set authDomain for development environments
-if (typeof window !== 'undefined' && window.location.hostname.includes('cloudworkstations.dev')) {
-  firebaseConfig.authDomain = window.location.hostname;
-}
+// =================================================================
+// IMPORTANT: For Production Deployment (e.g., on Vercel)
+//
+// 1. Deploy your app to get your production URL (e.g., your-app.vercel.app).
+// 2. Go to your Firebase Console > Authentication > Settings > Authorized domains.
+// 3. Click "Add domain" and enter your production URL.
+//
+// This code is set up for localhost development by default.
+// =================================================================
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
