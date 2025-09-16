@@ -16,6 +16,10 @@ const firebaseConfig = {
   measurementId: "G-5671SNRK8G"
 };
 
+// Dynamically set authDomain for development environments
+if (typeof window !== 'undefined' && window.location.hostname.includes('cloudworkstations.dev')) {
+  firebaseConfig.authDomain = window.location.hostname;
+}
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
