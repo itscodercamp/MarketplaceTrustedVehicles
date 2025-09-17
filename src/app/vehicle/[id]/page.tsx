@@ -7,7 +7,7 @@ import { formatCurrency, cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommitHorizontal, Car, MapPin, Shield, Palette, Sparkles, Armchair, Camera, Image as ImageIcon, FileText, ChevronLeft, ChevronRight, X, Calendar, Fingerprint, Hash, FilePen } from 'lucide-react';
+import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommit, Car, MapPin, Shield, Palette, Sparkles, Armchair, Camera, Image as ImageIcon, FileText, ChevronLeft, ChevronRight, X, Calendar, Fingerprint, Hash, FilePen } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import GetBestPrice from '@/components/vehicles/get-best-price';
@@ -17,7 +17,7 @@ const categoryIcons: { [key: string]: React.ElementType } = {
   'Bonnet & Dickey': Car,
   'Pillars & Roof': Car,
   'Interior & Odometer': Armchair,
-  'Tyres & Spare': GitCommitHorizontal,
+  'Tyres & Spare': GitCommit,
 };
 
 export default function VehicleDetailPage() {
@@ -75,7 +75,7 @@ export default function VehicleDetailPage() {
 
   const technicalDetails = [
     { icon: Sparkles, label: "Fuel Type", value: vehicle.fuelType },
-    { icon: GitCommitHorizontal, label: "Transmission", value: vehicle.transmission },
+    { icon: GitCommit, label: "Transmission", value: vehicle.transmission },
     { icon: MapPin, label: "RTO State", value: vehicle.rtoState },
     { icon: Users, label: "Ownership", value: vehicle.ownership },
     { icon: Shield, label: "Insurance", value: vehicle.insurance },
