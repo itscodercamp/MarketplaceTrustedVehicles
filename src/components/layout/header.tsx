@@ -19,7 +19,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { PanelLeftOpen, LayoutGrid, List, User, ArrowLeft, LogIn } from 'lucide-react';
+import { PanelLeftOpen, LayoutGrid, List, User, ArrowLeft } from 'lucide-react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useLayoutStore } from '@/store/layout-store';
 import { cn } from '@/lib/utils';
@@ -148,7 +148,7 @@ export default function Header() {
                 <TooltipTrigger asChild>
                   <Button asChild variant="ghost" size="icon">
                     <Link href="/login">
-                      <LogIn className="h-5 w-5" />
+                      <User className="h-5 w-5" />
                       <span className="sr-only">Login</span>
                     </Link>
                   </Button>
