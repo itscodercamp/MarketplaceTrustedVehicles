@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'CNG';
@@ -9,37 +10,42 @@ export type ServiceHistory = 'Available' | 'Not Available';
 export type Insurance = 'Comprehensive' | 'Third Party' | 'Expired';
 export type BodyType = 'SUV' | 'Sedan' | 'Hatchback' | 'MPV' | 'Off-road' | 'Cruiser' | 'Sports' | 'Scooter';
 export type VehicleType = '4-wheeler' | '2-wheeler';
-
+export type VehicleStatus = 'For Sale' | 'Sold' | 'Reserved';
 
 export interface Vehicle {
   id: string;
   make: string;
   model: string;
-  year: number;
+  variant: string;
+  year: number; // Registration Year
+  manufacturingYear: number;
   price: number;
-  kmsDriven: number;
+  kmsDriven: number; // Odometer Reading
   fuelType: FuelType;
   condition: Condition;
   imageUrl: string;
   imageHint: string;
   verified: boolean;
   transmission: Transmission;
-  engine: string; // e.g., "1.2L"
+  engine: string; 
   ownership: Ownership;
   serviceHistory: ServiceHistory;
   bodyType: BodyType;
-  registration: string; // e.g. "MH-01"
+  registration: string; // Registration Number
+  vin: string; // Vehicle Identification Number
+  rtoState: string;
   insurance: Insurance;
   color: string;
-  mileage: string; // e.g. "18.5 kmpl"
+  mileage: string; 
   seatingCapacity: number;
   vehicleType: VehicleType;
+  status: VehicleStatus;
   detailImages: {
-    Exterior: string[];
-    Interior: string[];
-    Engine: string[];
-    Tyres: string[];
-    Documents?: string[];
+    'Exterior Angles': string[];
+    'Bonnet & Dickey': string[];
+    'Pillars & Roof': string[];
+    'Interior & Odometer': string[];
+    'Tyres & Spare': string[];
   };
 }
 
