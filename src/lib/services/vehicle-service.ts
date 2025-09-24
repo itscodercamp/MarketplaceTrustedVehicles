@@ -1,11 +1,17 @@
 
 import type { Vehicle } from '@/lib/types';
 
-const API_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev/api/marketplace/vehicles';
+const API_BASE_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev';
+const API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
 
 // This is a temporary cache to avoid re-fetching data on every page navigation during development.
 // In a real-world app, you might use a more sophisticated caching strategy like React Query or SWR.
 let cachedVehicles: Vehicle[] | null = null;
+
+const constructImageUrl = (path?: string) => {
+  if (!path) return undefined;
+  return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
+}
 
 /**
  * Fetches vehicle data from the remote API and transforms it to match the application's Vehicle type.
@@ -51,30 +57,30 @@ export async function getVehicles(): Promise<Vehicle[]> {
       insurance: item.insurance,
       serviceHistory: item.serviceHistory,
       color: item.color,
-      imageUrl: item.imageUrl, // Main image for the listing card
       vehicleType: '4-wheeler', // Assuming all vehicles from this API are 4-wheelers
       
-      // Map all individual image fields
-      img_front: item.img_front,
-      img_front_right: item.img_front_right,
-      img_right: item.img_right,
-      img_back_right: item.img_back_right,
-      img_back: item.img_back,
-      img_open_dickey: item.img_open_dickey,
-      img_back_left: item.img_back_left,
-      img_left: item.img_left,
-      img_front_left: item.img_front_left,
-      img_open_bonnet: item.img_open_bonnet,
-      img_dashboard: item.img_dashboard,
-      img_right_front_door: item.img_right_front_door,
-      img_right_back_door: item.img_right_back_door,
-      img_tyre_1: item.img_tyre_1,
-      img_tyre_2: item.img_tyre_2,
-      img_tyre_3: item.img_tyre_3,
-      img_tyre_4: item.img_tyre_4,
-      img_tyre_optional: item.img_tyre_optional,
-      img_engine: item.img_engine,
-      img_roof: item.img_roof,
+      // Map all individual image fields and construct full URLs
+      imageUrl: constructImageUrl(item.imageUrl),
+      img_front: constructImageUrl(item.img_front),
+      img_front_right: constructImageUrl(item.img_front_right),
+      img_right: constructImageUrl(item.img_right),
+      img_back_right: constructImageUrl(item.img_back_right),
+      img_back: constructImageUrl(item.img_back),
+      img_open_dickey: constructImageUrl(item.img_open_dickey),
+      img_back_left: constructImageUrl(item.img_back_left),
+      img_left: constructImageUrl(item.img_left),
+      img_front_left: constructImageUrl(item.img_front_left),
+      img_open_bonnet: constructImageUrl(item.img_open_bonnet),
+      img_dashboard: constructImageUrl(item.img_dashboard),
+      img_right_front_door: constructImageUrl(item.img_right_front_door),
+      img_right_back_door: constructImageUrl(item.img_right_back_door),
+      img_tyre_1: constructImageUrl(item.img_tyre_1),
+      img_tyre_2: constructImageUrl(item.img_tyre_2),
+      img_tyre_3: constructImageUrl(item.img_tyre_3),
+      img_tyre_4: constructImageUrl(item.img_tyre_4),
+      img_tyre_optional: constructImageUrl(item.img_tyre_optional),
+      img_engine: constructImageUrl(item.img_engine),
+      img_roof: constructImageUrl(item.img_roof),
     }));
     
     cachedVehicles = transformedVehicles;
@@ -95,3 +101,4 @@ export async function getVehicleById(id: string): Promise<Vehicle | undefined> {
   const vehicles = await getVehicles();
   return vehicles.find(v => v.id === id);
 }
+
