@@ -195,7 +195,7 @@ export default function VehicleDetailPage() {
     { icon: Gauge, label: "Mileage", value: 'N/A' },
   ].filter(item => item.value);
   
-  const mainImageUrl = vehicle.imageUrl || 'https://picsum.photos/seed/placeholder/1200/800';
+  const mainImageUrl = vehicle.imageUrl || vehicle.img_front || 'https://picsum.photos/seed/placeholder/1200/800';
 
   // --- End of new dynamic image gallery and details logic ---
 
@@ -211,6 +211,7 @@ export default function VehicleDetailPage() {
             className="rounded-lg object-cover shadow-lg"
             priority
             data-ai-hint={`${vehicle.color} ${vehicle.make} ${vehicle.model}`}
+            unoptimized={true}
           />
            <div className="absolute top-4 right-4 flex gap-2">
             {vehicle.verified && (
@@ -302,7 +303,7 @@ export default function VehicleDetailPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   {section.images.map((image, index) => (
                     <div key={index} className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group" onClick={() => setPreviewImage(image.url!)}>
-                      <Image src={image.url!} alt={`${section.title} - ${image.label}`} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
+                      <Image src={image.url!} alt={`${section.title} - ${image.label}`} fill className="object-cover transition-transform duration-300 group-hover:scale-110" unoptimized={true} />
                        <div className="absolute inset-0 bg-black/40 flex items-end justify-center p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <p className="text-white text-xs text-center">{image.label}</p>
                        </div>
@@ -318,7 +319,7 @@ export default function VehicleDetailPage() {
         <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-transparent border-0 flex items-center justify-center">
           {previewImage && (
             <div className="relative w-full h-full">
-               <Image src={previewImage} alt="Vehicle preview" fill objectFit="contain" />
+               <Image src={previewImage} alt="Vehicle preview" layout="fill" objectFit="contain" unoptimized={true} />
                <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-10 w-10 rounded-full bg-black/50 hover:bg-black/70 text-white" onClick={() => setPreviewImage(null)}>
                   <X className="w-6 h-6"/>
                </Button>
@@ -335,3 +336,5 @@ export default function VehicleDetailPage() {
     </div>
   );
 }
+
+    
