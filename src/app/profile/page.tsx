@@ -1,31 +1,60 @@
+
 'use client';
 import { useAuth } from '@/context/auth-provider';
-import { vehicles } from '@/lib/data';
+import { getVehicles } from '@/lib/services/vehicle-service';
 import VehicleCard from '@/components/vehicles/vehicle-card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import type { Vehicle } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProfilePage() {
-  const { user, logout, loading } = useAuth();
+  const { user, logout, loading: authLoading } = useAuth();
   const router = useRouter();
+  const [allVehicles, setAllVehicles] = useState<Vehicle[]>([]);
+  const [vehiclesLoading, setVehiclesLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !user) {
       router.push('/login');
     }
-  }, [user, loading, router]);
+  }, [user, authLoading, router]);
+
+  useEffect(() => {
+    async function loadVehicles() {
+      setVehiclesLoading(true);
+      const vehicles = await getVehicles();
+      setAllVehicles(vehicles);
+      setVehiclesLoading(false);
+    }
+    loadVehicles();
+  }, []);
   
-  const savedVehicles = user ? vehicles.filter(
+  const savedVehicles = user ? allVehicles.filter(
     (vehicle) => user.savedVehicles.includes(vehicle.id)
   ) : [];
 
-  if (loading || !user) {
+  const isLoading = authLoading || vehiclesLoading;
+
+  if (isLoading || !user) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
-        <h2 className="text-2xl font-bold mb-4">Loading...</h2>
-        <p className="text-muted-foreground">Please wait while we fetch your profile.</p>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
+          <Skeleton className="h-24 w-24 rounded-full" />
+          <div className="space-y-2 text-center md:text-left">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-5 w-64" />
+            <Skeleton className="h-10 w-24 mt-4" />
+          </div>
+        </div>
+        <div>
+            <Skeleton className="h-8 w-40 mb-6" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-72 w-full" />)}
+            </div>
+        </div>
       </div>
     );
   }

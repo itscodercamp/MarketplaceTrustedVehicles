@@ -1,31 +1,78 @@
 
 'use client';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
-import { vehicles } from '@/lib/data';
+import { useState, useEffect } from 'react';
+import { getVehicleById } from '@/lib/services/vehicle-service';
+import type { Vehicle } from '@/lib/types';
 import { formatCurrency, cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommit, Car, MapPin, Shield, Palette, Sparkles, Armchair, Camera, Image as ImageIcon, FileText, ChevronLeft, ChevronRight, X, Calendar, Fingerprint, Hash, FilePen } from 'lucide-react';
+import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommit, Car, MapPin, Shield, Palette, Sparkles, Armchair, Camera, Image as ImageIcon, ChevronLeft, ChevronRight, X, Calendar, Fingerprint, Hash, FilePen, DoorOpen, HardHat, Cog } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import GetBestPrice from '@/components/vehicles/get-best-price';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const categoryIcons: { [key: string]: React.ElementType } = {
-  'Exterior Angles': Camera,
-  'Bonnet & Dickey': Car,
-  'Pillars & Roof': Car,
-  'Interior & Odometer': Armchair,
-  'Tyres & Spare': GitCommit,
+
+// Define a type for our structured image gallery
+type ImageGallerySection = {
+  title: string;
+  icon: React.ElementType;
+  images: { url?: string; label: string }[];
 };
+
+const VehicleDetailSkeleton = () => (
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+            <div className="lg:col-span-2">
+                <Skeleton className="aspect-video rounded-lg" />
+            </div>
+            <div className="lg:col-span-1 space-y-6">
+                <Skeleton className="h-10 w-3/4" />
+                <Skeleton className="h-6 w-1/2" />
+                <Skeleton className="h-8 w-1/3" />
+                <Skeleton className="h-24 w-full" />
+            </div>
+        </div>
+        <div className="mt-12 space-y-8">
+            <Skeleton className="h-8 w-1/4" />
+            <div className="grid md:grid-cols-2 gap-8">
+                <Skeleton className="h-48 w-full" />
+                <Skeleton className="h-48 w-full" />
+            </div>
+        </div>
+        <div className="mt-12 space-y-8">
+            <Skeleton className="h-8 w-1/4" />
+            <Skeleton className="h-64 w-full" />
+        </div>
+    </div>
+);
+
 
 export default function VehicleDetailPage() {
   const { id } = useParams();
   const { isVehicleSaved, toggleSaveVehicle } = useAuth();
+  
+  const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+  const [loading, setLoading] = useState(true);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (typeof id === 'string') {
+      const fetchVehicle = async () => {
+        setLoading(true);
+        const fetchedVehicle = await getVehicleById(id);
+        setVehicle(fetchedVehicle || null);
+        setLoading(false);
+      };
+      fetchVehicle();
+    }
+  }, [id]);
 
-  const vehicle = vehicles.find((v) => v.id === id);
+  if (loading) {
+    return <VehicleDetailSkeleton />;
+  }
 
   if (!vehicle) {
     return (
@@ -35,10 +82,72 @@ export default function VehicleDetailPage() {
       </div>
     );
   }
-
-  const isSaved = isVehicleSaved(vehicle.id);
   
-  const allImages = Object.values(vehicle.detailImages).flat();
+  // --- Start of new dynamic image gallery and details logic ---
+
+  const imageGallery: ImageGallerySection[] = [
+    { 
+      title: 'Exterior Angles', 
+      icon: Camera,
+      images: [
+        { url: vehicle.img_front, label: 'Front' },
+        { url: vehicle.img_back, label: 'Back' },
+        { url: vehicle.img_left, label: 'Left' },
+        { url: vehicle.img_right, label: 'Right' },
+        { url: vehicle.img_front_left, label: 'Front-Left' },
+        { url: vehicle.img_front_right, label: 'Front-Right' },
+        { url: vehicle.img_back_left, label: 'Back-Left' },
+        { url: vehicle.img_back_right, label: 'Back-Right' },
+      ],
+    },
+    {
+      title: 'Bonnet & Dickey',
+      icon: Car,
+      images: [
+        { url: vehicle.img_open_bonnet, label: 'Bonnet Open' },
+        { url: vehicle.img_open_dickey, label: 'Dickey (Trunk) Open' },
+      ],
+    },
+    {
+      title: 'Pillars & Roof',
+      icon: HardHat,
+      images: [
+        { url: vehicle.img_roof, label: 'Roof' },
+      ],
+    },
+    {
+      title: 'Interior, Doors & Odometer',
+      icon: Armchair,
+      images: [
+        { url: vehicle.img_dashboard, label: 'Dashboard View' },
+        { url: vehicle.img_right_front_door, label: 'Right Front Door Open' },
+        { url: vehicle.img_right_back_door, label: 'Right Back Door Open' },
+      ],
+    },
+    {
+      title: 'Tyres',
+      icon: GitCommit,
+      images: [
+        { url: vehicle.img_tyre_1, label: 'Tyre 1' },
+        { url: vehicle.img_tyre_2, label: 'Tyre 2' },
+        { url: vehicle.img_tyre_3, label: 'Tyre 3' },
+        { url: vehicle.img_tyre_4, label: 'Tyre 4' },
+        { url: vehicle.img_tyre_optional, label: 'Spare Tyre' },
+      ],
+    },
+     {
+      title: 'Engine',
+      icon: Cog,
+      images: [
+        { url: vehicle.img_engine, label: 'Engine Bay' },
+      ],
+    },
+  ].map(section => ({
+      ...section,
+      images: section.images.filter(img => img.url) // Filter out images that don't exist
+  })).filter(section => section.images.length > 0); // Filter out sections with no images
+
+  const allImages = imageGallery.flatMap(section => section.images.map(img => img.url!));
   
   const handleNextPreview = () => {
     if (!previewImage) return;
@@ -54,6 +163,8 @@ export default function VehicleDetailPage() {
     setPreviewImage(allImages[prevIndex]);
   };
 
+  const isSaved = isVehicleSaved(vehicle.id);
+  
   const getStatusBadgeColor = () => {
     switch (vehicle.status) {
       case 'For Sale': return 'bg-green-500 hover:bg-green-600';
@@ -65,13 +176,13 @@ export default function VehicleDetailPage() {
 
   const basicDetails = [
     { icon: Car, label: "Make", value: vehicle.make },
-    { icon: FilePen, label: "Model", value: `${vehicle.model} ${vehicle.variant}` },
-    { icon: Calendar, label: "Reg. Year", value: vehicle.year },
-    { icon: Calendar, label: "Mfg. Year", value: vehicle.manufacturingYear },
-    { icon: Hash, label: "Reg. Number", value: vehicle.registration },
-    { icon: Fingerprint, label: "VIN", value: vehicle.vin },
-    { icon: Gauge, label: "Odometer", value: `${vehicle.kmsDriven.toLocaleString('en-IN')} km` },
-  ];
+    { icon: FilePen, label: "Model", value: `${vehicle.model} ${vehicle.variant || ''}` },
+    { icon: Calendar, label: "Reg. Year", value: vehicle.regYear },
+    { icon: Calendar, label: "Mfg. Year", value: vehicle.mfgYear },
+    { icon: Hash, label: "Reg. Number", value: vehicle.regNumber },
+    { icon: Fingerprint, label: "VIN", value: '...'}, // VIN is sensitive, should not be displayed fully
+    { icon: Gauge, label: "Odometer", value: `${vehicle.kmsDriven?.toLocaleString('en-IN')} km` },
+  ].filter(item => item.value);
 
   const technicalDetails = [
     { icon: Sparkles, label: "Fuel Type", value: vehicle.fuelType },
@@ -81,8 +192,12 @@ export default function VehicleDetailPage() {
     { icon: Shield, label: "Insurance", value: vehicle.insurance },
     { icon: Wrench, label: "Service History", value: vehicle.serviceHistory },
     { icon: Palette, label: "Color", value: vehicle.color },
-    { icon: Gauge, label: "Mileage", value: vehicle.mileage },
-  ];
+    { icon: Gauge, label: "Mileage", value: 'N/A' },
+  ].filter(item => item.value);
+  
+  const mainImageUrl = vehicle.imageUrl || vehicle.img_front || 'https://picsum.photos/seed/placeholder/1200/800';
+
+  // --- End of new dynamic image gallery and details logic ---
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -90,12 +205,12 @@ export default function VehicleDetailPage() {
         
         <div className="lg:col-span-2 relative aspect-video">
           <Image
-            src={vehicle.imageUrl}
+            src={mainImageUrl}
             alt={`${vehicle.make} ${vehicle.model}`}
             fill
             className="rounded-lg object-cover shadow-lg"
             priority
-            data-ai-hint={vehicle.imageHint}
+            data-ai-hint={`${vehicle.color} ${vehicle.make} ${vehicle.model}`}
           />
            <div className="absolute top-4 right-4 flex gap-2">
             {vehicle.verified && (
@@ -104,9 +219,11 @@ export default function VehicleDetailPage() {
                   Verified
                 </Badge>
               )}
-               <Badge className={`text-white pointer-events-none ${getStatusBadgeColor()}`}>
-                {vehicle.status}
-              </Badge>
+              {vehicle.status && (
+                <Badge className={`text-white pointer-events-none ${getStatusBadgeColor()}`}>
+                    {vehicle.status}
+                </Badge>
+              )}
            </div>
         </div>
 
@@ -177,26 +294,24 @@ export default function VehicleDetailPage() {
           Vehicle Gallery
         </h2>
         <div className="space-y-8">
-          {Object.entries(vehicle.detailImages).map(([category, images]) => {
-            if (images.length === 0) return null;
-            const Icon = categoryIcons[category] || ImageIcon;
-            return (
-              <div key={category}>
+          {imageGallery.map((section) => (
+              <div key={section.title}>
                 <h3 className="text-lg font-semibold mb-3 text-primary flex items-center gap-2">
-                  <Icon className="w-5 h-5"/>
-                  {category}
+                  <section.icon className="w-5 h-5"/>
+                  {section.title}
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {images.map((src, index) => (
-                    <div key={index} className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group" onClick={() => setPreviewImage(src)}>
-                      <Image src={src} alt={`${category} image ${index + 1}`} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
-                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {section.images.map((image, index) => (
+                    <div key={index} className="relative aspect-video rounded-lg overflow-hidden cursor-pointer group" onClick={() => setPreviewImage(image.url!)}>
+                      <Image src={image.url!} alt={`${section.title} - ${image.label}`} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
+                       <div className="absolute inset-0 bg-black/40 flex items-end justify-center p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <p className="text-white text-xs text-center">{image.label}</p>
+                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-            )
-          })}
+          ))}
         </div>
       </div>
 

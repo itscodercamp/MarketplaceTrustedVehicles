@@ -1,24 +1,30 @@
+
 'use server';
 
 import { recommendVehiclesViaChatbot as recommendVehiclesFlow } from '@/ai/flows/recommend-vehicles-via-chatbot';
 import type { RecommendVehiclesViaChatbotInput, RecommendVehiclesViaChatbotOutput, VehicleType } from '@/lib/types';
-import { vehicles } from './data';
 import type { Vehicle } from './types';
+
+// Augment the input type to include the full vehicle objects
+export type RecommendVehiclesViaChatbotActionInput = RecommendVehiclesViaChatbotInput & {
+    allVehicles: Vehicle[];
+}
 
 // Augment the output type to include the full vehicle objects
 export type RecommendVehiclesViaChatbotActionOutput = Omit<RecommendVehiclesViaChatbotOutput, 'recommendations'> & {
     recommendedVehicles?: Vehicle[];
 }
 
-export async function recommendVehiclesViaChatbot(input: RecommendVehiclesViaChatbotInput): Promise<RecommendVehiclesViaChatbotActionOutput> {
+export async function recommendVehiclesViaChatbot(input: RecommendVehiclesViaChatbotActionInput): Promise<RecommendVehiclesViaChatbotActionOutput> {
     try {
-        const result = await recommendVehiclesFlow(input);
+        const { allVehicles, ...flowInput } = input;
+        const result = await recommendVehiclesFlow(flowInput);
         
         let recommendedVehicles: Vehicle[] = [];
 
         if (result.recommendations && result.recommendations.length > 0) {
             // The AI will return recommendations. We need to find the full vehicle object.
-            const availableVehicles = vehicles.filter(v => v.vehicleType === input.vehicleType);
+            const availableVehicles = allVehicles.filter(v => v.vehicleType === input.vehicleType);
             
             recommendedVehicles = result.recommendations.map(rec => {
                 // Find the vehicle in our data that matches the AI's recommendation

@@ -1,53 +1,68 @@
 
 import { z } from 'zod';
 
-export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'CNG';
+export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'CNG' | 'LPG' | 'Hybrid';
 export type Condition = 'New' | 'Like New' | 'Good' | 'Fair';
 export type SortOption = 'price-asc' | 'price-desc' | 'year-desc' | 'year-asc' | 'kms-asc' | 'kms-desc';
 export type Transmission = 'Automatic' | 'Manual';
-export type Ownership = '1st Owner' | '2nd Owner' | '3rd Owner';
+export type Ownership = '1st Owner' | '2nd Owner' | '3rd Owner' | string;
 export type ServiceHistory = 'Available' | 'Not Available';
-export type Insurance = 'Comprehensive' | 'Third Party' | 'Expired';
+export type Insurance = 'Comprehensive' | 'Third Party' | 'None' | 'Expired';
 export type BodyType = 'SUV' | 'Sedan' | 'Hatchback' | 'MPV' | 'Off-road' | 'Cruiser' | 'Sports' | 'Scooter';
 export type VehicleType = '4-wheeler' | '2-wheeler';
-export type VehicleStatus = 'For Sale' | 'Sold' | 'Reserved';
+export type VehicleStatus = 'For Sale' | 'Sold' | 'Reserved' | string;
 
 export interface Vehicle {
   id: string;
   make: string;
   model: string;
-  variant: string;
-  year: number; // Registration Year
-  manufacturingYear: number;
   price: number;
-  kmsDriven: number; // Odometer Reading
-  fuelType: FuelType;
-  condition: Condition;
-  imageUrl: string;
-  imageHint: string;
-  verified: boolean;
-  transmission: Transmission;
-  engine: string; 
-  ownership: Ownership;
-  serviceHistory: ServiceHistory;
-  bodyType: BodyType;
-  registration: string; // Registration Number
-  vin: string; // Vehicle Identification Number
-  rtoState: string;
-  insurance: Insurance;
-  color: string;
-  mileage: string; 
-  seatingCapacity: number;
+  variant?: string;
+  year?: number;
+  status?: VehicleStatus;
+  verified?: boolean;
+  mfgYear?: number;
+  regYear?: number;
+  regNumber?: string;
+  rtoState?: string;
+  ownership?: Ownership;
+  kmsDriven: number;
+  fuelType?: FuelType;
+  transmission?: Transmission;
+  insurance?: Insurance;
+  serviceHistory?: ServiceHistory;
+  color?: string;
+  imageUrl?: string;
+  imageHint?: string;
+  condition?: Condition;
+  engine?: string;
+  bodyType?: BodyType;
+  seatingCapacity?: number;
   vehicleType: VehicleType;
-  status: VehicleStatus;
-  detailImages: {
-    'Exterior Angles': string[];
-    'Bonnet & Dickey': string[];
-    'Pillars & Roof': string[];
-    'Interior & Odometer': string[];
-    'Tyres & Spare': string[];
-  };
+
+  // New image fields from API
+  img_front?: string;
+  img_front_right?: string;
+  img_right?: string;
+  img_back_right?: string;
+  img_back?: string;
+  img_open_dickey?: string;
+  img_back_left?: string;
+  img_left?: string;
+  img_front_left?: string;
+  img_open_bonnet?: string;
+  img_dashboard?: string;
+  img_right_front_door?: string;
+  img_right_back_door?: string;
+  img_tyre_1?: string;
+  img_tyre_2?: string;
+  img_tyre_3?: string;
+  img_tyre_4?: string;
+  img_tyre_optional?: string;
+  img_engine?: string;
+  img_roof?: string;
 }
+
 
 export interface User {
   id: string;

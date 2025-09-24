@@ -1,3 +1,4 @@
+
 'use client';
 import React from 'react';
 import { useState, useRef, useEffect, useCallback } from 'react';
@@ -5,13 +6,14 @@ import { motion, useDragControls } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { Bot, Send, Loader2, X, CornerDownLeft, RefreshCw } from 'lucide-react';
-import { vehicles } from '@/lib/data';
+import { getVehicles } from '@/lib/services/vehicle-service';
 import { recommendVehiclesViaChatbot, RecommendVehiclesViaChatbotActionOutput } from '@/lib/actions';
 import { Vehicle } from '@/lib/types';
 import VehicleCard from '@/components/vehicles/vehicle-card';
 import { useTypingEffect } from '@/hooks/use-typing-effect';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface ChatMessage {
   sender: 'user' | 'ai';
@@ -117,6 +119,16 @@ export default function AiChatbot() {
   const constraintsRef = useRef(null);
   const [showPopup, setShowPopup] = useState(false);
   const { filters: { vehicleType } } = useVehicleFilterStore();
+  const [vehicleData, setVehicleData] = useState<Vehicle[]>([]);
+
+  useEffect(() => {
+    // Fetch vehicle data when the component mounts or vehicleType changes
+    const loadVehicles = async () => {
+      const allVehicles = await getVehicles();
+      setVehicleData(allVehicles);
+    };
+    loadVehicles();
+  }, []);
 
   useEffect(() => {
     const showTimer = setTimeout(() => {
@@ -150,7 +162,7 @@ export default function AiChatbot() {
     setIsLoading(true);
 
     try {
-      const availableVehicles = vehicles.filter(v => v.vehicleType === vehicleType);
+      const availableVehicles = vehicleData.filter(v => v.vehicleType === vehicleType);
       const vehicleList = JSON.stringify(availableVehicles.map(v => ({
         make: v.make,
         model: v.model,
@@ -158,7 +170,7 @@ export default function AiChatbot() {
         kmsDriven: v.kmsDriven,
         fuelType: v.fuelType,
         year: v.year,
-        mileage: v.mileage
+        mileage: 'N/A' // Mileage is not consistently available
       })));
       
       const chatHistory = newMessages.slice(0, -1).map(msg => {
@@ -173,6 +185,7 @@ export default function AiChatbot() {
         vehicleList,
         chatHistory: chatHistory,
         vehicleType: vehicleType,
+        allVehicles: vehicleData // Pass all vehicles to the action
       });
 
       if (response.responseType === 'filter_suggestion' && response.brandToFilter) {
@@ -335,17 +348,22 @@ export default function AiChatbot() {
                     </div>
                   )}
 
-                  {response.recommendedVehicles && response.recommendedVehicles.length > 0 && (
+                  {response.recommendedVehicles && response.recommendedVehicles.length > 0 ? (
                      <div className={cn(
                        "mt-4 grid gap-4",
                        response.responseType === 'comparison' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'
                      )}>
                        {response.recommendedVehicles.map(vehicle => (
                          <div key={vehicle.id} className="bg-background rounded-lg overflow-hidden border">
-                           <VehicleCard vehicle={vehicle} onClick={handleVehicleClick}/>
+                          {vehicle.make ?
+                           <VehicleCard vehicle={vehicle} onClick={handleVehicleClick}/> :
+                           <Skeleton className="h-full w-full" />
+                          }
                          </div>
                        ))}
                     </div>
+                  ) : (
+                    response.recommendations && response.recommendations.length > 0 && <div>Loading recommendations...</div>
                   )}
 
                   {response.responseType === 'comparison' && response.comparisonTable && (

@@ -1,3 +1,4 @@
+
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -37,17 +38,19 @@ export default function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
     toggleSaveVehicle(vehicle.id);
   }
 
+  const mainImageUrl = vehicle.imageUrl || vehicle.img_front || 'https://picsum.photos/seed/placeholder/600/400';
+
   return (
     <Link href={`/vehicle/${vehicle.id}`} className="block" onClick={onClick}>
       <div className="group relative block overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow duration-200 hover:shadow-lg h-full flex flex-col">
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
-            src={vehicle.imageUrl}
+            src={mainImageUrl}
             alt={`${vehicle.make} ${vehicle.model}`}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-            data-ai-hint={vehicle.imageHint}
+            data-ai-hint={`${vehicle.color} ${vehicle.make} ${vehicle.model}`}
           />
         </div>
 
