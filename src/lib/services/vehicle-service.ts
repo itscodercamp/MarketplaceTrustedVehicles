@@ -18,10 +18,6 @@ export async function getVehicles(): Promise<Vehicle[]> {
 
   try {
     const response = await fetch(API_URL, {
-        method: 'POST', // The API expects a POST request to fetch vehicles
-        headers: {
-          'Content-Type': 'application/json',
-        },
         // Caching strategy: revalidate every 60 seconds
         next: { revalidate: 60 }
     });
