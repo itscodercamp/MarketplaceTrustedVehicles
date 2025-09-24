@@ -112,6 +112,7 @@ export default function SubHeader() {
                 onClick={handleStartSellingClick}
                 variant="link"
                 className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
+                disabled
               >
                 Start Selling
               </Button>
