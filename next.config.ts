@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 import withPWAInit from 'next-pwa';
 
@@ -21,6 +22,12 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
+       {
+        protocol: 'https',
+        hostname: '9000-firebase-studio-1757767172056.cluster-nle52mxuvfhlkrzyrq6g2cwb52.cloudworkstations.dev',
+        port: '',
+        pathname: '/**',
+      },
       {
         protocol: 'https',
         hostname: 'placehold.co',
@@ -40,7 +47,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' as const,
         hostname: 'media.giphy.com',
         port: '',
         pathname: '/**',
