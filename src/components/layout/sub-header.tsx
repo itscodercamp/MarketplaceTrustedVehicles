@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/auth-provider';
 import { useRouter, usePathname } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
 
 export default function SubHeader() {
   const {
@@ -37,18 +39,7 @@ export default function SubHeader() {
 
   const handleStartSellingClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!user) {
-      setTimeout(() => {
-        toast({
-          variant: 'destructive',
-          title: 'Authentication Required',
-          description: 'Please log in to start selling.',
-        });
-      }, 0);
-      router.push('/login?redirect=/start-selling');
-    } else {
-      router.push('/start-selling');
-    }
+    router.push('/start-selling');
   };
   
   const handleMyFavouritesClick = (e: React.MouseEvent) => {
@@ -93,8 +84,11 @@ export default function SubHeader() {
                   <DropdownMenuItem onSelect={() => setVehicleType('4-wheeler')}>
                     4-Wheeler
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => setVehicleType('2-wheeler')}>
-                    2-Wheeler
+                  <DropdownMenuItem disabled>
+                     <div className="flex items-center justify-between w-full">
+                        <span>2-Wheeler</span>
+                        <Badge variant="outline" className="text-xs ml-2">Coming soon</Badge>
+                     </div>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -119,7 +113,7 @@ export default function SubHeader() {
               <Button
                 asChild
                 variant="link"
-                className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
+                className="h-7 px-1 text-xs sm:h-8 smpx-2 sm:text-sm font-medium text-muted-foreground"
               >
                 <Link href="/faq">FAQ</Link>
               </Button>
