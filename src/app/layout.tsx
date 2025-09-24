@@ -12,6 +12,8 @@ import AiChatbot from "@/components/chatbot/ai-chatbot";
 import SubHeader from "@/components/layout/sub-header";
 import { usePathname } from 'next/navigation';
 import VehicleFilters from "@/components/vehicles/vehicle-filters";
+import { useEffect, useState } from "react";
+import PreLoader from "@/components/layout/pre-loader";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -26,6 +28,15 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const showSidebar = pathname === '/';
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -38,27 +49,29 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={cn("font-body antialiased", roboto.variable)}>
-        <AuthProvider>
-          <SidebarProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <Header />
-              <SubHeader />
-              <div className="flex flex-1">
-                {showSidebar && (
-                  <Sidebar side="left">
-                    <VehicleFilters />
-                  </Sidebar>
-                )}
-                <main className={cn("flex-1", showSidebar && "lg:ml-72")}>
-                  {children}
-                </main>
+        {loading ? <PreLoader /> : (
+          <AuthProvider>
+            <SidebarProvider>
+              <div className="relative flex min-h-screen flex-col">
+                <Header />
+                <SubHeader />
+                <div className="flex flex-1">
+                  {showSidebar && (
+                    <Sidebar side="left">
+                      <VehicleFilters />
+                    </Sidebar>
+                  )}
+                  <main className={cn("flex-1", showSidebar && "lg:ml-72")}>
+                    {children}
+                  </main>
+                </div>
+                <Footer />
               </div>
-              <Footer />
-            </div>
-            <Toaster />
-            <AiChatbot />
-          </SidebarProvider>
-        </AuthProvider>
+              <Toaster />
+              <AiChatbot />
+            </SidebarProvider>
+          </AuthProvider>
+        )}
       </body>
     </html>
   );
