@@ -51,6 +51,7 @@ export default function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
             data-ai-hint={`${vehicle.color} ${vehicle.make} ${vehicle.model}`}
+            unoptimized={true}
           />
         </div>
 
@@ -85,3 +86,4 @@ export default function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
     </Link>
   );
 }
+
