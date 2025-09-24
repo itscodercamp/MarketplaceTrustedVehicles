@@ -18,8 +18,7 @@ export async function getVehicles(): Promise<Vehicle[]> {
 
   try {
     const response = await fetch(API_URL, {
-        // Caching strategy: revalidate every 60 seconds
-        next: { revalidate: 60 }
+      mode: 'cors'
     });
 
     if (!response.ok) {
