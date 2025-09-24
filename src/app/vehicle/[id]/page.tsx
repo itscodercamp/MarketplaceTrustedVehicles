@@ -195,7 +195,7 @@ export default function VehicleDetailPage() {
     { icon: Gauge, label: "Mileage", value: 'N/A' },
   ].filter(item => item.value);
   
-  const mainImageUrl = vehicle.imageUrl || vehicle.img_front || 'https://picsum.photos/seed/placeholder/1200/800';
+  const mainImageUrl = vehicle.imageUrl || 'https://picsum.photos/seed/placeholder/1200/800';
 
   // --- End of new dynamic image gallery and details logic ---
 
@@ -278,8 +278,7 @@ export default function VehicleDetailPage() {
                   <div key={item.label} className="flex items-start gap-3">
                       <item.icon className="w-5 h-5 text-muted-foreground mt-0.5 shrink-0" />
                       <div>
-                          <p className="text-muted-foreground">{item.label}</p>
-                          <p className="font-semibold">{item.value}</p>
+                          <p className="text-muted-foreground">{item.label}</p>                          <p className="font-semibold">{item.value}</p>
                       </div>
                   </div>
                 ))}
