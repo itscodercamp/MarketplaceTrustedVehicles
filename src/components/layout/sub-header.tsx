@@ -108,7 +108,10 @@ export default function SubHeader() {
                 className="h-7 px-1 text-xs sm:h-8 sm:px-2 sm:text-sm font-medium text-muted-foreground"
                 disabled
               >
-                Start Selling
+                <div className="flex items-center gap-1.5">
+                  <span>Start Selling</span>
+                  <Badge variant="outline" className="text-xs text-accent border-accent px-1.5 py-0">Soon</Badge>
+                </div>
               </Button>
               <Button
                 asChild
