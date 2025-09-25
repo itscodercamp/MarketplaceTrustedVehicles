@@ -47,7 +47,7 @@ export default function SubHeader() {
     if (!user) {
       setTimeout(() => {
         toast({
-          variant: 'destructive',
+          variant: 'warning',
           title: 'Authentication Required',
           description: 'Please log in to view your favourites.',
         });

@@ -57,6 +57,7 @@ export default function ContactUsPage() {
     toast({
       title: 'Message Sent!',
       description: "We've received your message and will get back to you shortly.",
+      variant: 'success',
     });
   }
 

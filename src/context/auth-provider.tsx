@@ -72,6 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toast({
         title: 'Login Successful',
         description: `Welcome back, ${userData.name}!`,
+        variant: 'success',
       });
 
       const redirectUrl = pathname.includes('redirect=') 
@@ -109,6 +110,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         toast({
             title: 'Registration Successful!',
             description: 'You can now log in with your credentials.',
+            variant: 'success',
         });
         router.push('/login');
 
@@ -145,7 +147,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user) {
       setTimeout(() => {
         toast({
-          variant: 'destructive',
+          variant: 'warning',
           title: 'Login Required',
           description: 'Please log in to save vehicles.',
         });
@@ -168,7 +170,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (isSaved) {
           toast({ title: 'Vehicle Removed', description: 'Removed from your saved list.' });
         } else {
-          toast({ title: 'Vehicle Saved!', description: 'Added to your saved list.' });
+          toast({ title: 'Vehicle Saved!', description: 'Added to your saved list.', variant: 'success' });
         }
       }, 0);
       

@@ -22,6 +22,7 @@ export default function GetBestPrice({ vehicleId }: GetBestPriceProps) {
     toast({
       title: 'Link Copied!',
       description: 'Vehicle link has been copied to your clipboard.',
+      variant: 'success',
     });
   };
 

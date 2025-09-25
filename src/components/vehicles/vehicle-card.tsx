@@ -28,7 +28,7 @@ export default function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
     if (!user) {
       setTimeout(() => {
         toast({
-          variant: 'destructive',
+          variant: 'warning',
           title: 'Authentication Required',
           description: 'You need to be logged in to save vehicles.',
         });

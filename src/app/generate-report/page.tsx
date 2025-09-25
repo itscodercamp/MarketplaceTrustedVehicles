@@ -1,3 +1,4 @@
+
 'use client';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -65,7 +66,7 @@ export default function GenerateReportPage() {
     e.preventDefault();
     if (!formData.vehicleDescription || !formData.condition || images.length === 0) {
       toast({
-        variant: 'destructive',
+        variant: 'warning',
         title: 'Missing Information',
         description: 'Please fill out all required fields and upload at least one image.',
       });
@@ -87,7 +88,7 @@ export default function GenerateReportPage() {
       toast({
         title: 'Report Generated Successfully!',
         description: 'Your AI-powered vehicle condition report is ready.',
-        variant: 'default',
+        variant: 'success',
       });
     } catch (error) {
       console.error('Error generating report:', error);
