@@ -1,12 +1,15 @@
 
-import type { Vehicle } from '@/lib/types';
+import type { Vehicle, Banner } from '@/lib/types';
 
 const API_BASE_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev';
-const API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
+const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
+const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
+
 
 // This is a temporary cache to avoid re-fetching data on every page navigation during development.
 // In a real-world app, you might use a more sophisticated caching strategy like React Query or SWR.
 let cachedVehicles: Vehicle[] | null = null;
+let cachedBanners: Banner[] | null = null;
 
 const constructImageUrl = (path?: string) => {
   if (!path) return undefined;
@@ -26,7 +29,7 @@ export async function getVehicles(): Promise<Vehicle[]> {
   }
 
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(VEHICLES_API_URL, {
       mode: 'cors'
     });
 
@@ -103,4 +106,36 @@ export async function getVehicles(): Promise<Vehicle[]> {
 export async function getVehicleById(id: string): Promise<Vehicle | undefined> {
   const vehicles = await getVehicles();
   return vehicles.find(v => v.id === id);
+}
+
+/**
+ * Fetches banner data from the remote API.
+ * @returns {Promise<Banner[]>} A promise that resolves to an array of banners.
+ */
+export async function getBanners(): Promise<Banner[]> {
+  if (cachedBanners) {
+    return cachedBanners;
+  }
+
+  try {
+    const response = await fetch(BANNERS_API_URL, { mode: 'cors' });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch banners. Status: ${response.status}`);
+    }
+
+    const data: any[] = await response.json();
+
+    const transformedBanners: Banner[] = data.map(item => ({
+      title: item.title,
+      imageUrl: constructImageUrl(item.imageUrl)!,
+    }));
+    
+    cachedBanners = transformedBanners;
+    return transformedBanners;
+  } catch (error) {
+    console.error("Error fetching banner data:", error);
+    // Return empty array on error so the UI doesn't break
+    return [];
+  }
 }

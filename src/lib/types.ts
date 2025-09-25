@@ -89,6 +89,11 @@ export interface VehicleFilterState {
     setResultCount: (count: number) => void;
 }
 
+export interface Banner {
+  title: string;
+  imageUrl: string;
+}
+
 
 // Schema for generateVehicleConditionReport flow
 export const GenerateVehicleConditionReportInputSchema = z.object({
