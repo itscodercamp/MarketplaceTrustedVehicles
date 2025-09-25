@@ -69,14 +69,20 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input id="phone" name="phone" type="tel" autoComplete="tel" required className="mt-1" />
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input id="phone" name="phone" type="tel" autoComplete="tel" required className="mt-1" />
+            </div>
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" name="password" type="password" required className="mt-1" />
+            </div>
           </div>
 
           <div>
             <Button onClick={() => login('phone')} className="w-full">
-              Send OTP
+              Sign In
             </Button>
           </div>
           
