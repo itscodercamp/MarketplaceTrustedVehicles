@@ -47,7 +47,7 @@ export default function PreLoader() {
         </motion.h1>
         <motion.div variants={itemVariants}>
           <img
-            src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXZkZzVoZ2tmeTZvN3JyYnp6cW51eDRqd2l2d3g4aWxjcjV4eTM0diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/3o7bu3XilJ5BOiSGic/giphy.gif"
+            src="https://media.giphy.com/media/3o7bu3XilJ5BOiSGic/giphy.gif"
             alt="Loading animation"
             width={120}
             height={120}
