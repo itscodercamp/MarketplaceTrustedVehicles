@@ -128,8 +128,9 @@ export default function Header() {
                   className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   <Avatar className="h-9 w-9">
-                    <AvatarImage src={user.avatarUrl} alt={user.name} />
-                    <AvatarFallback>{user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>

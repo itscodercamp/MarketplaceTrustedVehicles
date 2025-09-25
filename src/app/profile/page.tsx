@@ -63,8 +63,9 @@ export default function ProfilePage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-8">
         <Avatar className="h-24 w-24">
-          <AvatarImage src={user.avatarUrl} alt={user.name} />
-          <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+          <AvatarFallback className="bg-primary text-primary-foreground text-4xl">
+            {user.name?.charAt(0)?.toUpperCase()}
+          </AvatarFallback>
         </Avatar>
         <div className="text-center md:text-left">
           <h1 className="text-3xl font-bold">{user.name}</h1>
