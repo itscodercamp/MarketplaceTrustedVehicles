@@ -31,9 +31,11 @@ export default function RootLayout({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // This now just prevents a flash of the pre-loader.
-    // The main app content will appear as soon as it's ready.
-    setLoading(false);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 5000); // Set loading to false after 5 seconds
+
+    return () => clearTimeout(timer); // Cleanup the timer
   }, []);
 
   return (
