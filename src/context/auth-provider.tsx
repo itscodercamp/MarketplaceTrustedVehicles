@@ -143,11 +143,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleSaveVehicle = (vehicleId: string) => {
     if (!user) {
-      toast({
-        variant: 'destructive',
-        title: 'Login Required',
-        description: 'Please log in to save vehicles.',
-      });
+      setTimeout(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Login Required',
+          description: 'Please log in to save vehicles.',
+        });
+      }, 0);
       router.push(`/login?redirect=/vehicle/${vehicleId}`);
       return;
     }
@@ -162,11 +164,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         ? currentSaved.filter(id => id !== vehicleId)
         : [...currentSaved, vehicleId];
         
-      if (isSaved) {
-        toast({ title: 'Vehicle Removed', description: 'Removed from your saved list.' });
-      } else {
-        toast({ title: 'Vehicle Saved!', description: 'Added to your saved list.' });
-      }
+      setTimeout(() => {
+        if (isSaved) {
+          toast({ title: 'Vehicle Removed', description: 'Removed from your saved list.' });
+        } else {
+          toast({ title: 'Vehicle Saved!', description: 'Added to your saved list.' });
+        }
+      }, 0);
       
       const updatedUser = { ...currentUser, savedVehicles: updatedSavedVehicles };
       localStorage.setItem('user', JSON.stringify(updatedUser)); // Persist change
