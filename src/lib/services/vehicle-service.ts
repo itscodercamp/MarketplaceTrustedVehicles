@@ -10,7 +10,10 @@ let cachedVehicles: Vehicle[] | null = null;
 
 const constructImageUrl = (path?: string) => {
   if (!path) return undefined;
-  return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
+  // If the path is already a full URL, return it as is.
+  if (path.startsWith('http')) return path;
+  // Otherwise, construct the full URL.
+  return `${API_BASE_URL}${path}`;
 }
 
 /**
@@ -87,8 +90,8 @@ export async function getVehicles(): Promise<Vehicle[]> {
     return transformedVehicles;
   } catch (error) {
     console.error("Error fetching or transforming vehicle data:", error);
-    // Return an empty array or handle the error as appropriate for your application
-    return [];
+    // Throw a more user-friendly error to be caught by the UI
+    throw new Error('The server is currently under maintenance. Please try again later.');
   }
 }
 
@@ -101,4 +104,3 @@ export async function getVehicleById(id: string): Promise<Vehicle | undefined> {
   const vehicles = await getVehicles();
   return vehicles.find(v => v.id === id);
 }
-
