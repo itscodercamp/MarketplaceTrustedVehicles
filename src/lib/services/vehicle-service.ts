@@ -24,7 +24,8 @@ const constructImageUrl = (path?: string) => {
  * @returns {Promise<Vehicle[]>} A promise that resolves to an array of vehicles.
  */
 export async function getVehicles(): Promise<Vehicle[]> {
-  if (cachedVehicles) {
+  // Only use the cache if it's a valid, non-empty array.
+  if (cachedVehicles && cachedVehicles.length > 0) {
     return cachedVehicles;
   }
 
