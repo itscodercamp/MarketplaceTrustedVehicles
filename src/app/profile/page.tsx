@@ -32,7 +32,7 @@ export default function ProfilePage() {
     loadVehicles();
   }, []);
   
-  const savedVehicles = user ? allVehicles.filter(
+  const savedVehicles = user?.savedVehicles ? allVehicles.filter(
     (vehicle) => user.savedVehicles.includes(vehicle.id)
   ) : [];
 
