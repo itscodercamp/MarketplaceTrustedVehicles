@@ -2,6 +2,39 @@
 
 import { motion } from 'framer-motion';
 
+const FourSquare = ({ color }: { color: string[] }) => {
+  const squareVariants = {
+    initial: { opacity: 0.5, scale: 0.8 },
+    animate: (i: number) => ({
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        repeat: Infinity,
+        repeatType: 'reverse',
+        delay: i * 0.15,
+      },
+    }),
+  };
+
+  return (
+    <div className="grid grid-cols-2 gap-2 w-24 h-24 my-4">
+      {color.map((c, i) => (
+        <motion.div
+          key={c}
+          custom={i}
+          variants={squareVariants}
+          initial="initial"
+          animate="animate"
+          style={{ backgroundColor: c }}
+          className="w-full h-full rounded-md"
+        />
+      ))}
+    </div>
+  );
+};
+
+
 export default function PreLoader() {
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -46,13 +79,7 @@ export default function PreLoader() {
           Trusted Vehicle Marketplace
         </motion.h1>
         <motion.div variants={itemVariants}>
-          <img
-            src="https://media.giphy.com/media/3o7bu3XilJ5BOiSGic/giphy.gif"
-            alt="Loading animation"
-            width={120}
-            height={120}
-            className="my-4"
-          />
+           <FourSquare color={["#3254b2", "#b23294", "#b29032", "#32b250"]} />
         </motion.div>
         <motion.p
           className="text-md text-muted-foreground italic animate-pulse-slow"
