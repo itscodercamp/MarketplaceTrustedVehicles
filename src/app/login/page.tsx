@@ -3,14 +3,28 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/auth-provider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Loader2 } from 'lucide-react';
+
+const formSchema = z.object({
+  phone: z.string().min(10, 'Phone number must be at least 10 digits.'),
+  password: z.string().min(6, 'Password must be at least 6 characters.'),
+});
 
 export default function LoginPage() {
   const { login, user, loading } = useAuth();
   const router = useRouter();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { phone: '', password: '' },
+  });
 
   useEffect(() => {
     if (!loading && user) {
@@ -18,11 +32,14 @@ export default function LoginPage() {
     }
   }, [user, loading, router]);
 
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    login(values);
+  };
 
   if (loading || (!loading && user)) {
-     return (
+    return (
       <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
-        <p>Loading...</p>
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -49,30 +66,48 @@ export default function LoginPage() {
             </Link>
           </p>
         </div>
-        <div className="space-y-6">
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input id="phone" name="phone" type="tel" autoComplete="tel" required className="mt-1" />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" name="password" type="password" required className="mt-1" />
-            </div>
-          </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input type="tel" autoComplete="tel" required placeholder="Enter your phone number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" required placeholder="Enter your password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div>
-            <Button onClick={() => login('phone')} className="w-full">
-              Sign In
-            </Button>
-          </div>
-          
-          <div className="text-sm text-center">
+            <div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Sign In'}
+              </Button>
+            </div>
+            
+            <div className="text-sm text-center">
               <a href="#" className="font-medium text-primary hover:text-primary/90">
                 Forgot your password?
               </a>
             </div>
-        </div>
+          </form>
+        </Form>
       </div>
     </div>
   );
