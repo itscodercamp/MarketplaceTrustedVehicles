@@ -155,10 +155,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(currentUser => {
       if (!currentUser) return null;
       
-      const isSaved = currentUser.savedVehicles.includes(vehicleId);
+      const currentSaved = currentUser.savedVehicles || [];
+      const isSaved = currentSaved.includes(vehicleId);
+      
       const updatedSavedVehicles = isSaved
-        ? currentUser.savedVehicles.filter(id => id !== vehicleId)
-        : [...currentUser.savedVehicles, vehicleId];
+        ? currentSaved.filter(id => id !== vehicleId)
+        : [...currentSaved, vehicleId];
         
       if (isSaved) {
         toast({ title: 'Vehicle Removed', description: 'Removed from your saved list.' });
