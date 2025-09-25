@@ -1,10 +1,14 @@
+
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { VehicleFilterState, VehicleType, Filters, SortOption } from '@/lib/types';
+import type { VehicleFilterState, VehicleType, Filters, SortOption, MultiFilter } from '@/lib/types';
 
 const initialFilters: Omit<Filters, 'vehicleType'> = {
   fuelType: [],
-  condition: [],
+  year: [],
+  rto: [],
+  ownership: [],
+  transmission: [],
 };
 
 const defaultState = {
@@ -21,7 +25,7 @@ export const useVehicleFilterStore = create<VehicleFilterState>()(
       ...defaultState,
       resultCount: 0,
       setSort: (sort) => set({ sort }),
-      toggleFilter: (filterType, value) =>
+      toggleMultiFilter: (filterType, value) =>
         set((state) => {
           const currentValues = state.filters[filterType] as string[];
           const newValues = currentValues.includes(value)

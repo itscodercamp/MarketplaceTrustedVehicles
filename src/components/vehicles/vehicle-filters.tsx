@@ -1,7 +1,8 @@
+
 'use client';
 import React from 'react';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
-import { FuelType, Condition, SortOption } from '@/lib/types';
+import { FuelType, SortOption, Transmission, Ownership } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -12,10 +13,19 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const fourWheelerFuelTypes: FuelType[] = ['Petrol', 'Diesel', 'Electric', 'CNG'];
 const twoWheelerFuelTypes: FuelType[] = ['Petrol', 'Electric'];
-const conditions: Condition[] = ['New', 'Like New', 'Good', 'Fair'];
+const transmissions: Transmission[] = ['Automatic', 'Manual'];
+const ownerships: Ownership[] = ['1st Owner', '2nd Owner', '3rd Owner'];
+
+// Statically define some common year ranges and RTOs for filtering.
+// In a real-world scenario, these could be dynamically generated from the available vehicle data.
+const yearRanges = ['2020-Present', '2015-2019', '2010-2014', '2005-2009', 'Before 2005'];
+const rtoStates = ['MH', 'DL', 'KA', 'TN', 'GJ'];
+
+
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'price-asc', label: 'Price: Low to High' },
   { value: 'price-desc', label: 'Price: High to Low' },
@@ -26,15 +36,11 @@ const sortOptions: { value: SortOption; label: string }[] = [
 ];
 
 export default function VehicleFilters() {
-  const { filters, sort, toggleFilter, setSort, clearFilters } = useVehicleFilterStore();
+  const { filters, sort, toggleMultiFilter, setSort, clearFilters } = useVehicleFilterStore();
   const { vehicleType } = filters;
 
   const fuelTypes = vehicleType === '4-wheeler' ? fourWheelerFuelTypes : twoWheelerFuelTypes;
 
-  const handleCheckboxToggle = (filterType: keyof typeof filters, value: string) => {
-    toggleFilter(filterType as 'fuelType' | 'condition', value);
-  };
-  
   return (
     <div className="space-y-6">
       <div>
@@ -53,41 +59,98 @@ export default function VehicleFilters() {
         </Select>
       </div>
 
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Fuel Type</h3>
-        <div className="space-y-2">
-          {fuelTypes.map((type) => (
-            <div key={type} className="flex items-center space-x-2">
-              <Checkbox
-                id={`fuel-${type}`}
-                checked={filters.fuelType.includes(type)}
-                onCheckedChange={() => handleCheckboxToggle('fuelType', type)}
-              />
-              <Label htmlFor={`fuel-${type}`} className="font-normal cursor-pointer">
-                {type}
-              </Label>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Condition</h3>
-        <div className="space-y-2">
-          {conditions.map((condition) => (
-            <div key={condition} className="flex items-center space-x-2">
-              <Checkbox
-                id={`condition-${condition}`}
-                checked={filters.condition.includes(condition)}
-                onCheckedChange={() => handleCheckboxToggle('condition', condition)}
-              />
-              <Label htmlFor={`condition-${condition}`} className="font-normal cursor-pointer">
-                {condition}
-              </Label>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Accordion type="multiple" defaultValue={['fuelType', 'year', 'ownership', 'rto', 'transmission']} className="w-full">
+        <AccordionItem value="fuelType">
+          <AccordionTrigger className="text-lg font-semibold">Fuel Type</AccordionTrigger>
+          <AccordionContent className="space-y-2 pt-2">
+            {fuelTypes.map((type) => (
+              <div key={type} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`fuel-${type}`}
+                  checked={filters.fuelType.includes(type)}
+                  onCheckedChange={() => toggleMultiFilter('fuelType', type)}
+                />
+                <Label htmlFor={`fuel-${type}`} className="font-normal cursor-pointer">
+                  {type}
+                </Label>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+        
+        <AccordionItem value="year">
+          <AccordionTrigger className="text-lg font-semibold">Year</AccordionTrigger>
+          <AccordionContent className="space-y-2 pt-2">
+            {yearRanges.map((range) => (
+              <div key={range} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`year-${range}`}
+                  checked={filters.year.includes(range)}
+                  onCheckedChange={() => toggleMultiFilter('year', range)}
+                />
+                <Label htmlFor={`year-${range}`} className="font-normal cursor-pointer">
+                  {range}
+                </Label>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+        
+        <AccordionItem value="ownership">
+          <AccordionTrigger className="text-lg font-semibold">Ownership</AccordionTrigger>
+          <AccordionContent className="space-y-2 pt-2">
+            {ownerships.map((owner) => (
+              <div key={owner} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`owner-${owner}`}
+                  checked={filters.ownership.includes(owner)}
+                  onCheckedChange={() => toggleMultiFilter('ownership', owner)}
+                />
+                <Label htmlFor={`owner-${owner}`} className="font-normal cursor-pointer">
+                  {owner}
+                </Label>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+        
+        <AccordionItem value="rto">
+          <AccordionTrigger className="text-lg font-semibold">RTO</AccordionTrigger>
+          <AccordionContent className="space-y-2 pt-2">
+            {rtoStates.map((rto) => (
+              <div key={rto} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`rto-${rto}`}
+                  checked={filters.rto.includes(rto)}
+                  onCheckedChange={() => toggleMultiFilter('rto', rto)}
+                />
+                <Label htmlFor={`rto-${rto}`} className="font-normal cursor-pointer">
+                  {rto}
+                </Label>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="transmission">
+          <AccordionTrigger className="text-lg font-semibold">Transmission</AccordionTrigger>
+          <AccordionContent className="space-y-2 pt-2">
+            {transmissions.map((type) => (
+              <div key={type} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`transmission-${type}`}
+                  checked={filters.transmission.includes(type)}
+                  onCheckedChange={() => toggleMultiFilter('transmission', type)}
+                />
+                <Label htmlFor={`transmission-${type}`} className="font-normal cursor-pointer">
+                  {type}
+                </Label>
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+
+      </Accordion>
 
       <Button onClick={clearFilters} variant="outline" className="w-full">
         Clear All Filters

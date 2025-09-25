@@ -74,16 +74,21 @@ export interface User {
 
 export interface Filters {
   fuelType: FuelType[];
-  condition: Condition[];
+  year: string[]; // Using string for ranges like "2020-Present"
+  rto: string[];
+  ownership: Ownership[];
+  transmission: Transmission[];
   vehicleType: VehicleType;
 }
+
+export type MultiFilter = 'fuelType' | 'year' | 'rto' | 'ownership' | 'transmission';
 
 export interface VehicleFilterState {
     filters: Filters;
     sort: SortOption;
     resultCount: number;
     setSort: (sort: SortOption) => void;
-    toggleFilter: (filterType: keyof Omit<Filters, 'vehicleType'>, value: string) => void;
+    toggleMultiFilter: (filterType: MultiFilter, value: string) => void;
     setVehicleType: (vehicleType: VehicleType) => void;
     clearFilters: () => void;
     setResultCount: (count: number) => void;

@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect } from 'react';
 import type { Vehicle } from '@/lib/types';
@@ -11,23 +12,43 @@ interface VehicleGridProps {
   vehicles: Vehicle[];
 }
 
+const checkYearInRange = (year: number, range: string) => {
+    if (range === '2020-Present') return year >= 2020;
+    if (range === 'Before 2005') return year < 2005;
+    const [start, end] = range.split('-').map(Number);
+    return year >= start && year <= end;
+}
+
 export default function VehicleGrid({ vehicles }: VehicleGridProps) {
   const { filters, sort, setResultCount } = useVehicleFilterStore();
   const { layout } = useLayoutStore();
 
   const filteredAndSortedVehicles = vehicles
     .filter((vehicle) => {
-      const { fuelType, condition } = filters;
-      if (fuelType.length > 0 && !fuelType.includes(vehicle.fuelType)) return false;
-      if (condition.length > 0 && !condition.includes(vehicle.condition)) return false;
+      const { fuelType, year: yearRanges, ownership, rto, transmission } = filters;
+      if (fuelType.length > 0 && vehicle.fuelType && !fuelType.includes(vehicle.fuelType)) return false;
+      if (ownership.length > 0 && vehicle.ownership && !ownership.includes(vehicle.ownership)) return false;
+      if (transmission.length > 0 && vehicle.transmission && !transmission.includes(vehicle.transmission)) return false;
+      
+      // RTO filter - check if vehicle's RTO state is in the selected RTOs
+      if (rto.length > 0 && vehicle.rtoState && !rto.some(rtoFilter => vehicle.rtoState!.startsWith(rtoFilter))) {
+          return false;
+      }
+      
+      // Year range filter
+      if (yearRanges.length > 0 && vehicle.year) {
+          const vehicleInAnyRange = yearRanges.some(range => checkYearInRange(vehicle.year!, range));
+          if (!vehicleInAnyRange) return false;
+      }
+      
       return true;
     })
     .sort((a, b) => {
       switch (sort) {
         case 'price-asc': return a.price - b.price;
         case 'price-desc': return b.price - a.price;
-        case 'year-asc': return a.year - b.year;
-        case 'year-desc': return b.year - a.year;
+        case 'year-asc': return (a.year || 0) - (b.year || 0);
+        case 'year-desc': return (b.year || 0) - (a.year || 0);
         case 'kms-asc': return a.kmsDriven - b.kmsDriven;
         case 'kms-desc': return b.kmsDriven - a.kmsDriven;
         default: return 0;
