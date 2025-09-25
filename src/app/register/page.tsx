@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { User, Building, ArrowLeft, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
@@ -87,7 +88,15 @@ export default function RegisterPage() {
   }, [user, loading, router]);
 
   const handleNextStep = async () => {
-    const isValid = await form.trigger();
+    const isStepTwo = step === 2;
+    // Define the fields to validate for step 2 based on the role
+    let fieldsToValidate: (keyof FormValues)[] = ['fullName', 'phone', 'email', 'password'];
+    if (form.getValues('userType') === 'Dealer') {
+        fieldsToValidate = [...fieldsToValidate, 'dealershipName', 'dealershipType', 'city', 'state', 'pincode'];
+    }
+
+    const isValid = isStepTwo ? await form.trigger(fieldsToValidate) : await form.trigger();
+    
     if (isValid) {
       setStep(prev => (prev + 1) as Step);
     }
