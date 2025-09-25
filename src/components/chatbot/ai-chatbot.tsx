@@ -116,7 +116,6 @@ export default function AiChatbot() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dragControls = useDragControls();
-  const constraintsRef = useRef(null);
   const [showPopup, setShowPopup] = useState(false);
   const { filters: { vehicleType } } = useVehicleFilterStore();
   const [vehicleData, setVehicleData] = useState<Vehicle[]>([]);
@@ -266,11 +265,10 @@ export default function AiChatbot() {
 
   return (
     <>
-      <motion.div ref={constraintsRef} className="fixed inset-0 pointer-events-none z-50" />
       <motion.div
         drag
         dragControls={dragControls}
-        dragConstraints={constraintsRef}
+        dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
         dragListener={false}
         className="fixed bottom-4 right-4 z-50"
         whileTap={{ scale: 0.95 }}
