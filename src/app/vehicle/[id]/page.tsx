@@ -325,3 +325,5 @@ function VehicleDetailSkeleton() {
 export default VehicleDetailPage;
 
     
+
+    
