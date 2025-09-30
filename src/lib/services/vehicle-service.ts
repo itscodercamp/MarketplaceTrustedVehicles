@@ -74,23 +74,29 @@ const transformVehicleData = (item: any): Vehicle => ({
 export async function getVehicles(): Promise<Vehicle[]> {
   // Only use the cache if it's a valid, non-empty array.
   if (cachedVehicles && cachedVehicles.length > 0) {
+    console.log("Returning cached vehicle data.");
     return cachedVehicles;
   }
 
   try {
+    console.log(`Fetching vehicles from: ${VEHICLES_API_URL}`);
     const response = await fetch(VEHICLES_API_URL, {
       mode: 'cors'
     });
 
     if (!response.ok) {
+      console.error("API Error Response Status:", response.status, response.statusText);
       throw new Error(`Failed to fetch vehicles. Status: ${response.status}`);
     }
 
     const data: any[] = await response.json();
+    console.log("Raw data from API:", JSON.stringify(data, null, 2));
 
     // The API response uses different field names than the app's internal `Vehicle` type.
     // We need to map the API fields to our internal type.
     const transformedVehicles: Vehicle[] = data.map(transformVehicleData);
+    
+    console.log("Transformed vehicle data:", JSON.stringify(transformedVehicles[0], null, 2));
     
     cachedVehicles = transformedVehicles;
     return transformedVehicles;
