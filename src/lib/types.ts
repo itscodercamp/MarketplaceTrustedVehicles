@@ -61,6 +61,7 @@ export interface Vehicle {
   img_tyre_optional?: string;
   img_engine?: string;
   img_roof?: string;
+  img_odometer?: string;
 }
 
 
@@ -144,3 +145,5 @@ export const RecommendVehiclesViaChatbotOutputSchema = z.object({
   brandToFilter: z.string().optional().describe("The brand name to use for filtering the main list. Only for 'filter_suggestion' and 'count' types."),
 });
 export type RecommendVehiclesViaChatbotOutput = z.infer<typeof RecommendVehiclesViaChatbotOutputSchema>;
+
+    

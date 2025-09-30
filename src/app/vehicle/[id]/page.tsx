@@ -101,27 +101,28 @@ export default function VehicleDetailPage() {
       ],
     },
     {
-      title: 'Bonnet & Dickey',
-      icon: Car,
+      title: 'Doors, Bonnet & Dickey',
+      icon: DoorOpen,
       images: [
         { url: vehicle.img_open_bonnet, label: 'Bonnet Open' },
         { url: vehicle.img_open_dickey, label: 'Dickey (Trunk) Open' },
+        { url: vehicle.img_right_front_door, label: 'Right Front Door Open' },
+        { url: vehicle.img_right_back_door, label: 'Right Back Door Open' },
       ],
     },
     {
-      title: 'Pillars & Roof',
+      title: 'Roof & Pillars',
       icon: HardHat,
       images: [
         { url: vehicle.img_roof, label: 'Roof' },
       ],
     },
     {
-      title: 'Interior, Doors & Odometer',
+      title: 'Interior & Odometer',
       icon: Armchair,
       images: [
         { url: vehicle.img_dashboard, label: 'Dashboard View' },
-        { url: vehicle.img_right_front_door, label: 'Right Front Door Open' },
-        { url: vehicle.img_right_back_door, label: 'Right Back Door Open' },
+        { url: vehicle.img_odometer, label: 'Odometer' },
       ],
     },
     {
@@ -336,3 +337,5 @@ export default function VehicleDetailPage() {
     </div>
   );
 }
+
+    
