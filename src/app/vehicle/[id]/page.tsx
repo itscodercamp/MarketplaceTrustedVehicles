@@ -3,12 +3,13 @@
 import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { getVehicleById } from '@/lib/services/vehicle-service';
+import { transformVehicleData } from '@/lib/services/vehicle-service'; // Import the transformer
 import type { Vehicle } from '@/lib/types';
 import { formatCurrency, cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, CheckCircle, Wrench, Gauge, Users, GitCommit, Car, MapPin, Shield, Palette, Sparkles, Armchair, Camera, Image as ImageIcon, ChevronLeft, ChevronRight, X, Calendar, Fingerprint, Hash, FilePen, DoorOpen, HardHat, Cog } from 'lucide-react';
+import { Heart, CheckCircle, Wrench, Gauge, Users, Car, MapPin, Shield, Palette, Sparkles, Armchair, Camera, Image as ImageIcon, ChevronLeft, ChevronRight, X, Calendar, Hash, FilePen, DoorOpen, HardHat, Cog, GitCommit } from 'lucide-react';
 import { useAuth } from '@/context/auth-provider';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import GetBestPrice from '@/components/vehicles/get-best-price';
@@ -62,8 +63,14 @@ export default function VehicleDetailPage() {
     if (typeof id === 'string') {
       const fetchVehicle = async () => {
         setLoading(true);
-        const fetchedVehicle = await getVehicleById(id);
-        setVehicle(fetchedVehicle || null);
+        const rawVehicleData = await getVehicleById(id);
+        if (rawVehicleData) {
+          // *** THE FIX: Transform the raw API data before setting the state ***
+          const transformedVehicle = transformVehicleData(rawVehicleData);
+          setVehicle(transformedVehicle);
+        } else {
+          setVehicle(null);
+        }
         setLoading(false);
       };
       fetchVehicle();
@@ -266,7 +273,7 @@ export default function VehicleDetailPage() {
                       <item.icon className="w-5 h-5 text-muted-foreground mt-0.5 shrink-0" />
                       <div>
                           <p className="text-muted-foreground">{item.label}</p>
-                          <p className="font-semibold">{item.value}</p>
+                          <p className="font-semibold">{String(item.value)}</p>
                       </div>
                   </div>
                 ))}
@@ -279,7 +286,8 @@ export default function VehicleDetailPage() {
                   <div key={item.label} className="flex items-start gap-3">
                       <item.icon className="w-5 h-5 text-muted-foreground mt-0.5 shrink-0" />
                       <div>
-                          <p className="text-muted-foreground">{item.label}</p>                          <p className="font-semibold">{item.value}</p>
+                          <p className="text-muted-foreground">{item.label}</p>
+                          <p className="font-semibold">{String(item.value)}</p>
                       </div>
                   </div>
                 ))}
@@ -336,5 +344,7 @@ export default function VehicleDetailPage() {
     </div>
   );
 }
+
+    
 
     

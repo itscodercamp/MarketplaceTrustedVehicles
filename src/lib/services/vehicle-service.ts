@@ -8,7 +8,7 @@ const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
 
 // This is a temporary cache to avoid re-fetching data on every page navigation during development.
 // In a real-world app, you might use a more sophisticated caching strategy like React Query or SWR.
-let cachedVehicles: Vehicle[] | null = null;
+let cachedVehicles: any[] | null = null;
 let cachedBanners: Banner[] | null = null;
 
 const constructImageUrl = (path?: string) => {
@@ -19,7 +19,7 @@ const constructImageUrl = (path?: string) => {
   return `${API_BASE_URL}${path}`;
 }
 
-const transformVehicleData = (item: any): Vehicle => ({
+export const transformVehicleData = (item: any): Vehicle => ({
   id: item.id.toString(),
   make: item.make,
   model: item.model,
@@ -75,7 +75,8 @@ export async function getVehicles(): Promise<Vehicle[]> {
   // Only use the cache if it's a valid, non-empty array.
   if (cachedVehicles && cachedVehicles.length > 0) {
     console.log("Returning cached vehicle data.");
-    return cachedVehicles;
+    // Return transformed data from cache
+    return cachedVehicles.map(transformVehicleData);
   }
 
   try {
@@ -90,15 +91,17 @@ export async function getVehicles(): Promise<Vehicle[]> {
     }
 
     const data: any[] = await response.json();
-    console.log("Raw data from API:", JSON.stringify(data, null, 2));
+    console.log("Raw data from API:", JSON.stringify(data[0], null, 2));
 
+    // Cache the raw data
+    cachedVehicles = data;
+    
     // The API response uses different field names than the app's internal `Vehicle` type.
     // We need to map the API fields to our internal type.
     const transformedVehicles: Vehicle[] = data.map(transformVehicleData);
     
     console.log("Transformed vehicle data:", JSON.stringify(transformedVehicles[0], null, 2));
     
-    cachedVehicles = transformedVehicles;
     return transformedVehicles;
   } catch (error) {
     console.error("Error fetching or transforming vehicle data:", error);
@@ -110,24 +113,26 @@ export async function getVehicles(): Promise<Vehicle[]> {
 /**
  * Fetches a single vehicle by its ID.
  * @param {string} id The ID of the vehicle to fetch.
- * @returns {Promise<Vehicle | undefined>} A promise that resolves to the vehicle or undefined if not found.
+ * @returns {Promise<any | undefined>} A promise that resolves to the raw vehicle data or undefined if not found.
  */
-export async function getVehicleById(id: string): Promise<Vehicle | undefined> {
-  // Always fetch all vehicles. This ensures the cache is populated and we have the raw data.
-  const vehicles = await getVehicles();
-  
-  // Find the specific vehicle from the (potentially cached) list of all vehicles.
-  const vehicle = vehicles.find(v => v.id === id);
-
-  if (!vehicle) {
-    return undefined;
+export async function getVehicleById(id: string): Promise<any | undefined> {
+  // Fetch vehicles if cache is empty
+  if (!cachedVehicles || cachedVehicles.length === 0) {
+    try {
+      const response = await fetch(VEHICLES_API_URL, { mode: 'cors' });
+      if (!response.ok) throw new Error('Failed to fetch');
+      cachedVehicles = await response.json();
+    } catch (e) {
+      console.error("Failed to pre-fetch vehicles for getVehicleById", e);
+      return undefined;
+    }
   }
+
+  // Find the raw vehicle data from the cache.
+  // The ID from the API might be a number, so we use '==' for loose comparison.
+  const vehicle = cachedVehicles!.find(v => v.id == id);
   
-  // This is the crucial fix:
-  // We re-run the transformation on the single vehicle object before returning it.
-  // This ensures that even if `getVehicles` returned from cache, this specific
-  // vehicle object is guaranteed to have all fields and URLs correctly processed.
-  return transformVehicleData(vehicle);
+  return vehicle;
 }
 
 /**
@@ -161,3 +166,6 @@ export async function getBanners(): Promise<Banner[]> {
     return [];
   }
 }
+
+
+    
