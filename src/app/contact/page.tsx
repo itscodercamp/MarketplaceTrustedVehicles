@@ -32,6 +32,8 @@ const formSchema = z.object({
   }),
 });
 
+const API_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev/api/marketplace/contact';
+
 export default function ContactUsPage() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,18 +49,34 @@ export default function ContactUsPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(values);
-    
-    setIsSubmitting(false);
-    form.reset();
-    
-    toast({
-      title: 'Message Sent!',
-      description: "We've received your message and will get back to you shortly.",
-      variant: 'success',
-    });
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred.' }));
+        throw new Error(errorData.message || 'Failed to send message.');
+      }
+
+      toast({
+        title: 'Message Sent!',
+        description: "We've received your message and will get back to you shortly.",
+        variant: 'success',
+      });
+      form.reset();
+
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Submission Failed',
+        description: error.message || 'Something went wrong. Please try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
