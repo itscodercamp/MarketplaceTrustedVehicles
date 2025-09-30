@@ -27,7 +27,7 @@ const transformVehicleData = (item: any, index: number): Vehicle => ({
   model: item.model,
   price: item.price,
   variant: item.variant,
-  year: item.year,
+  year: item.year || item.regYear, // Fallback to regYear if year is not present
   status: item.status,
   verified: item.verified,
   mfgYear: item.mfgYear,
