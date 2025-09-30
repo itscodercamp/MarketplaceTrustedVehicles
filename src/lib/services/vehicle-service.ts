@@ -107,7 +107,10 @@ export async function getVehicles(): Promise<Vehicle[]> {
  * @returns {Promise<Vehicle | undefined>} A promise that resolves to the vehicle or undefined if not found.
  */
 export async function getVehicleById(id: string): Promise<Vehicle | undefined> {
+  // Always fetch all vehicles. This ensures the cache is populated and we have the raw data.
   const vehicles = await getVehicles();
+  
+  // Find the specific vehicle from the (potentially cached) list of all vehicles.
   const vehicle = vehicles.find(v => v.id === id);
 
   if (!vehicle) {
