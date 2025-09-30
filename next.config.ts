@@ -24,9 +24,9 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-       {
+      {
         protocol: 'https',
-        hostname: '9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev',
+        hostname: '9000-firebase-studio-1757767172056.cluster-nle52mxuvfhlkrzyrq6g2cwb52.cloudworkstations.dev',
         port: '',
         pathname: '/**',
       },
