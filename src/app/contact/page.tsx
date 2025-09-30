@@ -99,8 +99,8 @@ export default function ContactUsPage() {
                     <p className="text-muted-foreground">
                       Our phone lines are open from 9 AM to 6 PM IST, Mon-Sat.
                     </p>
-                    <a href="tel:+911234567890" className="text-primary hover:underline">
-                      +91 12345 67890
+                    <a href="tel:+918767273110" className="text-primary hover:underline">
+                      +91 87672 73110
                     </a>
                   </div>
                 </div>

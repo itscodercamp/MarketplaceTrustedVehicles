@@ -63,14 +63,14 @@ export default function GetBestPrice({ vehicleId }: GetBestPriceProps) {
                 <Phone className="w-5 h-5 text-primary"/>
                 <div>
                     <p className="text-sm text-muted-foreground">Dealer Contact</p>
-                    <a href="tel:+919876543210" className="font-semibold text-lg hover:underline">+91 98765 43210</a>
+                    <a href="tel:+918767273110" className="font-semibold text-lg hover:underline">+91 87672 73110</a>
                 </div>
             </div>
              <div className="flex items-center gap-3">
                 <MessageCircle className="w-5 h-5 text-green-500"/>
                 <div>
                     <p className="text-sm text-muted-foreground">WhatsApp</p>
-                    <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="font-semibold text-lg hover:underline">Chat Now</a>
+                    <a href="https://wa.me/918767273110" target="_blank" rel="noopener noreferrer" className="font-semibold text-lg hover:underline">Chat Now</a>
                 </div>
             </div>
           </div>
