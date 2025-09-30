@@ -181,7 +181,6 @@ export default function VehicleDetailPage() {
     { icon: Calendar, label: "Reg. Year", value: vehicle.regYear },
     { icon: Calendar, label: "Mfg. Year", value: vehicle.mfgYear },
     { icon: Hash, label: "Reg. Number", value: vehicle.regNumber },
-    { icon: Fingerprint, label: "VIN", value: '...'}, // VIN is sensitive, should not be displayed fully
     { icon: Gauge, label: "Odometer", value: `${vehicle.kmsDriven?.toLocaleString('en-IN')} km` },
   ].filter(item => item.value);
 
