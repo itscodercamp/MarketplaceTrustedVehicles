@@ -19,15 +19,13 @@ const constructImageUrl = (path?: string) => {
   return `${API_BASE_URL}${path}`;
 }
 
-const transformVehicleData = (item: any, index: number): Vehicle => ({
-  // The API doesn't provide a unique ID, so we'll generate one for the key prop.
-  // In a real app, the API should provide a stable, unique ID for each vehicle.
-  id: item.id || `${index + 1}`, 
+const transformVehicleData = (item: any): Vehicle => ({
+  id: item.id.toString(),
   make: item.make,
   model: item.model,
   price: item.price,
   variant: item.variant,
-  year: item.year || item.regYear, // Fallback to regYear if year is not present
+  year: item.year || item.regYear,
   status: item.status,
   verified: item.verified,
   mfgYear: item.mfgYear,
@@ -110,20 +108,17 @@ export async function getVehicles(): Promise<Vehicle[]> {
  */
 export async function getVehicleById(id: string): Promise<Vehicle | undefined> {
   const vehicles = await getVehicles();
-  // Find the raw vehicle object and its original index
-  const vehicleIndex = vehicles.findIndex(v => v.id === id);
+  const vehicle = vehicles.find(v => v.id === id);
 
-  if (vehicleIndex === -1) {
+  if (!vehicle) {
     return undefined;
   }
-  
-  const vehicle = vehicles[vehicleIndex];
   
   // This is the crucial fix:
   // We re-run the transformation on the single vehicle object before returning it.
   // This ensures that even if `getVehicles` returned from cache, this specific
   // vehicle object is guaranteed to have all fields and URLs correctly processed.
-  return transformVehicleData(vehicle, vehicleIndex);
+  return transformVehicleData(vehicle);
 }
 
 /**
@@ -157,5 +152,3 @@ export async function getBanners(): Promise<Banner[]> {
     return [];
   }
 }
-
-    
