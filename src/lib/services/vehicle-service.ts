@@ -19,6 +19,55 @@ const constructImageUrl = (path?: string) => {
   return `${API_BASE_URL}${path}`;
 }
 
+const transformVehicleData = (item: any, index: number): Vehicle => ({
+  // The API doesn't provide a unique ID, so we'll generate one for the key prop.
+  // In a real app, the API should provide a stable, unique ID for each vehicle.
+  id: item.id || `${index + 1}`, 
+  make: item.make,
+  model: item.model,
+  price: item.price,
+  variant: item.variant,
+  year: item.year,
+  status: item.status,
+  verified: item.verified,
+  mfgYear: item.mfgYear,
+  regYear: item.regYear,
+  regNumber: item.regNumber,
+  rtoState: item.rtoState,
+  ownership: item.ownership,
+  kmsDriven: item.odometer, // Map 'odometer' from API to 'kmsDriven'
+  fuelType: item.fuelType,
+  transmission: item.transmission,
+  insurance: item.insurance,
+  serviceHistory: item.serviceHistory,
+  color: item.color,
+  vehicleType: '4-wheeler', // Assuming all vehicles from this API are 4-wheelers
+  
+  // Map all individual image fields and construct full URLs
+  imageUrl: constructImageUrl(item.imageUrl),
+  img_front: constructImageUrl(item.img_front),
+  img_front_right: constructImageUrl(item.img_front_right),
+  img_right: constructImageUrl(item.img_right),
+  img_back_right: constructImageUrl(item.img_back_right),
+  img_back: constructImageUrl(item.img_back),
+  img_open_dickey: constructImageUrl(item.img_open_dickey),
+  img_back_left: constructImageUrl(item.img_back_left),
+  img_left: constructImageUrl(item.img_left),
+  img_front_left: constructImageUrl(item.img_front_left),
+  img_open_bonnet: constructImageUrl(item.img_open_bonnet),
+  img_dashboard: constructImageUrl(item.img_dashboard),
+  img_right_front_door: constructImageUrl(item.img_right_front_door),
+  img_right_back_door: constructImageUrl(item.img_right_back_door),
+  img_tyre_1: constructImageUrl(item.img_tyre_1),
+  img_tyre_2: constructImageUrl(item.img_tyre_2),
+  img_tyre_3: constructImageUrl(item.img_tyre_3),
+  img_tyre_4: constructImageUrl(item.img_tyre_4),
+  img_tyre_optional: constructImageUrl(item.img_tyre_optional),
+  img_engine: constructImageUrl(item.img_engine),
+  img_roof: constructImageUrl(item.img_roof),
+});
+
+
 /**
  * Fetches vehicle data from the remote API and transforms it to match the application's Vehicle type.
  * @returns {Promise<Vehicle[]>} A promise that resolves to an array of vehicles.
@@ -42,53 +91,7 @@ export async function getVehicles(): Promise<Vehicle[]> {
 
     // The API response uses different field names than the app's internal `Vehicle` type.
     // We need to map the API fields to our internal type.
-    const transformedVehicles: Vehicle[] = data.map((item, index) => ({
-      // The API doesn't provide a unique ID, so we'll generate one for the key prop.
-      // In a real app, the API should provide a stable, unique ID for each vehicle.
-      id: item.id || `${index + 1}`, 
-      make: item.make,
-      model: item.model,
-      price: item.price,
-      variant: item.variant,
-      year: item.year,
-      status: item.status,
-      verified: item.verified,
-      mfgYear: item.mfgYear,
-      regYear: item.regYear,
-      regNumber: item.regNumber,
-      rtoState: item.rtoState,
-      ownership: item.ownership,
-      kmsDriven: item.odometer, // Map 'odometer' from API to 'kmsDriven'
-      fuelType: item.fuelType,
-      transmission: item.transmission,
-      insurance: item.insurance,
-      serviceHistory: item.serviceHistory,
-      color: item.color,
-      vehicleType: '4-wheeler', // Assuming all vehicles from this API are 4-wheelers
-      
-      // Map all individual image fields and construct full URLs
-      imageUrl: constructImageUrl(item.imageUrl),
-      img_front: constructImageUrl(item.img_front),
-      img_front_right: constructImageUrl(item.img_front_right),
-      img_right: constructImageUrl(item.img_right),
-      img_back_right: constructImageUrl(item.img_back_right),
-      img_back: constructImageUrl(item.img_back),
-      img_open_dickey: constructImageUrl(item.img_open_dickey),
-      img_back_left: constructImageUrl(item.img_back_left),
-      img_left: constructImageUrl(item.img_left),
-      img_front_left: constructImageUrl(item.img_front_left),
-      img_open_bonnet: constructImageUrl(item.img_open_bonnet),
-      img_dashboard: constructImageUrl(item.img_dashboard),
-      img_right_front_door: constructImageUrl(item.img_right_front_door),
-      img_right_back_door: constructImageUrl(item.img_right_back_door),
-      img_tyre_1: constructImageUrl(item.img_tyre_1),
-      img_tyre_2: constructImageUrl(item.img_tyre_2),
-      img_tyre_3: constructImageUrl(item.img_tyre_3),
-      img_tyre_4: constructImageUrl(item.img_tyre_4),
-      img_tyre_optional: constructImageUrl(item.img_tyre_optional),
-      img_engine: constructImageUrl(item.img_engine),
-      img_roof: constructImageUrl(item.img_roof),
-    }));
+    const transformedVehicles: Vehicle[] = data.map(transformVehicleData);
     
     cachedVehicles = transformedVehicles;
     return transformedVehicles;
@@ -106,7 +109,15 @@ export async function getVehicles(): Promise<Vehicle[]> {
  */
 export async function getVehicleById(id: string): Promise<Vehicle | undefined> {
   const vehicles = await getVehicles();
-  return vehicles.find(v => v.id === id);
+  const vehicle = vehicles.find(v => v.id === id);
+  // Even if we get a vehicle from the cache, we need to ensure its URLs are absolute.
+  // The transform function is idempotent, so it's safe to run it again.
+  if (vehicle) {
+    // We pass the same object and its index to keep the ID stable if it was generated by index.
+    const vehicleIndex = vehicles.indexOf(vehicle);
+    return transformVehicleData(vehicle, vehicleIndex);
+  }
+  return undefined;
 }
 
 /**
