@@ -31,6 +31,9 @@
     --success: 142 76% 36%; /* Green */
     --success-foreground: 0 0% 100%;
 
+    --hot-pink: 330 100% 71%;
+    --hot-pink-foreground: 0 0% 0%;
+
     --border: 220 20% 90%;
     --input: 220 20% 90%;
     --ring: 221 83% 53%;
@@ -71,6 +74,9 @@
     
     --success: 142 66% 46%;
     --success-foreground: 0 0% 100%;
+
+    --hot-pink: 330 100% 71%;
+    --hot-pink-foreground: 0 0% 0%;
 
     --border: 220 15% 25%;
     --input: 220 15% 25%;
