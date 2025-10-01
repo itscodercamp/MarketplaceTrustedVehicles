@@ -120,8 +120,13 @@ export async function getVehicleById(id: string): Promise<any | undefined> {
   // Find the raw vehicle data from the cache.
   // The ID from the API might be a number, so we use '==' for loose comparison.
   const vehicle = cachedVehicles!.find(v => v.id == id);
+
+  if (vehicle) {
+    // ALWAYS transform the data before returning to ensure consistency
+    return transformVehicleData(vehicle);
+  }
   
-  return vehicle;
+  return undefined;
 }
 
 /**
