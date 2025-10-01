@@ -1,7 +1,7 @@
 
 import type { Vehicle, Banner } from '@/lib/types';
 
-const API_BASE_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev';
+const API_BASE_URL = 'https://apis.trustedvehicles.com';
 const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
 const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
 
@@ -80,7 +80,6 @@ export async function getVehicles(): Promise<Vehicle[]> {
   }
 
   try {
-    console.log(`Fetching vehicles from: ${VEHICLES_API_URL}`);
     const response = await fetch(VEHICLES_API_URL, {
       mode: 'cors'
     });
@@ -91,7 +90,6 @@ export async function getVehicles(): Promise<Vehicle[]> {
     }
 
     const data: any[] = await response.json();
-    console.log("Raw data from API:", JSON.stringify(data[0], null, 2));
 
     // Cache the raw data
     cachedVehicles = data;
@@ -99,8 +97,6 @@ export async function getVehicles(): Promise<Vehicle[]> {
     // The API response uses different field names than the app's internal `Vehicle` type.
     // We need to map the API fields to our internal type.
     const transformedVehicles: Vehicle[] = data.map(transformVehicleData);
-    
-    console.log("Transformed vehicle data:", JSON.stringify(transformedVehicles[0], null, 2));
     
     return transformedVehicles;
   } catch (error) {
@@ -116,16 +112,9 @@ export async function getVehicles(): Promise<Vehicle[]> {
  * @returns {Promise<any | undefined>} A promise that resolves to the raw vehicle data or undefined if not found.
  */
 export async function getVehicleById(id: string): Promise<any | undefined> {
-  // Fetch vehicles if cache is empty
+  // Ensure we have the latest data before trying to find a vehicle
   if (!cachedVehicles || cachedVehicles.length === 0) {
-    try {
-      const response = await fetch(VEHICLES_API_URL, { mode: 'cors' });
-      if (!response.ok) throw new Error('Failed to fetch');
-      cachedVehicles = await response.json();
-    } catch (e) {
-      console.error("Failed to pre-fetch vehicles for getVehicleById", e);
-      return undefined;
-    }
+    await getVehicles();
   }
 
   // Find the raw vehicle data from the cache.
@@ -166,6 +155,3 @@ export async function getBanners(): Promise<Banner[]> {
     return [];
   }
 }
-
-
-    

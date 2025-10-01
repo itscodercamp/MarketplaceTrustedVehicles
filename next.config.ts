@@ -26,6 +26,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'apis.trustedvehicles.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: '9000-firebase-studio-1757767172056.cluster-nle52mxuvfhlkrzyrq6g2cwb52.cloudworkstations.dev',
         port: '',
         pathname: '/**',
