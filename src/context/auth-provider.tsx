@@ -17,7 +17,7 @@ interface AuthContextType {
   loading: boolean;
 }
 
-const API_BASE_URL = 'https://apis.trustedvehicles.com/api/marketplace/auth';
+const API_BASE_URL = 'http://82.29.165.213:3000/api/marketplace/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

@@ -1,7 +1,7 @@
 
 import type { Vehicle, Banner } from '@/lib/types';
 
-const API_BASE_URL = 'https://apis.trustedvehicles.com';
+const API_BASE_URL = 'http://82.29.165.213:3000';
 const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
 const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
 

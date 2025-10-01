@@ -25,9 +25,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'apis.trustedvehicles.com',
-        port: '',
+        protocol: 'http',
+        hostname: '82.29.165.213',
+        port: '3000',
         pathname: '/**',
       },
       {
