@@ -1,3 +1,4 @@
+
 'use client';
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
@@ -12,8 +13,6 @@ import AiChatbot from "@/components/chatbot/ai-chatbot";
 import SubHeader from "@/components/layout/sub-header";
 import { usePathname } from 'next/navigation';
 import VehicleFilters from "@/components/vehicles/vehicle-filters";
-import { useEffect, useState } from "react";
-import PreLoader from "@/components/layout/pre-loader";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -28,15 +27,6 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const showSidebar = pathname === '/';
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 5000); // Set loading to false after 5 seconds
-
-    return () => clearTimeout(timer); // Cleanup the timer
-  }, []);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -49,7 +39,6 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={cn("font-body antialiased", roboto.variable)}>
-        {loading ? <PreLoader /> : (
           <AuthProvider>
             <SidebarProvider>
               <div className="relative flex min-h-screen flex-col">
@@ -71,7 +60,6 @@ export default function RootLayout({
               <AiChatbot />
             </SidebarProvider>
           </AuthProvider>
-        )}
       </body>
     </html>
   );
