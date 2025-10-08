@@ -15,8 +15,8 @@ const constructImageUrl = (path?: string) => {
   if (!path) return undefined;
   // If the path is already a full URL, return it as is.
   if (path.startsWith('http')) return path;
-  // Otherwise, construct the full URL.
-  return `${API_BASE_URL}${path}`;
+  // Otherwise, construct the full URL, ensuring the /api path is included.
+  return `${API_BASE_URL}/api${path}`;
 }
 
 export const transformVehicleData = (item: any): Vehicle => ({
@@ -124,8 +124,7 @@ export async function getVehicleById(id: string): Promise<any | undefined> {
   const vehicle = cachedVehicles!.find(v => v.id == id);
 
   if (vehicle) {
-    // ALWAYS transform the data before returning to ensure consistency
-    return transformVehicleData(vehicle);
+    return vehicle;
   }
   
   return undefined;
