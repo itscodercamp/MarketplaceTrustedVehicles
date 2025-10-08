@@ -1,7 +1,7 @@
 
 import type { Vehicle, Banner } from '@/lib/types';
 
-const API_BASE_URL = 'http://82.29.165.213:3000';
+const API_BASE_URL = 'https://apis.trustedvehicles.com';
 const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
 const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
 
@@ -86,6 +86,8 @@ export async function getVehicles(): Promise<Vehicle[]> {
 
     if (!response.ok) {
       console.error("API Error Response Status:", response.status, response.statusText);
+      const errorText = await response.text();
+      console.error("API Error Response Body:", errorText);
       throw new Error(`Failed to fetch vehicles. Status: ${response.status}`);
     }
 
