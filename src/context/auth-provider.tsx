@@ -170,7 +170,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (isSaved) {
           toast({ title: 'Vehicle Removed', description: 'Removed from your saved list.', variant: 'warning' });
         } else {
-          toast({ title: 'Vehicle Saved!', description: 'Added to your saved list.', variant: 'hot-pink' });
+          toast({ title: 'Vehicle Saved!', description: 'Added to your saved list.', variant: 'success' });
         }
       }, 0);
       
