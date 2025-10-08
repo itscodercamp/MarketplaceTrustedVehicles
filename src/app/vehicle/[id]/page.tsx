@@ -127,7 +127,7 @@ const VehicleDetailPage = () => {
   const basicDetails: DetailItem[] = [
     { icon: Calendar, label: 'Reg. Year', value: vehicle.regYear },
     { icon: Calendar, label: 'Mfg. Year', value: vehicle.mfgYear },
-    { icon: Gauge, label: 'KMs Driven', value: `${vehicle.kmsDriven.toLocaleString('en-IN')} km` },
+    { icon: Gauge, label: 'KMs Driven', value: vehicle.kmsDriven ? `${vehicle.kmsDriven.toLocaleString('en-IN')} km` : undefined },
     { icon: User, label: 'Ownership', value: vehicle.ownership },
     { icon: GitCommit, label: 'Reg. Number', value: vehicle.regNumber },
     { icon: MapPin, label: 'RTO', value: vehicle.rtoState },
@@ -323,7 +323,3 @@ function VehicleDetailSkeleton() {
 
 
 export default VehicleDetailPage;
-
-    
-
-    
