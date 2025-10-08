@@ -17,4 +17,4 @@ This is a Next.js application for a marketplace for trusted, verified used vehic
 - **Styling**: Tailwind CSS
 - **UI Components**: shadcn/ui
 - **AI**: Google Gemini via Genkit
-- **Language**: TypeScript
+- **Language**: TypeScript# MarketplaceTrustedVehicles
