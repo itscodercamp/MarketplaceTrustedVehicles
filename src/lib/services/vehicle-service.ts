@@ -15,8 +15,12 @@ const constructImageUrl = (path?: string) => {
   if (!path) return undefined;
   // If the path is already a full URL, return it as is.
   if (path.startsWith('http')) return path;
-  // Otherwise, construct the full URL, ensuring the /api path is included.
-  return `${API_BASE_URL}/api${path}`;
+  
+  // Construct the full URL, ensuring the /api path is prepended correctly.
+  // The path from the API might be like 'images/uploads/car.jpg'
+  // and we need to make it 'https://apis.trustedvehicles.com/api/images/uploads/car.jpg'
+  const separator = path.startsWith('/') ? '' : '/';
+  return `${API_BASE_URL}/api${separator}${path}`;
 }
 
 export const transformVehicleData = (item: any): Vehicle => ({
