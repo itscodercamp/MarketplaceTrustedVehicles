@@ -32,7 +32,7 @@ const formSchema = z.object({
   }),
 });
 
-const API_URL = 'https://apis.trustedvehicles.com/apis/marketplace/contact';
+const API_URL = 'https://apis.trustedvehicles.com/api/marketplace/contact';
 
 export default function ContactUsPage() {
   const { toast } = useToast();
