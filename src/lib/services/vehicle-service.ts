@@ -2,8 +2,8 @@
 import type { Vehicle, Banner } from '@/lib/types';
 
 const API_BASE_URL = 'https://apis.trustedvehicles.com';
-const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
-const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
+const VEHICLES_API_URL = `${API_BASE_URL}/marketplace/vehicles`;
+const BANNERS_API_URL = `${API_BASE_URL}/marketplace/banners`;
 
 
 // This is a temporary cache to avoid re-fetching data on every page navigation during development.
@@ -16,9 +16,9 @@ const constructImageUrl = (path?: string) => {
   // If the path is already a full URL, return it as is.
   if (path.startsWith('http')) return path;
   
-  // Construct the full URL, ensuring the /api path is prepended correctly.
+  // Construct the full URL.
   const separator = path.startsWith('/') ? '' : '/';
-  return `${API_BASE_URL}/api${separator}${path}`;
+  return `${API_BASE_URL}${separator}${path}`;
 }
 
 export const transformVehicleData = (item: any): Vehicle => ({
