@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https' as const,
-        hostname: 'apis.trustedvehicles.com',
+        hostname: 'admin.trustedvehicles.com',
         port: '',
         pathname: '/**',
       },

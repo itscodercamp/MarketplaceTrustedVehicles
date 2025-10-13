@@ -17,7 +17,7 @@ interface AuthContextType {
   loading: boolean;
 }
 
-const API_BASE_URL = 'https://apis.trustedvehicles.com/marketplace/auth';
+const API_BASE_URL = 'https://admin.trustedvehicles.com/api/marketplace/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
