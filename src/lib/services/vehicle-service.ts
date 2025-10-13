@@ -18,7 +18,7 @@ const constructImageUrl = (path?: string) => {
   
   // Construct the full URL.
   const separator = path.startsWith('/') ? '' : '/';
-  return `${API_BASE_URL}${separator}${path}`;
+  return `https://admin.trustedvehicles.com${separator}${path}`;
 }
 
 export const transformVehicleData = (item: any): Vehicle => ({
