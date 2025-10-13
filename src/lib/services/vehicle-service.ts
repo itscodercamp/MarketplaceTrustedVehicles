@@ -117,18 +117,37 @@ export async function getVehicles(): Promise<Vehicle[]> {
  */
 export async function getVehicleById(id: string): Promise<any | undefined> {
   // Ensure we have the latest data before trying to find a vehicle
-  if (!cachedVehicles || cachedVehicles.length === 0) {
-    await getVehicles();
+  try {
+    if (!cachedVehicles || cachedVehicles.length === 0) {
+        await getVehicles();
+    }
+  } catch (error) {
+      console.error("Failed to pre-fetch vehicles for getVehicleById:", error);
+      // We can still try to find it if the cache was populated on a previous successful run
   }
+
 
   // Find the raw vehicle data from the cache.
   // The ID from the API might be a number, so we use '==' for loose comparison.
-  const vehicle = cachedVehicles!.find(v => v.id == id);
-
-  if (vehicle) {
-    return vehicle;
+  if (cachedVehicles) {
+    const vehicle = cachedVehicles.find(v => v.id == id);
+    if (vehicle) {
+      return vehicle;
+    }
   }
   
+  // If not found in cache, maybe the cache is stale. Try fetching it directly.
+  try {
+    const response = await fetch(`${VEHICLES_API_URL}/${id}`, { mode: 'cors' });
+    if (response.ok) {
+      const vehicle = await response.json();
+      // Optionally update cache here
+      return vehicle;
+    }
+  } catch (error) {
+     console.error(`Direct fetch for vehicle ${id} failed:`, error);
+  }
+
   return undefined;
 }
 
