@@ -17,8 +17,6 @@ const constructImageUrl = (path?: string) => {
   if (path.startsWith('http')) return path;
   
   // Construct the full URL, ensuring the /api path is prepended correctly.
-  // The path from the API might be like 'images/uploads/car.jpg'
-  // and we need to make it 'https://apis.trustedvehicles.com/api/images/uploads/car.jpg'
   const separator = path.startsWith('/') ? '' : '/';
   return `${API_BASE_URL}/api${separator}${path}`;
 }
