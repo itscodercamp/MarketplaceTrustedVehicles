@@ -13,7 +13,7 @@ interface GetBestPriceProps {
   vehicleId: string;
 }
 
-const API_URL = 'https://apis.trustedvehicles.com/api/marketplace/inquiries';
+const API_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev/api/marketplace/inquiries';
 
 
 export default function GetBestPrice({ vehicleId }: GetBestPriceProps) {

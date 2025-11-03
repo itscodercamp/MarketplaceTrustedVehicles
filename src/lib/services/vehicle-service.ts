@@ -1,9 +1,9 @@
 
 import type { Vehicle, Banner } from '@/lib/types';
 
-const API_BASE_URL = 'https://apis.trustedvehicles.com/api';
-const VEHICLES_API_URL = `${API_BASE_URL}/marketplace/vehicles`;
-const BANNERS_API_URL = `${API_BASE_URL}/marketplace/banners`;
+const API_BASE_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev';
+const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
+const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
 
 
 // This is a temporary cache to avoid re-fetching data on every page navigation during development.

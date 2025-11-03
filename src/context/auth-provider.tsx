@@ -17,7 +17,7 @@ interface AuthContextType {
   loading: boolean;
 }
 
-const API_BASE_URL = 'https://apis.trustedvehicles.com/api/marketplace/auth';
+const API_BASE_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev/api/marketplace/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
