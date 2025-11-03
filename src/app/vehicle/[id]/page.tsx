@@ -61,7 +61,7 @@ const VehicleDetailPage = () => {
         const transformedVehicle = transformVehicleData(rawVehicleData);
         setVehicle(transformedVehicle);
 
-        // Collate all available images
+        // Collate all available images, filtering out any undefined or null values
         const images = [
           transformedVehicle.imageUrl,
           transformedVehicle.img_front,
@@ -85,10 +85,12 @@ const VehicleDetailPage = () => {
           transformedVehicle.img_tyre_3,
           transformedVehicle.img_tyre_4,
           transformedVehicle.img_tyre_optional,
-        ].filter((img): img is string => !!img);
+        ].filter((img): img is string => !!img && typeof img === 'string');
         
-        setAllImages(images);
-        setSelectedImage(images[0] || null);
+        const uniqueImages = [...new Set(images)];
+
+        setAllImages(uniqueImages);
+        setSelectedImage(uniqueImages[0] || null);
 
       } catch (err: any) {
         setError(err.message || 'An unexpected error occurred.');
@@ -259,7 +261,11 @@ const VehicleDetailPage = () => {
               </CardHeader>
               <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {allImages.map((img, index) => (
-                  <div key={index} className="relative aspect-square rounded-lg overflow-hidden border group">
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(img)}
+                    className="relative aspect-square rounded-lg overflow-hidden border group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  >
                     <Image
                       src={img}
                       alt={`Vehicle image ${index + 1}`}
@@ -267,7 +273,7 @@ const VehicleDetailPage = () => {
                       className="object-cover transition-transform duration-300 group-hover:scale-110"
                       sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                     />
-                  </div>
+                  </button>
                 ))}
               </CardContent>
             </Card>
