@@ -4,6 +4,9 @@ import VehicleGrid from '@/components/vehicles/vehicle-grid';
 import AdBanner from '@/components/layout/ad-banner';
 import { Car } from 'lucide-react';
 
+// Revalidate this page every 5 minutes
+export const revalidate = 300;
+
 export default async function Home() {
   let allVehicles = [];
   let error = null;

@@ -8,7 +8,6 @@ const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
 
 // This is a temporary cache to avoid re-fetching data on every page navigation during development.
 // In a real-world app, you might use a more sophisticated caching strategy like React Query or SWR.
-let cachedVehicles: any[] | null = null;
 let cachedBanners: Banner[] | null = null;
 
 const constructImageUrl = (path?: string) => {
@@ -74,16 +73,10 @@ export const transformVehicleData = (item: any): Vehicle => ({
  * @returns {Promise<Vehicle[]>} A promise that resolves to an array of vehicles.
  */
 export async function getVehicles(): Promise<Vehicle[]> {
-  // Only use the cache if it's a valid, non-empty array.
-  if (cachedVehicles && cachedVehicles.length > 0) {
-    console.log("Returning cached vehicle data.");
-    // Return transformed data from cache
-    return cachedVehicles.map(transformVehicleData);
-  }
-
   try {
+    // Fetch with no-cache to ensure fresh data in production server components
     const response = await fetch(VEHICLES_API_URL, {
-      mode: 'cors'
+      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -94,12 +87,7 @@ export async function getVehicles(): Promise<Vehicle[]> {
     }
 
     const data: any[] = await response.json();
-
-    // Cache the raw data
-    cachedVehicles = data;
     
-    // The API response uses different field names than the app's internal `Vehicle` type.
-    // We need to map the API fields to our internal type.
     const transformedVehicles: Vehicle[] = data.map(transformVehicleData);
     
     return transformedVehicles;
@@ -116,32 +104,11 @@ export async function getVehicles(): Promise<Vehicle[]> {
  * @returns {Promise<any | undefined>} A promise that resolves to the raw vehicle data or undefined if not found.
  */
 export async function getVehicleById(id: string): Promise<any | undefined> {
-  // Ensure we have the latest data before trying to find a vehicle
+  // Fetch directly from the API to ensure fresh data.
   try {
-    if (!cachedVehicles || cachedVehicles.length === 0) {
-        await getVehicles();
-    }
-  } catch (error) {
-      console.error("Failed to pre-fetch vehicles for getVehicleById:", error);
-      // We can still try to find it if the cache was populated on a previous successful run
-  }
-
-
-  // Find the raw vehicle data from the cache.
-  // The ID from the API might be a number, so we use '==' for loose comparison.
-  if (cachedVehicles) {
-    const vehicle = cachedVehicles.find(v => v.id == id);
-    if (vehicle) {
-      return vehicle;
-    }
-  }
-  
-  // If not found in cache, maybe the cache is stale. Try fetching it directly.
-  try {
-    const response = await fetch(`${VEHICLES_API_URL}/${id}`, { mode: 'cors' });
+    const response = await fetch(`${VEHICLES_API_URL}/${id}`, { cache: 'no-store' });
     if (response.ok) {
       const vehicle = await response.json();
-      // Optionally update cache here
       return vehicle;
     }
   } catch (error) {
