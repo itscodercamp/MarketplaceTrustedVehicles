@@ -14,8 +14,13 @@ const constructImageUrl = (path?: string) => {
   if (!path) return undefined;
   // If the path is already a full URL, return it as is.
   if (path.startsWith('http')) return path;
+
+  // Handle banner images specifically if they have a different path structure
+  if (path.startsWith('/uploads/banners/')) {
+     return `${API_BASE_URL}/api/images${path}`;
+  }
   
-  // Construct the full URL.
+  // Construct the full URL for other images
   const separator = path.startsWith('/') ? '' : '/';
   return `${API_BASE_URL}${separator}${path}`;
 }
@@ -105,7 +110,7 @@ export async function getVehicles(): Promise<Vehicle[]> {
  * @returns {Promise<any | undefined>} A promise that resolves to the raw vehicle data or undefined if not found.
  */
 export async function getVehicleById(id: string): Promise<any | undefined> {
-  // Fetch from the internal proxy API route to bypass CORS issues on the client.
+  // Use the internal API proxy route to avoid client-side CORS issues.
   try {
     const response = await fetch(`/api/vehicles/${id}`, { cache: 'no-store' });
     if (!response.ok) {

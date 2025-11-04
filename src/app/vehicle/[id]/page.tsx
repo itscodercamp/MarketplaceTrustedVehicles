@@ -93,7 +93,11 @@ const VehicleDetailPage = () => {
         setSelectedImage(uniqueImages[0] || null);
 
       } catch (err: any) {
-        setError(err.message || 'An unexpected error occurred while loading vehicle data.');
+         if (err.message.includes('404')) {
+          setError('VehicleNotFound');
+        } else {
+          setError(err.message || 'An unexpected error occurred while loading vehicle data.');
+        }
       } finally {
         setLoading(false);
       }
@@ -107,6 +111,15 @@ const VehicleDetailPage = () => {
   }
 
   if (error) {
+    if (error === 'VehicleNotFound') {
+      return (
+        <div className="container mx-auto px-4 py-8 text-center flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
+          <AlertTriangle className="w-24 h-24 text-yellow-500 mb-4" />
+          <h1 className="text-3xl font-bold">Vehicle Not Found</h1>
+          <p className="text-muted-foreground mt-2">The vehicle you are looking for does not exist or has been removed.</p>
+        </div>
+      );
+    }
     return (
       <div className="container mx-auto px-4 py-8 text-center flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
         <ServerCrash className="w-24 h-24 text-destructive mb-4" />
@@ -117,13 +130,7 @@ const VehicleDetailPage = () => {
   }
 
   if (!vehicle) {
-     return (
-      <div className="container mx-auto px-4 py-8 text-center flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
-        <AlertTriangle className="w-24 h-24 text-yellow-500 mb-4" />
-        <h1 className="text-3xl font-bold">Vehicle Not Found</h1>
-        <p className="text-muted-foreground mt-2">The vehicle you are looking for does not exist or has been removed.</p>
-      </div>
-    );
+     return null; // Should be covered by error and loading states
   }
   
   const basicDetails: DetailItem[] = [
