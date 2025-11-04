@@ -53,9 +53,12 @@ const VehicleDetailPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const rawVehicleData = await getVehicleById(id);
+        // Trim the ID to remove any leading/trailing spaces
+        const trimmedId = id.trim();
+        const rawVehicleData = await getVehicleById(trimmedId);
+        
         if (!rawVehicleData) {
-          throw new Error('Vehicle not found.');
+          throw new Error('VehicleNotFound');
         }
         
         const transformedVehicle = transformVehicleData(rawVehicleData);
@@ -93,9 +96,10 @@ const VehicleDetailPage = () => {
         setSelectedImage(uniqueImages[0] || null);
 
       } catch (err: any) {
-         if (err.message.includes('404')) {
+         if (err.message.includes('404') || err.message === 'VehicleNotFound') {
           setError('VehicleNotFound');
         } else {
+          console.error("Fetch Vehicle Error:", err);
           setError(err.message || 'An unexpected error occurred while loading vehicle data.');
         }
       } finally {
@@ -232,7 +236,7 @@ const VehicleDetailPage = () => {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <GetBestPrice vehicleId={id} />
+                    <GetBestPrice vehicleId={id.trim()} />
                 </CardContent>
             </Card>
           </div>
