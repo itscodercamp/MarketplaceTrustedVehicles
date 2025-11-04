@@ -105,16 +105,16 @@ export async function getVehicles(): Promise<Vehicle[]> {
  * @returns {Promise<any | undefined>} A promise that resolves to the raw vehicle data or undefined if not found.
  */
 export async function getVehicleById(id: string): Promise<any | undefined> {
-  // Fetch directly from the API to ensure fresh data.
+  // Fetch from the internal proxy API route to bypass CORS issues on the client.
   try {
-    const response = await fetch(`${VEHICLES_API_URL}/${id}`, { cache: 'no-store', mode: 'cors' });
+    const response = await fetch(`/api/vehicles/${id}`, { cache: 'no-store' });
     if (!response.ok) {
         throw new Error(`Failed to fetch vehicle ${id}. Status: ${response.status}`);
     }
     const vehicle = await response.json();
     return vehicle;
   } catch (error) {
-     console.error(`Direct fetch for vehicle ${id} failed:`, error);
+     console.error(`Fetch for vehicle ${id} via proxy failed:`, error);
      throw new Error('Failed to fetch. Please check the network connection and API status.');
   }
 }
