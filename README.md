@@ -18,3 +18,4 @@ This is a Next.js application for a marketplace for trusted, verified used vehic
 - **UI Components**: shadcn/ui
 - **AI**: Google Gemini via Genkit
 - **Language**: TypeScript# MarketplaceTrustedVehicles
+# MarketplaceTrustedVehicles
