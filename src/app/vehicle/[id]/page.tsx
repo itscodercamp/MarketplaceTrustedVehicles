@@ -93,7 +93,7 @@ const VehicleDetailPage = () => {
         setSelectedImage(uniqueImages[0] || null);
 
       } catch (err: any) {
-        setError(err.message || 'An unexpected error occurred.');
+        setError(err.message || 'An unexpected error occurred while loading vehicle data.');
       } finally {
         setLoading(false);
       }

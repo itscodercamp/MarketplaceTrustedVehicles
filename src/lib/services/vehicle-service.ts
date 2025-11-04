@@ -77,6 +77,7 @@ export async function getVehicles(): Promise<Vehicle[]> {
     // Fetch with no-cache to ensure fresh data in production server components
     const response = await fetch(VEHICLES_API_URL, {
       cache: 'no-store',
+      mode: 'cors',
     });
 
     if (!response.ok) {
@@ -106,16 +107,16 @@ export async function getVehicles(): Promise<Vehicle[]> {
 export async function getVehicleById(id: string): Promise<any | undefined> {
   // Fetch directly from the API to ensure fresh data.
   try {
-    const response = await fetch(`${VEHICLES_API_URL}/${id}`, { cache: 'no-store' });
-    if (response.ok) {
-      const vehicle = await response.json();
-      return vehicle;
+    const response = await fetch(`${VEHICLES_API_URL}/${id}`, { cache: 'no-store', mode: 'cors' });
+    if (!response.ok) {
+        throw new Error(`Failed to fetch vehicle ${id}. Status: ${response.status}`);
     }
+    const vehicle = await response.json();
+    return vehicle;
   } catch (error) {
      console.error(`Direct fetch for vehicle ${id} failed:`, error);
+     throw new Error('Failed to fetch. Please check the network connection and API status.');
   }
-
-  return undefined;
 }
 
 /**
