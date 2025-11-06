@@ -15,12 +15,7 @@ const constructImageUrl = (path?: string) => {
   // If the path is already a full URL, return it as is.
   if (path.startsWith('http')) return path;
 
-  // Handle banner images specifically if they have a different path structure
-  if (path.startsWith('/uploads/')) {
-     return `${API_BASE_URL}/api/images${path}`;
-  }
-  
-  // Construct the full URL for other images
+  // Ensure the path starts with a slash, then combine with the base URL.
   const separator = path.startsWith('/') ? '' : '/';
   return `${API_BASE_URL}${separator}${path}`;
 }
