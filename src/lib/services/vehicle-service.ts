@@ -1,7 +1,7 @@
 
 import type { Vehicle, Banner } from '@/lib/types';
 
-const API_BASE_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev';
+const API_BASE_URL = 'https://apis.trustedvehicles.com';
 const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
 const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
 
@@ -16,7 +16,7 @@ const constructImageUrl = (path?: string) => {
   if (path.startsWith('http')) return path;
 
   // Handle banner images specifically if they have a different path structure
-  if (path.startsWith('/uploads/banners/')) {
+  if (path.startsWith('/uploads/')) {
      return `${API_BASE_URL}/api/images${path}`;
   }
   
@@ -134,7 +134,7 @@ export async function getBanners(): Promise<Banner[]> {
   }
 
   try {
-    const response = await fetch(BANNERS_API_URL, { mode: 'cors' });
+    const response = await fetch(BANNERS_API_URL, { mode: 'cors', cache: 'no-store' });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch banners. Status: ${response.status}`);

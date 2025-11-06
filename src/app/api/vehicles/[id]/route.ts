@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server';
 
-const API_BASE_URL = 'https://9000-firebase-studio-1757611792048.cluster-ancjwrkgr5dvux4qug5rbzyc2y.cloudworkstations.dev';
+const API_BASE_URL = 'https://apis.trustedvehicles.com';
 const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
 
 export async function GET(
