@@ -22,8 +22,8 @@ export default async function Home() {
 
   return (
     <>
-      <AdBanner />
       <SearchBar />
+      <AdBanner />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error ? (
           <div className="text-center py-16">
