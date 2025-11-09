@@ -17,6 +17,7 @@ const defaultState = {
     vehicleType: '4-wheeler' as VehicleType,
   },
   sort: 'price-asc' as SortOption,
+  searchQuery: '',
 };
 
 export const useVehicleFilterStore = create<VehicleFilterState>()(
@@ -25,6 +26,7 @@ export const useVehicleFilterStore = create<VehicleFilterState>()(
       ...defaultState,
       resultCount: 0,
       setSort: (sort) => set({ sort }),
+      setSearchQuery: (query) => set({ searchQuery: query }),
       toggleMultiFilter: (filterType, value) =>
         set((state) => {
           const currentValues = state.filters[filterType] as string[];
@@ -46,7 +48,10 @@ export const useVehicleFilterStore = create<VehicleFilterState>()(
           },
         }));
       },
-      clearFilters: () => set((state) => ({ filters: { ...initialFilters, vehicleType: state.filters.vehicleType } })),
+      clearFilters: () => set((state) => ({ 
+        filters: { ...initialFilters, vehicleType: state.filters.vehicleType },
+        searchQuery: '',
+      })),
       setResultCount: (count) => set({ resultCount: count }),
     }),
     {
@@ -64,6 +69,7 @@ export const useVehicleFilterStore = create<VehicleFilterState>()(
       partialize: (state) => ({
         filters: state.filters,
         sort: state.sort,
+        searchQuery: state.searchQuery,
       }),
     }
   )

@@ -2,6 +2,7 @@
 import { getVehicles } from '@/lib/services/vehicle-service';
 import VehicleGrid from '@/components/vehicles/vehicle-grid';
 import AdBanner from '@/components/layout/ad-banner';
+import SearchBar from '@/components/search/search-bar';
 import { Car } from 'lucide-react';
 
 // Revalidate this page every 5 minutes
@@ -22,6 +23,7 @@ export default async function Home() {
   return (
     <>
       <AdBanner />
+      <SearchBar />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error ? (
           <div className="text-center py-16">

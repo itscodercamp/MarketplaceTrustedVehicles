@@ -87,8 +87,10 @@ export type MultiFilter = 'fuelType' | 'year' | 'rto' | 'ownership' | 'transmiss
 export interface VehicleFilterState {
     filters: Filters;
     sort: SortOption;
+    searchQuery: string;
     resultCount: number;
     setSort: (sort: SortOption) => void;
+    setSearchQuery: (query: string) => void;
     toggleMultiFilter: (filterType: MultiFilter, value: string) => void;
     setVehicleType: (vehicleType: VehicleType) => void;
     clearFilters: () => void;
@@ -145,5 +147,3 @@ export const RecommendVehiclesViaChatbotOutputSchema = z.object({
   brandToFilter: z.string().optional().describe("The brand name to use for filtering the main list. Only for 'filter_suggestion' and 'count' types."),
 });
 export type RecommendVehiclesViaChatbotOutput = z.infer<typeof RecommendVehiclesViaChatbotOutputSchema>;
-
-    
