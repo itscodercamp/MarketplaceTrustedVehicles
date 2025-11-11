@@ -74,12 +74,12 @@ export const transformVehicleData = (item: any): Vehicle => ({
  */
 export async function getVehicles(): Promise<Vehicle[]> {
   try {
-    // Fetch with no-cache to ensure fresh data in production server components
     const response = await fetch(VEHICLES_API_URL, {
       headers: {
         'Content-Type': 'application/json',
       },
       cache: 'no-store',
+      mode: 'cors', // Required for client-side cross-origin requests
     });
 
     if (!response.ok) {
