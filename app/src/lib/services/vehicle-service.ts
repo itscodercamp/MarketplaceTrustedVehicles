@@ -1,0 +1,149 @@
+
+import type { Vehicle, Banner } from '@/lib/types';
+
+const API_BASE_URL = 'https://apis.trustedvehicles.com';
+const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
+const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
+
+
+const constructImageUrl = (path?: string) => {
+  if (!path) return undefined;
+  // If the path is already a full URL, return it as is.
+  if (path.startsWith('http')) return path;
+
+  // Ensure there is no leading slash from the path and a single slash after the base URL.
+  return `${API_BASE_URL}/${path.replace(/^\//, '')}`;
+}
+
+export const transformVehicleData = (item: any): Vehicle => ({
+  id: item.id.toString(),
+  make: item.make,
+  model: item.model,
+  price: item.price,
+  variant: item.variant,
+  year: item.year || item.regYear,
+  status: item.status,
+  verified: item.verified,
+  mfgYear: item.mfgYear,
+  regYear: item.regYear,
+  regNumber: item.regNumber,
+  rtoState: item.rtoState,
+  ownership: item.ownership,
+  kmsDriven: item.odometer, // Map 'odometer' from API to 'kmsDriven'
+  fuelType: item.fuelType,
+  transmission: item.transmission,
+  insurance: item.insurance,
+  serviceHistory: item.serviceHistory,
+  color: item.color,
+  vehicleType: item.vehicleType === '2-wheeler' ? '2-wheeler' : '4-wheeler', // Default to 4-wheeler if not specified
+  condition: item.condition,
+  
+  // Map all individual image fields and construct full URLs
+  img_front: constructImageUrl(item.img_front),
+  img_front_right: constructImageUrl(item.img_front_right),
+  img_right: constructImageUrl(item.img_right),
+  img_back_right: constructImageUrl(item.img_back_right),
+  img_back: constructImageUrl(item.img_back),
+  img_open_dickey: constructImageUrl(item.img_open_dickey),
+  img_back_left: constructImageUrl(item.img_back_left),
+  img_left: constructImageUrl(item.img_left),
+  img_front_left: constructImageUrl(item.img_front_left),
+  img_open_bonnet: constructImageUrl(item.img_open_bonnet),
+  img_dashboard: constructImageUrl(item.img_dashboard),
+  img_right_front_door: constructImageUrl(item.img_right_front_door),
+  img_right_back_door: constructImageUrl(item.img_right_back_door),
+  img_tyre_1: constructImageUrl(item.img_tyre_1),
+  img_tyre_2: constructImageUrl(item.img_tyre_2),
+  img_tyre_3: constructImageUrl(item.img_tyre_3),
+  img_tyre_4: constructImageUrl(item.img_tyre_4),
+  img_tyre_optional: constructImageUrl(item.img_tyre_optional),
+  img_engine: constructImageUrl(item.img_engine),
+  img_roof: constructImageUrl(item.img_roof),
+  img_odometer: constructImageUrl(item.img_odometer),
+});
+
+
+/**
+ * Fetches vehicle data from the remote API and transforms it to match the application's Vehicle type.
+ * @returns {Promise<Vehicle[]>} A promise that resolves to an array of vehicles.
+ */
+export async function getVehicles(): Promise<Vehicle[]> {
+  try {
+    const response = await fetch(VEHICLES_API_URL, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors', // Required for client-side cross-origin requests
+    });
+
+    if (!response.ok) {
+      console.error("API Error Response Status:", response.status, response.statusText);
+      const errorText = await response.text();
+      console.error("API Error Response Body:", errorText);
+      throw new Error(`Failed to fetch vehicles. Status: ${response.status}`);
+    }
+
+    const data: any[] = await response.json();
+    
+    const transformedVehicles: Vehicle[] = data.map(transformVehicleData);
+    return transformedVehicles;
+  } catch (error) {
+    console.error("Error fetching or transforming vehicle data:", error);
+    // Throw a more user-friendly error to be caught by the UI
+    throw new Error('The server is currently under maintenance. Please try again later.');
+  }
+}
+
+/**
+ * Fetches a single vehicle by its ID.
+ * @param {string} id The ID of the vehicle to fetch.
+ * @returns {Promise<any | undefined>} A promise that resolves to the raw vehicle data or undefined if not found.
+ */
+export async function getVehicleById(id: string): Promise<any | undefined> {
+  // Fetch directly from the external API to avoid server-side fetch issues and proxy complexity.
+  try {
+    const response = await fetch(`${VEHICLES_API_URL}/${id}`, { 
+        mode: 'cors' // Required for client-side cross-origin requests
+    });
+    if (!response.ok) {
+        throw new Error(`Failed to fetch vehicle ${id}. Status: ${response.status}`);
+    }
+    const vehicle = await response.json();
+    return vehicle;
+  } catch (error) {
+     console.error(`Direct fetch for vehicle ${id} failed:`, error);
+     throw new Error('Failed to fetch. Please check the network connection and API status.');
+  }
+}
+
+/**
+ * Fetches banner data from the remote API.
+ * @returns {Promise<Banner[]>} A promise that resolves to an array of banners.
+ */
+export async function getBanners(): Promise<Banner[]> {
+  try {
+    const response = await fetch(BANNERS_API_URL, { 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch banners. Status: ${response.status}`);
+    }
+
+    const data: any[] = await response.json();
+
+    const transformedBanners: Banner[] = data.map(item => ({
+      title: item.title,
+      imageUrl: constructImageUrl(item.imageUrl)!,
+    }));
+    
+    return transformedBanners;
+  } catch (error) {
+    console.error("Error fetching banner data:", error);
+    // Return empty array on error so the UI doesn't break
+    return [];
+  }
+}
