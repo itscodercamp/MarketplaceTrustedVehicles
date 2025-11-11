@@ -17,6 +17,7 @@ const constructImageUrl = (path?: string) => {
   // If the path is already a full URL, return it as is.
   if (path.startsWith('http')) return path;
 
+  // Ensure there is no leading slash from the path and a single slash after the base URL.
   return `${API_BASE_URL}/${path.replace(/^\//, '')}`;
 }
 

@@ -1,12 +1,16 @@
 
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import type { Vehicle } from './types';
 import { formatCurrency } from './utils';
 
 async function imageToDataURL(url: string): Promise<string> {
+  // Use a proxy or a serverless function in production to bypass CORS issues if they arise.
+  // For development, many image hosts are permissive.
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
+    }
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -15,9 +19,9 @@ async function imageToDataURL(url: string): Promise<string> {
       reader.readAsDataURL(blob);
     });
   } catch (error) {
-    console.error(`Failed to fetch image from ${url}`, error);
-    // Return a placeholder or empty string if image fetch fails
-    return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+    console.error(`Failed to convert image to data URL from ${url}`, error);
+    // Return a placeholder for a broken image
+    return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QxZDVlMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIj48L2NpcmNsZT48bGluZSB4MT0iNC45MyIgeTE9IjQuOTMiIHgyPSIxOS4wNyIgeTI9IjE5LjA3Ij48L2xpbmU+PC9zdmc+';
   }
 }
 
@@ -122,6 +126,7 @@ export async function generateVehicleReport(vehicle: Vehicle, allImages: string[
     if (y + imageSize > doc.internal.pageSize.getHeight() - margin) {
         doc.addPage();
         y = margin;
+        x = margin;
     }
     try {
         const imgData = await imageToDataURL(imageUrl);
@@ -132,7 +137,7 @@ export async function generateVehicleReport(vehicle: Vehicle, allImages: string[
     }
 
     x += imageSize + 5;
-    if (x > pageWidth - margin - imageSize) {
+    if (i % 3 === 2) { // Move to next row after 3 images
         x = margin;
         y += (imageSize * 0.75) + 5;
     }
