@@ -76,6 +76,9 @@ export async function getVehicles(): Promise<Vehicle[]> {
   try {
     // Fetch with no-cache to ensure fresh data in production server components
     const response = await fetch(VEHICLES_API_URL, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
       cache: 'no-store',
     });
 
@@ -128,7 +131,12 @@ export async function getBanners(): Promise<Banner[]> {
   }
 
   try {
-    const response = await fetch(BANNERS_API_URL, { cache: 'no-store' });
+    const response = await fetch(BANNERS_API_URL, { 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store' 
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch banners. Status: ${response.status}`);
@@ -149,4 +157,3 @@ export async function getBanners(): Promise<Banner[]> {
     return [];
   }
 }
-
