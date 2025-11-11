@@ -114,7 +114,7 @@ export default function GetBestPrice({ vehicleId, shareReportButton }: GetBestPr
                   </div>
               </div>
           </div>
-           <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t">
+           <div className="flex flex-wrap items-center gap-4 pt-4 border-t">
               <Button onClick={handleInquiry} disabled={isSubmitting} className="w-full sm:w-auto">
                  {isSubmitting ? (
                     <>
