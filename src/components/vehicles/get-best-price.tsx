@@ -11,12 +11,13 @@ import { useState } from 'react';
 
 interface GetBestPriceProps {
   vehicleId: string;
+  shareReportButton?: React.ReactNode;
 }
 
 const API_URL = 'https://apis.trustedvehicles.com/api/marketplace/inquiries';
 
 
-export default function GetBestPrice({ vehicleId }: GetBestPriceProps) {
+export default function GetBestPrice({ vehicleId, shareReportButton }: GetBestPriceProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -131,6 +132,7 @@ export default function GetBestPrice({ vehicleId }: GetBestPriceProps) {
                 <Share2 className="w-4 h-4 mr-2" />
                 Share Vehicle
               </Button>
+              {shareReportButton}
             </div>
              <p className="text-xs text-muted-foreground text-center sm:text-left">Click "Inquire Now" to send your interest to the dealer. They will contact you on your registered number.</p>
         </div>

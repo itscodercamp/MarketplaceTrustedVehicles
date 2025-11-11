@@ -12,6 +12,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import GetBestPrice from '@/components/vehicles/get-best-price';
+import { generateVehicleReport } from '@/lib/generate-pdf-report';
+import { useToast } from '@/hooks/use-toast';
+
 import {
   Car,
   CheckCircle,
@@ -27,9 +30,10 @@ import {
   MapPin,
   Loader2,
   AlertTriangle,
-  ServerCrash
+  ServerCrash,
+  Download
 } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 
 type DetailItem = {
   icon: React.ElementType;
@@ -42,9 +46,11 @@ const VehicleDetailPage = () => {
   const id = params.id as string;
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [allImages, setAllImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!id) return;
@@ -53,7 +59,6 @@ const VehicleDetailPage = () => {
       setLoading(true);
       setError(null);
       try {
-        // Trim the ID to remove any leading/trailing spaces
         const trimmedId = id.trim();
         const rawVehicleData = await getVehicleById(trimmedId);
         
@@ -64,7 +69,6 @@ const VehicleDetailPage = () => {
         const transformedVehicle = transformVehicleData(rawVehicleData);
         setVehicle(transformedVehicle);
 
-        // Collate all available images, filtering out any undefined or null values
         const images = [
           transformedVehicle.img_front,
           transformedVehicle.img_front_right,
@@ -109,6 +113,33 @@ const VehicleDetailPage = () => {
     fetchVehicle();
   }, [id]);
 
+  const handleGenerateReport = async () => {
+    if (!vehicle) return;
+    setIsGeneratingPdf(true);
+    toast({
+      title: 'Generating Report...',
+      description: 'Please wait while we create the vehicle report PDF.',
+    });
+    try {
+      await generateVehicleReport(vehicle, allImages);
+      toast({
+        variant: 'success',
+        title: 'Report Generated!',
+        description: 'The PDF report has been downloaded.',
+      });
+    } catch (error) {
+      console.error('PDF Generation Error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'PDF Generation Failed',
+        description: 'Could not generate the report. Please try again.',
+      });
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
+
   if (loading) {
     return <VehicleDetailSkeleton />;
   }
@@ -133,7 +164,7 @@ const VehicleDetailPage = () => {
   }
 
   if (!vehicle) {
-     return null; // Should be covered by error and loading states
+     return null;
   }
   
   const basicDetails: DetailItem[] = [
@@ -153,10 +184,25 @@ const VehicleDetailPage = () => {
     { icon: Book, label: 'Service History', value: vehicle.serviceHistory },
   ].filter(item => item.value);
 
+  const shareReportButton = (
+    <Button variant="secondary" onClick={handleGenerateReport} disabled={isGeneratingPdf} className="w-full sm:w-auto">
+      {isGeneratingPdf ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Generating...
+        </>
+      ) : (
+        <>
+          <Download className="mr-2 h-4 w-4" />
+          Share Report
+        </>
+      )}
+    </Button>
+  );
 
   return (
     <div className="bg-muted/30">
-      <div className="container mx-auto px-2 sm:px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-8" id="vehicle-report-content">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column: Images */}
           <div className="lg:col-span-2">
@@ -235,7 +281,7 @@ const VehicleDetailPage = () => {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <GetBestPrice vehicleId={id.trim()} />
+                    <GetBestPrice vehicleId={id.trim()} shareReportButton={shareReportButton} />
                 </CardContent>
             </Card>
           </div>
