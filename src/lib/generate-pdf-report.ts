@@ -7,7 +7,7 @@ async function imageToDataURL(url: string): Promise<string> {
   // Use a proxy or a serverless function in production to bypass CORS issues if they arise.
   // For development, many image hosts are permissive.
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { mode: 'cors' });
     if (!response.ok) {
       throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
     }
