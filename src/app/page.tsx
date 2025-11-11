@@ -9,11 +9,13 @@ import SearchBar from '@/components/search/search-bar';
 import { Car } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Vehicle } from '@/lib/types';
+import { useVehicleFilterStore } from '@/store/vehicle-filters';
 
 export default function Home() {
   const [allVehicles, setAllVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { filters: { vehicleType } } = useVehicleFilterStore();
 
   useEffect(() => {
     async function loadVehicles() {
@@ -31,7 +33,7 @@ export default function Home() {
     loadVehicles();
   }, []);
 
-  const fourWheelers = allVehicles.filter(v => v.vehicleType === '4-wheeler');
+  const filteredVehicles = allVehicles.filter(v => v.vehicleType === vehicleType);
 
   const renderContent = () => {
     if (loading) {
@@ -56,8 +58,8 @@ export default function Home() {
       );
     }
 
-    if (fourWheelers.length > 0) {
-      return <VehicleGrid vehicles={fourWheelers} />;
+    if (filteredVehicles.length > 0) {
+      return <VehicleGrid vehicles={filteredVehicles} />;
     }
 
     return (
@@ -65,7 +67,7 @@ export default function Home() {
         <Car className="w-24 h-24 text-muted-foreground mb-6" />
         <h2 className="text-2xl font-bold text-primary mb-2">No Vehicles Found</h2>
         <p className="text-lg text-muted-foreground">
-          There are currently no vehicles available. Please check back later.
+          There are currently no vehicles available for this type. Please check back later.
         </p>
       </div>
     );

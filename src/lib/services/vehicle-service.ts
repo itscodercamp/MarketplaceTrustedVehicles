@@ -6,12 +6,6 @@ const VEHICLES_API_URL = `${API_BASE_URL}/api/marketplace/vehicles`;
 const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
 
 
-// This is a temporary cache to avoid re-fetching data on every page navigation during development.
-// In a real-world app, you might use a more sophisticated caching strategy like React Query or SWR.
-let cachedBanners: Banner[] | null = null;
-let cachedVehicles: Vehicle[] | null = null;
-
-
 const constructImageUrl = (path?: string) => {
   if (!path) return undefined;
   // If the path is already a full URL, return it as is.
@@ -41,7 +35,7 @@ export const transformVehicleData = (item: any): Vehicle => ({
   insurance: item.insurance,
   serviceHistory: item.serviceHistory,
   color: item.color,
-  vehicleType: '4-wheeler', // Assuming all vehicles from this API are 4-wheelers
+  vehicleType: item.vehicleType === '2-wheeler' ? '2-wheeler' : '4-wheeler', // Default to 4-wheeler if not specified
   condition: item.condition,
   
   // Map all individual image fields and construct full URLs
@@ -74,9 +68,6 @@ export const transformVehicleData = (item: any): Vehicle => ({
  * @returns {Promise<Vehicle[]>} A promise that resolves to an array of vehicles.
  */
 export async function getVehicles(): Promise<Vehicle[]> {
-   if (cachedVehicles) {
-    return cachedVehicles;
-  }
   try {
     const response = await fetch(VEHICLES_API_URL, {
       headers: {
@@ -95,7 +86,6 @@ export async function getVehicles(): Promise<Vehicle[]> {
     const data: any[] = await response.json();
     
     const transformedVehicles: Vehicle[] = data.map(transformVehicleData);
-    cachedVehicles = transformedVehicles;
     return transformedVehicles;
   } catch (error) {
     console.error("Error fetching or transforming vehicle data:", error);
@@ -132,10 +122,6 @@ export async function getVehicleById(id: string): Promise<any | undefined> {
  * @returns {Promise<Banner[]>} A promise that resolves to an array of banners.
  */
 export async function getBanners(): Promise<Banner[]> {
-  if (cachedBanners) {
-    return cachedBanners;
-  }
-
   try {
     const response = await fetch(BANNERS_API_URL, { 
       headers: {
@@ -155,7 +141,6 @@ export async function getBanners(): Promise<Banner[]> {
       imageUrl: constructImageUrl(item.imageUrl)!,
     }));
     
-    cachedBanners = transformedBanners;
     return transformedBanners;
   } catch (error) {
     console.error("Error fetching banner data:", error);
