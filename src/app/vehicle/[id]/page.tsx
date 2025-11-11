@@ -12,8 +12,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import GetBestPrice from '@/components/vehicles/get-best-price';
-import { generateVehicleReport } from '@/lib/generate-pdf-report';
 import { useToast } from '@/hooks/use-toast';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 import {
   Car,
@@ -115,13 +116,61 @@ const VehicleDetailPage = () => {
 
   const handleGenerateReport = async () => {
     if (!vehicle) return;
+    const reportContentElement = document.getElementById('vehicle-report-content');
+    if (!reportContentElement) {
+        toast({
+            variant: 'destructive',
+            title: 'PDF Generation Failed',
+            description: 'Could not find the report content to generate PDF.',
+        });
+        return;
+    }
+
     setIsGeneratingPdf(true);
     toast({
       title: 'Generating Report...',
       description: 'Please wait while we create the vehicle report PDF.',
     });
+    
     try {
-      await generateVehicleReport(vehicle, allImages);
+      const canvas = await html2canvas(reportContentElement, {
+        scale: 2, // Increase resolution for better quality
+        useCORS: true, // Important for fetching cross-origin images
+        allowTaint: true,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      
+      const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4',
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const ratio = canvasWidth / canvasHeight;
+      
+      const imgWidth = pdfWidth;
+      const imgHeight = imgWidth / ratio;
+      
+      let heightLeft = imgHeight;
+      let position = 0;
+      
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+      
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+      
+      pdf.save(`${vehicle.make}_${vehicle.model}_Report.pdf`);
+
       toast({
         variant: 'success',
         title: 'Report Generated!',
@@ -202,140 +251,142 @@ const VehicleDetailPage = () => {
 
   return (
     <div className="bg-muted/30">
-      <div className="container mx-auto px-2 sm:px-4 py-8" id="vehicle-report-content">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column: Images */}
-          <div className="lg:col-span-2">
-            <Card className="shadow-md overflow-hidden">
-                <CardContent className="p-2">
-                    <div className="aspect-[4/3] relative rounded-md overflow-hidden bg-muted">
-                        {selectedImage ? (
-                        <Image
-                            src={selectedImage}
-                            alt={`${vehicle.make} ${vehicle.model}`}
-                            fill
-                            className="object-contain"
-                            priority
-                            sizes="(max-width: 1024px) 100vw, 66vw"
-                        />
-                        ) : (
-                        <div className="flex items-center justify-center h-full">
-                            <Car className="w-24 h-24 text-muted-foreground" />
-                        </div>
-                        )}
-                    </div>
-                </CardContent>
-            </Card>
+      <div className="container mx-auto px-2 sm:px-4 py-8">
+        <div id="vehicle-report-content" className="bg-background p-4 sm:p-6 rounded-lg">
+          <h1 className="text-3xl font-bold text-primary mb-4 text-center">{vehicle.make}</h1>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column: Images */}
+            <div className="lg:col-span-2">
+              <Card className="shadow-md overflow-hidden">
+                  <CardContent className="p-2">
+                      <div className="aspect-[4/3] relative rounded-md overflow-hidden bg-muted">
+                          {selectedImage ? (
+                          <Image
+                              src={selectedImage}
+                              alt={`${vehicle.make} ${vehicle.model}`}
+                              fill
+                              className="object-contain"
+                              priority
+                              sizes="(max-width: 1024px) 100vw, 66vw"
+                          />
+                          ) : (
+                          <div className="flex items-center justify-center h-full">
+                              <Car className="w-24 h-24 text-muted-foreground" />
+                          </div>
+                          )}
+                      </div>
+                  </CardContent>
+              </Card>
 
-            {allImages.length > 1 && (
-                 <div className="mt-4">
-                    <Carousel
-                        opts={{
-                        align: "start",
-                        dragFree: true,
-                        }}
-                        className="w-full"
-                    >
-                        <CarouselContent className="-ml-2">
-                        {allImages.map((img, index) => (
-                            <CarouselItem key={index} className="pl-2 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6">
-                            <button
-                                onClick={() => setSelectedImage(img)}
-                                className={cn(
-                                "block w-full aspect-square relative rounded-md overflow-hidden border-2 transition-all",
-                                selectedImage === img ? 'border-primary' : 'border-transparent hover:border-primary/50'
-                                )}
-                            >
-                                <Image
-                                src={img}
-                                alt={`Thumbnail ${index + 1}`}
-                                fill
-                                className="object-cover"
-                                sizes="15vw"
-                                />
-                            </button>
-                            </CarouselItem>
-                        ))}
-                        </CarouselContent>
-                        <CarouselPrevious className="hidden sm:flex" />
-                        <CarouselNext className="hidden sm:flex" />
-                    </Carousel>
-                </div>
-            )}
-          </div>
-
-          {/* Right Column: Details */}
-          <div className="lg:col-span-1">
-             <Card className="shadow-md">
-                <CardHeader>
-                    <p className="text-sm text-muted-foreground">{vehicle.year} &bull; {vehicle.variant}</p>
-                    <CardTitle className="text-2xl sm:text-3xl">{vehicle.make} {vehicle.model}</CardTitle>
-                    <div className="flex items-center justify-between pt-2">
-                        <p className="text-3xl font-bold text-primary">{formatCurrency(vehicle.price)}</p>
-                        {vehicle.verified && (
-                        <Badge variant="outline" className="border-success text-success font-medium">
-                            <CheckCircle className="mr-1.5 h-4 w-4" />
-                            Verified
-                        </Badge>
-                        )}
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <GetBestPrice vehicleId={id.trim()} shareReportButton={shareReportButton} />
-                </CardContent>
-            </Card>
-          </div>
-        </div>
-        
-        {/* Lower Section: Details & All Images */}
-        <div className="mt-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {basicDetails.length > 0 && (
-                    <Card className="shadow-md">
-                        <CardHeader><CardTitle>Basic Details</CardTitle></CardHeader>
-                        <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 gap-x-4">
-                            {basicDetails.map(item => <DetailItemCard key={item.label} {...item} />)}
-                        </CardContent>
-                    </Card>
-                )}
-                {techDetails.length > 0 && (
-                    <Card className="shadow-md">
-                        <CardHeader><CardTitle>Technical Details</CardTitle></CardHeader>
-                        <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 gap-x-4">
-                            {techDetails.map(item => <DetailItemCard key={item.label} {...item} />)}
-                        </CardContent>
-                    </Card>
-                )}
+              {allImages.length > 1 && (
+                  <div className="mt-4">
+                      <Carousel
+                          opts={{
+                          align: "start",
+                          dragFree: true,
+                          }}
+                          className="w-full"
+                      >
+                          <CarouselContent className="-ml-2">
+                          {allImages.map((img, index) => (
+                              <CarouselItem key={index} className="pl-2 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6">
+                              <button
+                                  onClick={() => setSelectedImage(img)}
+                                  className={cn(
+                                  "block w-full aspect-square relative rounded-md overflow-hidden border-2 transition-all",
+                                  selectedImage === img ? 'border-primary' : 'border-transparent hover:border-primary/50'
+                                  )}
+                              >
+                                  <Image
+                                  src={img}
+                                  alt={`Thumbnail ${index + 1}`}
+                                  fill
+                                  className="object-cover"
+                                  sizes="15vw"
+                                  />
+                              </button>
+                              </CarouselItem>
+                          ))}
+                          </CarouselContent>
+                          <CarouselPrevious className="hidden sm:flex" />
+                          <CarouselNext className="hidden sm:flex" />
+                      </Carousel>
+                  </div>
+              )}
             </div>
-        </div>
-        
-        {allImages.length > 0 && (
-          <div className="mt-8">
-            <Card className="shadow-md">
-              <CardHeader>
-                <CardTitle>Vehicle Image Gallery</CardTitle>
-              </CardHeader>
-              <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {allImages.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(img)}
-                    className="relative aspect-square rounded-lg overflow-hidden border group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                  >
-                    <Image
-                      src={img}
-                      alt={`Vehicle image ${index + 1}`}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-110"
-                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                    />
-                  </button>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
+            {/* Right Column: Details */}
+            <div className="lg:col-span-1">
+              <Card className="shadow-md">
+                  <CardHeader>
+                      <p className="text-sm text-muted-foreground">{vehicle.year} &bull; {vehicle.variant}</p>
+                      <CardTitle className="text-2xl sm:text-3xl">{vehicle.make} {vehicle.model}</CardTitle>
+                      <div className="flex items-center justify-between pt-2">
+                          <p className="text-3xl font-bold text-primary">{formatCurrency(vehicle.price)}</p>
+                          {vehicle.verified && (
+                          <Badge variant="outline" className="border-success text-success font-medium">
+                              <CheckCircle className="mr-1.5 h-4 w-4" />
+                              Verified
+                          </Badge>
+                          )}
+                      </div>
+                  </CardHeader>
+                  <CardContent>
+                      <GetBestPrice vehicleId={id.trim()} shareReportButton={shareReportButton} />
+                  </CardContent>
+              </Card>
+            </div>
+          </div>
+          
+          {/* Lower Section: Details & All Images */}
+          <div className="mt-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {basicDetails.length > 0 && (
+                      <Card className="shadow-md">
+                          <CardHeader><CardTitle>Basic Details</CardTitle></CardHeader>
+                          <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 gap-x-4">
+                              {basicDetails.map(item => <DetailItemCard key={item.label} {...item} />)}
+                          </CardContent>
+                      </Card>
+                  )}
+                  {techDetails.length > 0 && (
+                      <Card className="shadow-md">
+                          <CardHeader><CardTitle>Technical Details</CardTitle></CardHeader>
+                          <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 gap-x-4">
+                              {techDetails.map(item => <DetailItemCard key={item.label} {...item} />)}
+                          </CardContent>
+                      </Card>
+                  )}
+              </div>
+          </div>
+          
+          {allImages.length > 0 && (
+            <div className="mt-8">
+              <Card className="shadow-md">
+                <CardHeader>
+                  <CardTitle>Vehicle Image Gallery</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {allImages.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(img)}
+                      className="relative aspect-square rounded-lg overflow-hidden border group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    >
+                      <Image
+                        src={img}
+                        alt={`Vehicle image ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-110"
+                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                      />
+                    </button>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

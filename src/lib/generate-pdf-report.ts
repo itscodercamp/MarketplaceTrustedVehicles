@@ -1,159 +1,437 @@
+'use client';
 
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import Image from 'next/image';
+import { getVehicleById, transformVehicleData } from '@/lib/services/vehicle-service';
+import type { Vehicle } from '@/lib/types';
+import { formatCurrency, cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import GetBestPrice from '@/components/vehicles/get-best-price';
+import { useToast } from '@/hooks/use-toast';
 import jsPDF from 'jspdf';
-import type { Vehicle } from './types';
-import { formatCurrency } from './utils';
+import html2canvas from 'html2canvas';
 
-async function imageToDataURL(url: string): Promise<string> {
-  // Use a proxy or a serverless function in production to bypass CORS issues if they arise.
-  // For development, many image hosts are permissive.
-  try {
-    const response = await fetch(url, { mode: 'cors' });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
-    }
-    const blob = await response.blob();
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  } catch (error) {
-    console.error(`Failed to convert image to data URL from ${url}`, error);
-    // Return a placeholder for a broken image
-    return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QxZDVlMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIj48L2NpcmNsZT48bGluZSB4MT0iNC45MyIgeTE9IjQuOTMiIHgyPSIxOS4wNyIgeTI9IjE5LjA3Ij48L2xpbmU+PC9zdmc+';
-  }
-}
+import {
+  Car,
+  CheckCircle,
+  Calendar,
+  Gauge,
+  User,
+  GitCommit,
+  Fuel,
+  Wrench,
+  Shield,
+  Book,
+  Palette,
+  MapPin,
+  Loader2,
+  AlertTriangle,
+  ServerCrash,
+  Download
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-export async function generateVehicleReport(vehicle: Vehicle, allImages: string[]) {
-  const doc = new jsPDF('p', 'mm', 'a4');
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const margin = 15;
-  let y = 20;
+type DetailItem = {
+  icon: React.ElementType;
+  label: string;
+  value: React.ReactNode;
+};
 
-  // --- Header ---
-  doc.setFontSize(24);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(41, 98, 255); // Primary color
-  doc.text(`${vehicle.make} ${vehicle.model}`, margin, y);
-  y += 8;
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(100, 116, 139); // Muted foreground
-  doc.text(`${vehicle.year} | ${vehicle.variant}`, margin, y);
-  
-  y += 12;
+const VehicleDetailPage = () => {
+  const params = useParams();
+  const id = params.id as string;
+  const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [allImages, setAllImages] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  // --- Price ---
-  doc.setFontSize(22);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(41, 98, 255);
-  doc.text(formatCurrency(vehicle.price), pageWidth - margin, y, { align: 'right' });
-  doc.setFontSize(12);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(100, 116, 139);
-  doc.text('Price', pageWidth - margin, y - 5, { align: 'right' });
+  useEffect(() => {
+    if (!id) return;
 
-  y += 15;
-
-  // --- Main Image ---
-  if (vehicle.img_front) {
-    try {
-      const imgData = await imageToDataURL(vehicle.img_front);
-      const imgProps = doc.getImageProperties(imgData);
-      const imgWidth = pageWidth - margin * 2;
-      const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-      doc.addImage(imgData, 'JPEG', margin, y, imgWidth, imgHeight);
-      y += imgHeight + 10;
-    } catch(e) {
-      console.error("Failed to add main image to PDF", e);
-    }
-  }
-
-  // --- Details Section ---
-  const addDetailRow = (yPos: number, ...details: {label: string, value: any}[]) => {
-    const colWidth = (pageWidth - margin * 2) / details.length;
-    details.forEach((detail, index) => {
-        if(detail.value) {
-            doc.setFontSize(10);
-            doc.setTextColor(100, 116, 139);
-            doc.text(detail.label, margin + (index * colWidth), yPos);
-            doc.setFontSize(12);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(30, 41, 59); // Foreground
-            doc.text(String(detail.value), margin + (index * colWidth), yPos + 5);
+    async function fetchVehicle() {
+      setLoading(true);
+      setError(null);
+      try {
+        const trimmedId = id.trim();
+        const rawVehicleData = await getVehicleById(trimmedId);
+        
+        if (!rawVehicleData) {
+          throw new Error('VehicleNotFound');
         }
+        
+        const transformedVehicle = transformVehicleData(rawVehicleData);
+        setVehicle(transformedVehicle);
+
+        const images = [
+          transformedVehicle.img_front,
+          transformedVehicle.img_front_right,
+          transformedVehicle.img_right,
+          transformedVehicle.img_back_right,
+          transformedVehicle.img_back,
+          transformedVehicle.img_open_dickey,
+          transformedVehicle.img_back_left,
+          transformedVehicle.img_left,
+          transformedVehicle.img_front_left,
+          transformedVehicle.img_open_bonnet,
+          transformedVehicle.img_dashboard,
+          transformedVehicle.img_right_front_door,
+          transformedVehicle.img_right_back_door,
+          transformedVehicle.img_engine,
+          transformedVehicle.img_roof,
+          transformedVehicle.img_odometer,
+          transformedVehicle.img_tyre_1,
+          transformedVehicle.img_tyre_2,
+          transformedVehicle.img_tyre_3,
+          transformedVehicle.img_tyre_4,
+          transformedVehicle.img_tyre_optional,
+        ].filter((img): img is string => !!img && typeof img === 'string');
+        
+        const uniqueImages = [...new Set(images)];
+
+        setAllImages(uniqueImages);
+        setSelectedImage(uniqueImages[0] || null);
+
+      } catch (err: any) {
+         if (err.message.includes('404') || err.message === 'VehicleNotFound') {
+          setError('VehicleNotFound');
+        } else {
+          console.error("Fetch Vehicle Error:", err);
+          setError(err.message || 'An unexpected error occurred while loading vehicle data.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchVehicle();
+  }, [id]);
+
+  const handleGenerateReport = async () => {
+    if (!vehicle) return;
+    const reportContentElement = document.getElementById('vehicle-report-content');
+    if (!reportContentElement) {
+        toast({
+            variant: 'destructive',
+            title: 'PDF Generation Failed',
+            description: 'Could not find the report content to generate PDF.',
+        });
+        return;
+    }
+
+    setIsGeneratingPdf(true);
+    toast({
+      title: 'Generating Report...',
+      description: 'Please wait while we create the vehicle report PDF.',
     });
-    return yPos + 15;
+    
+    try {
+      const canvas = await html2canvas(reportContentElement, {
+        scale: 2, // Increase resolution for better quality
+        useCORS: true, // Important for fetching cross-origin images
+        allowTaint: true,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      
+      const pdf = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4',
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const ratio = canvasWidth / canvasHeight;
+      
+      const imgWidth = pdfWidth;
+      const imgHeight = imgWidth / ratio;
+      
+      let heightLeft = imgHeight;
+      let position = 0;
+      
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+      
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+      
+      pdf.save(`${vehicle.make}_${vehicle.model}_Report.pdf`);
+
+      toast({
+        variant: 'success',
+        title: 'Report Generated!',
+        description: 'The PDF report has been downloaded.',
+      });
+    } catch (error) {
+      console.error('PDF Generation Error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'PDF Generation Failed',
+        description: 'Could not generate the report. Please try again.',
+      });
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
+
+  if (loading) {
+    return <VehicleDetailSkeleton />;
   }
 
-  y = addDetailRow(y, 
-    { label: 'Reg. Year', value: vehicle.regYear },
-    { label: 'KMs Driven', value: vehicle.kmsDriven ? `${vehicle.kmsDriven.toLocaleString('en-IN')} km` : 'N/A' },
-    { label: 'Fuel Type', value: vehicle.fuelType }
-  );
+  if (error) {
+    if (error === 'VehicleNotFound') {
+      return (
+        <div className="container mx-auto px-4 py-8 text-center flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
+          <AlertTriangle className="w-24 h-24 text-yellow-500 mb-4" />
+          <h1 className="text-3xl font-bold">Vehicle Not Found</h1>
+          <p className="text-muted-foreground mt-2">The vehicle you are looking for does not exist or has been removed.</p>
+        </div>
+      );
+    }
+    return (
+      <div className="container mx-auto px-4 py-8 text-center flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
+        <ServerCrash className="w-24 h-24 text-destructive mb-4" />
+        <h1 className="text-3xl font-bold text-destructive">Loading Failed</h1>
+        <p className="text-muted-foreground mt-2">{error}</p>
+      </div>
+    );
+  }
 
-  y = addDetailRow(y,
-    { label: 'Ownership', value: vehicle.ownership },
-    { label: 'Transmission', value: vehicle.transmission },
-    { label: 'Color', value: vehicle.color }
-  );
-
-  y = addDetailRow(y,
-    { label: 'Insurance', value: vehicle.insurance },
-    { label: 'Service History', value: vehicle.serviceHistory },
-    { label: 'RTO', value: vehicle.rtoState }
-  );
-
-  if (y > doc.internal.pageSize.getHeight() - 20) {
-      doc.addPage();
-      y = 20;
+  if (!vehicle) {
+     return null;
   }
   
-  // --- Image Gallery ---
-  y += 5;
-  doc.setFontSize(16);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(41, 98, 255);
-  doc.text('Vehicle Image Gallery', margin, y);
-  y += 10;
+  const basicDetails: DetailItem[] = [
+    { icon: Calendar, label: 'Reg. Year', value: vehicle.regYear },
+    { icon: Calendar, label: 'Mfg. Year', value: vehicle.mfgYear },
+    { icon: Gauge, label: 'KMs Driven', value: vehicle.kmsDriven ? `${vehicle.kmsDriven.toLocaleString('en-IN')} km` : undefined },
+    { icon: User, label: 'Ownership', value: vehicle.ownership },
+    { icon: GitCommit, label: 'Reg. Number', value: vehicle.regNumber },
+    { icon: MapPin, label: 'RTO', value: vehicle.rtoState },
+  ].filter(item => item.value);
 
-  const imageSize = (pageWidth - margin * 2 - 10) / 3; // 3 images per row with 5mm gap
-  let x = margin;
+  const techDetails: DetailItem[] = [
+    { icon: Fuel, label: 'Fuel Type', value: vehicle.fuelType },
+    { icon: Wrench, label: 'Transmission', value: vehicle.transmission },
+    { icon: Palette, label: 'Color', value: vehicle.color },
+    { icon: Shield, label: 'Insurance', value: vehicle.insurance },
+    { icon: Book, label: 'Service History', value: vehicle.serviceHistory },
+  ].filter(item => item.value);
 
-  for (let i = 0; i < allImages.length && i < 9; i++) {
-    const imageUrl = allImages[i];
-    if (y + imageSize > doc.internal.pageSize.getHeight() - margin) {
-        doc.addPage();
-        y = margin;
-        x = margin;
-    }
-    try {
-        const imgData = await imageToDataURL(imageUrl);
-        doc.addImage(imgData, 'JPEG', x, y, imageSize, imageSize * 0.75);
-    } catch(e) {
-        doc.rect(x, y, imageSize, imageSize * 0.75);
-        doc.text('Image failed to load', x + 5, y + 20);
-    }
+  const shareReportButton = (
+    <Button variant="secondary" onClick={handleGenerateReport} disabled={isGeneratingPdf} className="w-full sm:w-auto">
+      {isGeneratingPdf ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Generating...
+        </>
+      ) : (
+        <>
+          <Download className="mr-2 h-4 w-4" />
+          Share Report
+        </>
+      )}
+    </Button>
+  );
 
-    x += imageSize + 5;
-    if (i % 3 === 2) { // Move to next row after 3 images
-        x = margin;
-        y += (imageSize * 0.75) + 5;
-    }
-  }
+  return (
+    <div className="bg-muted/30">
+      <div className="container mx-auto px-2 sm:px-4 py-8">
+        <div id="vehicle-report-content" className="bg-background p-4 sm:p-6 rounded-lg">
+          <h1 className="text-3xl font-bold text-primary mb-4 text-center">{vehicle.make}</h1>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column: Images */}
+            <div className="lg:col-span-2">
+              <Card className="shadow-md overflow-hidden">
+                  <CardContent className="p-2">
+                      <div className="aspect-[4/3] relative rounded-md overflow-hidden bg-muted">
+                          {selectedImage ? (
+                          <Image
+                              src={selectedImage}
+                              alt={`${vehicle.make} ${vehicle.model}`}
+                              fill
+                              className="object-contain"
+                              priority
+                              sizes="(max-width: 1024px) 100vw, 66vw"
+                          />
+                          ) : (
+                          <div className="flex items-center justify-center h-full">
+                              <Car className="w-24 h-24 text-muted-foreground" />
+                          </div>
+                          )}
+                      </div>
+                  </CardContent>
+              </Card>
 
+              {allImages.length > 1 && (
+                  <div className="mt-4">
+                      <Carousel
+                          opts={{
+                          align: "start",
+                          dragFree: true,
+                          }}
+                          className="w-full"
+                      >
+                          <CarouselContent className="-ml-2">
+                          {allImages.map((img, index) => (
+                              <CarouselItem key={index} className="pl-2 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6">
+                              <button
+                                  onClick={() => setSelectedImage(img)}
+                                  className={cn(
+                                  "block w-full aspect-square relative rounded-md overflow-hidden border-2 transition-all",
+                                  selectedImage === img ? 'border-primary' : 'border-transparent hover:border-primary/50'
+                                  )}
+                              >
+                                  <Image
+                                  src={img}
+                                  alt={`Thumbnail ${index + 1}`}
+                                  fill
+                                  className="object-cover"
+                                  sizes="15vw"
+                                  />
+                              </button>
+                              </CarouselItem>
+                          ))}
+                          </CarouselContent>
+                          <CarouselPrevious className="hidden sm:flex" />
+                          <CarouselNext className="hidden sm:flex" />
+                      </Carousel>
+                  </div>
+              )}
+            </div>
 
-  // --- Footer ---
-  const pageCount = doc.internal.pages.length;
-  for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setFontSize(10);
-      doc.setTextColor(150);
-      doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
-      doc.text('Report generated by Trusted Vehicles Marketplace', margin, doc.internal.pageSize.getHeight() - 10);
-  }
+            {/* Right Column: Details */}
+            <div className="lg:col-span-1">
+              <Card className="shadow-md">
+                  <CardHeader>
+                      <p className="text-sm text-muted-foreground">{vehicle.year} &bull; {vehicle.variant}</p>
+                      <CardTitle className="text-2xl sm:text-3xl">{vehicle.make} {vehicle.model}</CardTitle>
+                      <div className="flex items-center justify-between pt-2">
+                          <p className="text-3xl font-bold text-primary">{formatCurrency(vehicle.price)}</p>
+                          {vehicle.verified && (
+                          <Badge variant="outline" className="border-success text-success font-medium">
+                              <CheckCircle className="mr-1.5 h-4 w-4" />
+                              Verified
+                          </Badge>
+                          )}
+                      </div>
+                  </CardHeader>
+                  <CardContent>
+                      <GetBestPrice vehicleId={id.trim()} shareReportButton={shareReportButton} />
+                  </CardContent>
+              </Card>
+            </div>
+          </div>
+          
+          {/* Lower Section: Details & All Images */}
+          <div className="mt-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {basicDetails.length > 0 && (
+                      <Card className="shadow-md">
+                          <CardHeader><CardTitle>Basic Details</CardTitle></CardHeader>
+                          <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 gap-x-4">
+                              {basicDetails.map(item => <DetailItemCard key={item.label} {...item} />)}
+                          </CardContent>
+                      </Card>
+                  )}
+                  {techDetails.length > 0 && (
+                      <Card className="shadow-md">
+                          <CardHeader><CardTitle>Technical Details</CardTitle></CardHeader>
+                          <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 gap-x-4">
+                              {techDetails.map(item => <DetailItemCard key={item.label} {...item} />)}
+                          </CardContent>
+                      </Card>
+                  )}
+              </div>
+          </div>
+          
+          {allImages.length > 0 && (
+            <div className="mt-8">
+              <Card className="shadow-md">
+                <CardHeader>
+                  <CardTitle>Vehicle Image Gallery</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {allImages.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(img)}
+                      className="relative aspect-square rounded-lg overflow-hidden border group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    >
+                      <Image
+                        src={img}
+                        alt={`Vehicle image ${index + 1}`}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-110"
+                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                      />
+                    </button>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
-
-  doc.save(`${vehicle.make}_${vehicle.model}_Report.pdf`);
+function DetailItemCard({ icon: Icon, label, value }: DetailItem) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="bg-primary/10 p-2 rounded-full">
+         <Icon className="w-5 h-5 text-primary" />
+      </div>
+      <div>
+        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="font-semibold text-base leading-tight">{value}</p>
+      </div>
+    </div>
+  );
 }
+
+
+function VehicleDetailSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <Skeleton className="aspect-[4/3] w-full rounded-lg" />
+          <div className="flex gap-2 mt-4">
+            {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-24 w-1/5 rounded-md" />)}
+          </div>
+        </div>
+        <div className="lg:col-span-1">
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-1/2" />
+            <Skeleton className="h-10 w-3/4" />
+            <Skeleton className="h-12 w-1/2" />
+            <Skeleton className="h-40 w-full" />
+          </div>
+        </div>
+      </div>
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Skeleton className="h-48 w-full rounded-lg" />
+          <Skeleton className="h-48 w-full rounded-lg" />
+      </div>
+    </div>
+  );
+}
+
+
+export default VehicleDetailPage;
