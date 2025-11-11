@@ -15,9 +15,9 @@ const constructImageUrl = (path?: string) => {
   // If the path is already a full URL, return it as is.
   if (path.startsWith('http')) return path;
 
-  // Ensure the path starts with a slash, then combine with the base URL.
-  const separator = path.startsWith('/') ? '' : '/';
-  return `${API_BASE_URL}${separator}${path}`;
+  // The path from the API might or might not start with a slash.
+  // The base URL doesn't have a trailing slash, so we add one.
+  return `${API_BASE_URL}/${path.replace(/^\//, '')}`;
 }
 
 export const transformVehicleData = (item: any): Vehicle => ({
@@ -41,6 +41,7 @@ export const transformVehicleData = (item: any): Vehicle => ({
   serviceHistory: item.serviceHistory,
   color: item.color,
   vehicleType: '4-wheeler', // Assuming all vehicles from this API are 4-wheelers
+  condition: item.condition,
   
   // Map all individual image fields and construct full URLs
   img_front: constructImageUrl(item.img_front),
@@ -107,7 +108,10 @@ export async function getVehicles(): Promise<Vehicle[]> {
 export async function getVehicleById(id: string): Promise<any | undefined> {
   // Use the internal API proxy route to avoid client-side CORS issues.
   try {
-    const response = await fetch(`/api/vehicles/${id}`, { cache: 'no-store' });
+    const response = await fetch(`/api/vehicles/${id}`, { 
+        cache: 'no-store',
+        mode: 'cors'
+    });
     if (!response.ok) {
         throw new Error(`Failed to fetch vehicle ${id}. Status: ${response.status}`);
     }
@@ -133,6 +137,7 @@ export async function getBanners(): Promise<Banner[]> {
       headers: {
         'Content-Type': 'application/json',
       },
+      mode: 'cors',
     });
 
     if (!response.ok) {
