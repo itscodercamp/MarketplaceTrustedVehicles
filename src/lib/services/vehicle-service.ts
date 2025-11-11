@@ -9,14 +9,14 @@ const BANNERS_API_URL = `${API_BASE_URL}/api/marketplace/banners`;
 // This is a temporary cache to avoid re-fetching data on every page navigation during development.
 // In a real-world app, you might use a more sophisticated caching strategy like React Query or SWR.
 let cachedBanners: Banner[] | null = null;
+let cachedVehicles: Vehicle[] | null = null;
+
 
 const constructImageUrl = (path?: string) => {
   if (!path) return undefined;
   // If the path is already a full URL, return it as is.
   if (path.startsWith('http')) return path;
 
-  // The path from the API might or might not start with a slash.
-  // The base URL doesn't have a trailing slash, so we add one.
   return `${API_BASE_URL}/${path.replace(/^\//, '')}`;
 }
 
@@ -73,6 +73,9 @@ export const transformVehicleData = (item: any): Vehicle => ({
  * @returns {Promise<Vehicle[]>} A promise that resolves to an array of vehicles.
  */
 export async function getVehicles(): Promise<Vehicle[]> {
+   if (cachedVehicles) {
+    return cachedVehicles;
+  }
   try {
     const response = await fetch(VEHICLES_API_URL, {
       headers: {
@@ -91,7 +94,7 @@ export async function getVehicles(): Promise<Vehicle[]> {
     const data: any[] = await response.json();
     
     const transformedVehicles: Vehicle[] = data.map(transformVehicleData);
-    
+    cachedVehicles = transformedVehicles;
     return transformedVehicles;
   } catch (error) {
     console.error("Error fetching or transforming vehicle data:", error);
@@ -106,11 +109,11 @@ export async function getVehicles(): Promise<Vehicle[]> {
  * @returns {Promise<any | undefined>} A promise that resolves to the raw vehicle data or undefined if not found.
  */
 export async function getVehicleById(id: string): Promise<any | undefined> {
-  // Use the internal API proxy route to avoid client-side CORS issues.
+  // Fetch directly from the external API to avoid server-side fetch issues and proxy complexity.
   try {
-    const response = await fetch(`/api/vehicles/${id}`, { 
+    const response = await fetch(`${VEHICLES_API_URL}/${id}`, { 
         cache: 'no-store',
-        mode: 'cors'
+        mode: 'cors' // Required for client-side cross-origin requests
     });
     if (!response.ok) {
         throw new Error(`Failed to fetch vehicle ${id}. Status: ${response.status}`);
@@ -118,7 +121,7 @@ export async function getVehicleById(id: string): Promise<any | undefined> {
     const vehicle = await response.json();
     return vehicle;
   } catch (error) {
-     console.error(`Fetch for vehicle ${id} via proxy failed:`, error);
+     console.error(`Direct fetch for vehicle ${id} failed:`, error);
      throw new Error('Failed to fetch. Please check the network connection and API status.');
   }
 }
