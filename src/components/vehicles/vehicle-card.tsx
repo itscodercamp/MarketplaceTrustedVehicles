@@ -38,7 +38,7 @@ export default function VehicleCard({ vehicle, onClick }: VehicleCardProps) {
     toggleSaveVehicle(vehicle.id);
   }
 
-  const mainImageUrl = vehicle.imageUrl || 'https://picsum.photos/seed/placeholder/600/400';
+  const mainImageUrl = vehicle.img_front || 'https://picsum.photos/seed/placeholder/600/400';
 
   return (
     <Link href={`/vehicle/${vehicle.id}`} className="block" onClick={onClick}>

@@ -43,7 +43,6 @@ export const transformVehicleData = (item: any): Vehicle => ({
   vehicleType: '4-wheeler', // Assuming all vehicles from this API are 4-wheelers
   
   // Map all individual image fields and construct full URLs
-  imageUrl: constructImageUrl(item.imageUrl),
   img_front: constructImageUrl(item.img_front),
   img_front_right: constructImageUrl(item.img_front_right),
   img_right: constructImageUrl(item.img_right),
@@ -78,7 +77,6 @@ export async function getVehicles(): Promise<Vehicle[]> {
       headers: {
         'Content-Type': 'application/json',
       },
-      cache: 'no-store',
       mode: 'cors', // Required for client-side cross-origin requests
     });
 
@@ -135,7 +133,6 @@ export async function getBanners(): Promise<Banner[]> {
       headers: {
         'Content-Type': 'application/json',
       },
-      cache: 'no-store' 
     });
 
     if (!response.ok) {

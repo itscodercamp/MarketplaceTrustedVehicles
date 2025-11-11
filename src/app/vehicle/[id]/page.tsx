@@ -66,7 +66,6 @@ const VehicleDetailPage = () => {
 
         // Collate all available images, filtering out any undefined or null values
         const images = [
-          transformedVehicle.imageUrl,
           transformedVehicle.img_front,
           transformedVehicle.img_front_right,
           transformedVehicle.img_right,
