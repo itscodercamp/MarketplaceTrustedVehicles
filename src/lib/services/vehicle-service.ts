@@ -103,7 +103,6 @@ export async function getVehicleById(id: string): Promise<any | undefined> {
   // Fetch directly from the external API to avoid server-side fetch issues and proxy complexity.
   try {
     const response = await fetch(`${VEHICLES_API_URL}/${id}`, { 
-        cache: 'no-store',
         mode: 'cors' // Required for client-side cross-origin requests
     });
     if (!response.ok) {
