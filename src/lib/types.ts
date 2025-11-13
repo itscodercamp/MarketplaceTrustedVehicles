@@ -95,6 +95,7 @@ export interface VehicleFilterState {
     setVehicleType: (vehicleType: VehicleType) => void;
     clearFilters: () => void;
     setResultCount: (count: number) => void;
+    setFiltersFromURL: (newFilters: Partial<Filters>) => void;
 }
 
 export interface Banner {

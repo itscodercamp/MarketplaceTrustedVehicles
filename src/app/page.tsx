@@ -10,6 +10,7 @@ import { Car } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Vehicle } from '@/lib/types';
 import { useVehicleFilterStore } from '@/store/vehicle-filters';
+import { QueryParamSync } from '@/components/search/query-param-sync';
 
 export default function Home() {
   const [allVehicles, setAllVehicles] = useState<Vehicle[]>([]);
@@ -75,6 +76,7 @@ export default function Home() {
 
   return (
     <>
+      <QueryParamSync />
       <SearchBar />
       <AdBanner />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
