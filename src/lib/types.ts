@@ -147,4 +147,20 @@ export const RecommendVehiclesViaChatbotOutputSchema = z.object({
   vehicleCount: z.number().optional().describe("The number of vehicles found for a specific brand. Only for 'count' type."),
   brandToFilter: z.string().optional().describe("The brand name to use for filtering the main list. Only for 'filter_suggestion' and 'count' types."),
 });
-export type RecommendVehiclesViaChatbotOutput = z.infer<typeof RecommendVehiclesViaChatbotOutputSchema>;
+export type RecommendVehlesViaChatbotOutput = z.infer<typeof RecommendVehiclesViaChatbotOutputSchema>;
+
+export interface LoginCredentials {
+    phone: string;
+    password?: string;
+}
+
+export interface RegisterPayload extends LoginCredentials {
+    userType: 'Customer' | 'Dealer';
+    fullName: string;
+    email?: string;
+    dealershipName?: string;
+    dealershipType?: '4w' | '2w' | 'both';
+    city?: string;
+    state?: string;
+pincode?: string;
+}

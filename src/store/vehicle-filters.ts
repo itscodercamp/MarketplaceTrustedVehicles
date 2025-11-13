@@ -20,11 +20,14 @@ const defaultState = {
   searchQuery: '',
 };
 
-export const useVehicleFilterStore = create<VehicleFilterState>()(
+export const useVehicleFilterStore = create<VehicleFilterState & { 
+    isHydrated: boolean; 
+  }>()(
   persist(
     (set, get) => ({
       ...defaultState,
       resultCount: 0,
+      isHydrated: false,
       setSort: (sort) => set({ sort }),
       setSearchQuery: (query) => set({ searchQuery: query }),
       toggleMultiFilter: (filterType, value) =>
@@ -41,11 +44,12 @@ export const useVehicleFilterStore = create<VehicleFilterState>()(
           };
         }),
       setVehicleType: (vehicleType) => {
-        set((state) => ({
+        set(() => ({
           filters: {
             ...initialFilters,
             vehicleType,
           },
+          searchQuery: '', // Also reset search query on type change
         }));
       },
       clearFilters: () => set((state) => ({ 
@@ -53,20 +57,34 @@ export const useVehicleFilterStore = create<VehicleFilterState>()(
         searchQuery: '',
       })),
       setResultCount: (count) => set({ resultCount: count }),
+      setFiltersFromURL: (newFilters) => set((state) => ({
+        filters: {
+            ...state.filters,
+            ...newFilters,
+        }
+      })),
     }),
     {
       name: 'vehicle-filter-storage',
       storage: createJSONStorage(() => localStorage),
-      // Merge the stored state with the default state to prevent undefined properties
+      onRehydrateStorage: () => (state) => {
+        if (state) state.isHydrated = true;
+      },
+      // This merge function is crucial for SSR compatibility.
+      // It prevents the client-side persisted state from overwriting the server-side default state before hydration.
       merge: (persistedState, currentState) => {
-        const state = { ...currentState, ...(persistedState as Partial<VehicleFilterState>) };
-        state.filters = {
-            ...currentState.filters,
-            ...(persistedState as Partial<VehicleFilterState>).filters,
+        // If we're on the server, we return the current (default) state.
+        if (typeof window === 'undefined') {
+            return currentState;
+        }
+        // On the client, we merge the persisted state with the current state.
+        return {
+          ...currentState,
+          ...(persistedState as Partial<VehicleFilterState>),
         };
-        return state;
       },
       partialize: (state) => ({
+        // We only persist a subset of the state to avoid issues with non-serializable parts
         filters: state.filters,
         sort: state.sort,
         searchQuery: state.searchQuery,
