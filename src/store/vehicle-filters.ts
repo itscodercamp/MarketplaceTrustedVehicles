@@ -22,6 +22,7 @@ const defaultState = {
 
 export const useVehicleFilterStore = create<VehicleFilterState & { 
     isHydrated: boolean; 
+    setFiltersFromURL: (newFilters: Partial<Filters>) => void;
   }>()(
   persist(
     (set, get) => ({
